@@ -1,19 +1,81 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {# Run `composer require symfony/webpack-encore-bundle`
-           and uncomment the following Encore helpers to start using Symfony UX #}
-        {% block stylesheets %}
-            {#{{ encore_entry_link_tags('app') }}#}
-        {% endblock %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="YouTube Playlist">
+    <meta name="theme-color" content="#ff0000">
+    <link rel="shortcut icon" href="{{ asset('favicon.png') }}" type="image/x-icon"/>
 
-        {% block javascripts %}
-            {#{{ encore_entry_script_tags('app') }}#}
-        {% endblock %}
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-    </body>
+    <title>{% block title %}{% endblock %}{{ block('title') ? block('title') ~ ' | YouTube playlist | Arris' : 'Cloutteries' }}</title>
+
+    <!-- Bulma Version 0.9.0-->
+    <link rel="stylesheet" href="https://unpkg.com/bulma@0.9.0/css/bulma.min.css" />
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <link rel="stylesheet" href="{{ asset('bundles/app/css/main.css') }}">
+
+    {# Run `composer require symfony/webpack-encore-bundle`
+           and uncomment the following Encore helpers to start using Symfony UX #}
+    {% block stylesheets %}
+        {# {{ encore_entry_link_tags('app') }} #}
+    {% endblock %}
+
+    {% block javascripts %}
+        {# {{ encore_entry_script_tags('app') }} #}
+    {% endblock %}
+</head>
+<body>
+{% block header %}
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-brand">
+                <a class="navbar-item is-unselectable" href="{{ path('home') }}">
+                    <i class="fab fa-youtube fa-3x"></i>  YouTube Playlist
+                </a>
+                <span class="navbar-burger burger" data-target="navbarMenu">
+					<span></span>
+					<span></span>
+					<span></span>
+				</span>
+            </div>
+            <div id="navbarMenu" class="navbar-menu">
+                {% set route = app.request.attributes.get("_route") %}
+                <div class="navbar-end">
+                    <a href="{{ path('home') }}" class="navbar-item {{ route == 'home' ? 'is-active' }}">Home</a>
+                    <a href="{{ path('about') }}" class="navbar-item {{ route == 'about' ? 'is-active' }}">About</a>
+                    <a href="{{ path('contact') }}" class="navbar-item {{ route == 'contact' ? 'is-active' }}">Contact</a>
+{#                    <div class="navbar-item has-dropdown is-hoverable">#}
+{#                        <a class="navbar-link">Account</a>#}
+{#                        <div class="navbar-dropdown">#}
+{#                            <a class="navbar-item">Dashboard</a>#}
+{#                            <a class="navbar-item">Profile</a>#}
+{#                            <a class="navbar-item">Settings</a>#}
+{#                            <hr class="navbar-divider">#}
+{#                            <div class="navbar-item">Logout</div>#}
+{#                        </div>#}
+{#                    </div>#}
+                </div>
+            </div>
+        </div>
+    </nav>
+{% endblock header %}
+
+<div id="body_content">
+    {% block body %}
+    {% endblock body %}
+</div>
+
+{% block footer %}
+    <footer>
+        <div class="container">
+            <div class="content">
+                <p class="has-text-centered is-unselectable">
+                    {{ 'allRightsReserved'|trans }} &copy; {{ "now"|date('Y') }}
+                </p>
+            </div>
+        </div>
+    </footer>
+{% endblock footer %}
+</body>
 </html>

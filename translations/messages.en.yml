@@ -1,0 +1,7 @@
+allRightsReserved: All rights reserved
+submit: Submit
+shuffle: Shuffle
+playlist:
+    notFound: The playlist cannot be found.
+    url: YouTube playlist URL
+    realUrl: https://www.youtube.com/watch?list=xyz

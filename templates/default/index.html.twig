@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}YouTube Playlist{% endblock %}
+
+{% block body %}
+    <section class="hero">
+        <div class="hero-body">
+            <div class="container has-text-centered">
+                <div class="columns is-4 is-variable ">
+                    <div class="column is-three-fifths has-text-left">
+                        <div class="content" style="margin-bottom: 64px;">
+                            <h2>YouTube Playlist Randomizer</h2>
+                            <p>
+                                Put in your YouTube playlist URL and click Shuffle button.
+                            </p>
+                        </div>
+
+                        {{ form_start(form, {'attr': {'class': 'form form-contact'} }) }}
+                        <div class="field">
+                            {{ form_label(form.url, null, {'label_attr': {'class': 'label'}}) }}
+                            <div class="control has-icons-left">
+                                {{ form_widget(form.url, {'attr': {'class': 'input '}}) }} {# ~  'is-danger' #}
+                                <span class="icon is-small is-left">
+                                    <i class="fas fa-link"></i>
+                                </span>
+                            </div>
+                            {% if not form.url.vars.valid %}
+                                <p class="help is-danger">{{ form_errors(form.url) }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="field">
+                            <p class="control">
+                                <input type="submit" class="button is-link" value="{{ 'shuffle'|trans|upper }}"/>
+                            </p>
+                        </div>
+                        {{ form_end(form) }}
+                    </div>
+                    <div class="column is-one-third has-text-left">
+                        <div class="content has-text-centered" style="margin-top: 104px">
+                            <i class="fas fa-chevron-left fa-10x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
