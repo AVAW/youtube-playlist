@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Playlist;
 use App\Form\PlaylistType;
+use App\Utils\YouTubePlaylist;
 use Doctrine\ORM\EntityManagerInterface;
 use Google_Client;
 use Google_Service_YouTube;
@@ -25,7 +26,8 @@ class DefaultController extends AbstractController
         Request $request,
         EntityManagerInterface $em,
         TranslatorInterface $translator,
-        Google_Client $client
+        Google_Client $client,
+        YouTubePlaylist $youTubePlaylist
     ): Response {
         $form = $this->createForm(PlaylistType::class);
         $form->handleRequest($request);
@@ -34,12 +36,7 @@ class DefaultController extends AbstractController
             /** @var Playlist $playlist */
             $playlist = $form->getData();
 
-
-            // Validate
-            $plu = parse_url($playlist->getUrl());
-            $s = null;
-            parse_str($plu['query'], $s);
-            $playlistId = $s['list'];
+            $playlistId = $youTubePlaylist->getPlaylistIdFromUrl($playlist->getUrl());
 
             $service = new Google_Service_YouTube($client);
             $part = [
@@ -49,6 +46,8 @@ class DefaultController extends AbstractController
                 'maxResults' => 50,
                 'playlistId' => $playlistId,
             ];
+
+            $results = $service->playlistItems->listPlaylistItems($part, $queryParams);
 
             try {
                 $results = $service->playlistItems->listPlaylistItems($part, $queryParams);
@@ -63,7 +62,7 @@ class DefaultController extends AbstractController
             $total = $results->getPageInfo()->getTotalResults();
 
             $videosIds = $this->getPageVideosIds($results);
-            while (($results->getNextPageToken())) {
+            while ($results->getNextPageToken()) {
                 $optParams = array_merge($queryParams, ['pageToken' => $results->getNextPageToken()]);
                 $results = $service->playlistItems->listPlaylistItems($part, $optParams);
                 $videosIds = array_merge($videosIds, $this->getPageVideosIds($results));

@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Playlist;
+use App\Validator\YouTube\YouTubePlaylistUrl;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -19,11 +20,12 @@ class PlaylistType extends AbstractType
             ->add('url', TextType::class, [
                 'label' => 'playlist.url',
                 'attr' => [
-                    'placeholder' => 'playlist.realUrl'
+                    'placeholder' => 'playlist.realUrl',
                 ],
                 'constraints' => [
                     new NotNull(),
                     new Url(),
+                    new YouTubePlaylistUrl(),
                 ],
             ]);
     }
