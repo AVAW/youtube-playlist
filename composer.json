@@ -1,4 +1,12 @@
 {
+    "name": "awojcik/youtube-playlist",
+    "description": "YouTube playlist",
+    "authors": [
+        {
+            "name": "Arek Wójcik",
+            "email": "a.wojcik@arris.pl"
+        }
+    ],
     "type": "project",
     "license": "proprietary",
     "minimum-stability": "dev",
@@ -12,6 +20,8 @@
         "doctrine/doctrine-bundle": "^2.3",
         "doctrine/doctrine-migrations-bundle": "^3.0",
         "doctrine/orm": "^2.8",
+        "gedmo/doctrine-extensions": "^3.0",
+        "google/apiclient": "^2.9",
         "phpdocumentor/reflection-docblock": "^5.2",
         "sensio/framework-extra-bundle": "^5.1",
         "symfony/asset": "5.2.*",
@@ -36,6 +46,7 @@
         "symfony/string": "5.2.*",
         "symfony/translation": "5.2.*",
         "symfony/twig-bundle": "^5.2",
+        "symfony/uid": "5.2.*",
         "symfony/validator": "5.2.*",
         "symfony/web-link": "5.2.*",
         "symfony/yaml": "5.2.*",
@@ -53,6 +64,9 @@
         "symfony/web-profiler-bundle": "^5.2"
     },
     "config": {
+        "platform": {
+            "php": "7.4.16"
+        },
         "optimize-autoloader": true,
         "preferred-install": {
             "*": "dist"
