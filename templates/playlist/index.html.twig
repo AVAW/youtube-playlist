@@ -1,0 +1,77 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}YouTube Playlist{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('bundles/app/js/app.js') }}"></script>
+{% endblock javascripts %}
+
+{% block body %}
+    <input class="js-playlist-uuid" type="hidden" value="{{ playlist.uuid }}">
+    <input class="js-get-playlist-data-url" type="hidden" value="{{ path('app_playlist_videos') }}">
+    <section class="hero">
+        <div class="hero-body">
+            <div class="container">
+                <div class="columns">
+                    <div class="column is-full">
+                        <section class="hero is-hero-bar is-main-hero">
+                            <div class="hero-body" style="padding: 1.5rem 1.5rem">
+                                <div class="level">
+                                    <div class="level-left">
+                                        <div class="level-item is-hero-content-item">
+                                            <div>
+                                                <h1 class="title is-spaced">{{ playlist.title }}</h1>
+                                                <h3 class="subtitle">Videos amount: <b>{{ playlist.videosAmount }}</b></h3>
+                                                <p>
+                                                    <small>Created at <b>{{ playlist.createdAt|date('m.d.Y H:i') }}</b>
+                                                    by <b>{{ playlist.channelTitle }}</b></small>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="level-right">
+                                        <div class="level-item is-hero-avatar-item">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+                <div class="columns is-4 is-variable ">
+                    <div class="column is-half has-text-left">
+                        <div id="ytplayer"></div>
+                        <button class="js-loading-play button is-link is-loading">{{ 'shuffle'|trans|upper }}</button>
+                    </div>
+                    <div class="column has-text-left">
+                        <div class="select">
+                            <select  class="js-playlist-list" size="10" style="max-width: 657px; height: 361px;">
+                                <option class="is-hidden js-select-template" value="0"></option>
+                            </select>
+                        </div>
+
+
+{#                        <div class="card events-card">#}
+{#                            <div class="card-table">#}
+{#                                <div class="content">#}
+{#                                    <table class="js-playlist-list table is-fullwidth is-striped">#}
+{#                                        <tbody>#}
+{#                                        <tr>#}
+{#                                            <td>asdf</td>#}
+{#                                            <td class="level-right">#}
+{#                                                <a class="button is-small is-primary" href="#">Action</a>#}
+{#                                            </td>#}
+{#                                        </tr>#}
+{#                                        </tbody>#}
+{#                                    </table>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                            <footer class="card-footer">#}
+{#                            </footer>#}
+{#                        </div>#}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

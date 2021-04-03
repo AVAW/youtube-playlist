@@ -42,6 +42,7 @@ class YouTubePlaylistManager
         try {
             $results = $this->service->playlistItems->listPlaylistItems($part, $queryParams);
         } catch (\Google_Service_Exception $e) {
+            // todo
             dd($e);
             if ($e->getCode() === 404) {
                 dd($this->translator->trans('playlist.notFound'));
