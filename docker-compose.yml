@@ -41,3 +41,8 @@ services:
         volumes:
             - .:/application
 
+    ngrok:
+        image: wernight/ngrok
+        ports:
+            - "4040:4040"
+        command: ["ngrok", "http", "web:80"]
