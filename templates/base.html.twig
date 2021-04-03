@@ -24,6 +24,23 @@
     {% block javascripts %}
         {# {{ encore_entry_script_tags('app') }} #}
     {% endblock %}
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <script type="application/javascript">
+        $(document).ready(function () {
+            $('.modalClose').click(function (e) {
+                let $el = $(e.currentTarget);
+                $el.closest('.modal').removeClass('is-active');
+            });
+            // Check for click events on the navbar burger icon
+            $(".navbar-burger").click(function () {
+                // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
+                $(".navbar-burger").toggleClass("is-active");
+                $(".navbar-menu").toggleClass("is-active");
+            });
+        });
+    </script>
 </head>
 <body>
 {% block header %}
@@ -67,7 +84,7 @@
 </div>
 
 {% block footer %}
-    <footer>
+    <footer style="margin-top: 200px">
         <div class="container">
             <div class="content">
                 <p class="has-text-centered is-unselectable">

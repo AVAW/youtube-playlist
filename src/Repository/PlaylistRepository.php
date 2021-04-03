@@ -14,6 +14,7 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class PlaylistRepository extends ServiceEntityRepository
 {
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Playlist::class);
@@ -47,4 +48,15 @@ class PlaylistRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    /**
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function save(Playlist $playlist): void
+    {
+        $this->getEntityManager()->persist($playlist);
+        $this->getEntityManager()->flush();
+    }
+
 }

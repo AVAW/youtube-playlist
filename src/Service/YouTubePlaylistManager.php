@@ -30,7 +30,6 @@ class YouTubePlaylistManager
             'id',
             'snippet',
             'contentDetails',
-            'localization',
         ];
         $queryParams = [
             'maxResults' => 50,

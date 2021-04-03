@@ -4,8 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Playlist;
 use App\Form\PlaylistType;
+use App\Repository\PlaylistRepository;
 use App\Utils\YouTubePlaylist;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,10 +17,13 @@ class DefaultController extends AbstractController
 
     /**
      * @Route("/", name="home")
+     *
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function index(
         Request $request,
-        EntityManagerInterface $em,
+        PlaylistRepository $playlistRepository,
         YouTubePlaylist $youTubePlaylist
     ): Response {
         $form = $this->createForm(PlaylistType::class);
@@ -29,12 +32,13 @@ class DefaultController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var Playlist $playlist */
             $playlist = $form->getData();
-            $playlistId = $youTubePlaylist->getPlaylistIdFromUrl($playlist->getUrl());
+
             $playlist->setCreatedAt(new \DateTime());
+            $playlistId = $youTubePlaylist->getPlaylistIdFromUrl($playlist->getUrl());
             $playlist->setYoutubeId($playlistId);
             $playlist->setUuid(Uuid::v4());
-            $em->persist($playlist);
-            $em->flush();
+
+            $playlistRepository->save($playlist);
 
             return $this->redirectToRoute('playlist', ['uuid' => $playlist->getUuid()]);
         }
