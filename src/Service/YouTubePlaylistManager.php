@@ -5,6 +5,8 @@ namespace App\Service;
 use App\Entity\Playlist;
 use Google_Client;
 use Google_Service_YouTube;
+use Google_Service_YouTube_PlaylistItem;
+use Google_Service_YouTube_PlaylistItemListResponse;
 use GuzzleHttp\Exception\ConnectException;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -24,7 +26,7 @@ class YouTubePlaylistManager
         $this->translator = $translator;
     }
 
-    public function getPlaylistVideosIds(Playlist $playlist): array
+    public function getPlaylistVideos(Playlist $playlist): array
     {
         $part = [
             'id',
@@ -48,31 +50,33 @@ class YouTubePlaylistManager
             dd('ConnectException');
         }
 
-        $videosIds = $this->getPageVideosIds($results);
+        $videos = $this->getPageVideos($results);
         while ($results->getNextPageToken()) {
             $optParams = array_merge($queryParams, ['pageToken' => $results->getNextPageToken()]);
             $results = $this->service->playlistItems->listPlaylistItems($part, $optParams);
-            $videosIds = array_merge($videosIds, $this->getPageVideosIds($results));
+            $videos = array_merge($videos, $this->getPageVideos($results));
         }
 
-//            $firstVideoId = array_pop($videosIds);
-//            $video = $service->videos->listVideos($part, ['id' => $firstVideoId]);
-
-        if (empty($videosIds)) {
-            throw new \InvalidArgumentException('Empty playlist');
-        }
-
-        return $videosIds;
+        return $videos;
     }
 
-    protected function getPageVideosIds($results): array
+    protected function getPageVideos(Google_Service_YouTube_PlaylistItemListResponse $results): array
     {
-        $videosIds = [];
+        $videos = [];
         foreach ($results->getItems() as $item) {
-            $videosIds [] = $item->getContentDetails()->videoId;
+            $videos [] = $this->getVideoData($item);
         }
 
-        return $videosIds;
+        return $videos;
+    }
+
+    protected function getVideoData(Google_Service_YouTube_PlaylistItem $item): array
+    {
+        return [
+            'id' => $item->getContentDetails()->videoId,
+            'title' => $item->getSnippet()->title,
+            'publishedAt' => \DateTime::createFromFormat(DATE_ISO8601, $item->getSnippet()->getPublishedAt()),
+        ];
     }
 
     public function getVideosAmountInPlaylist(Playlist $playlist): void

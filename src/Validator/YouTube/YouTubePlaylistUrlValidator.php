@@ -23,7 +23,7 @@ class YouTubePlaylistUrlValidator extends ConstraintValidator
             throw new UnexpectedTypeException($constraint, __NAMESPACE__ . '\NotBlank');
         }
 
-        if (!$this->validator->isValidaUrl($value)) {
+        if (!$this->validator->isValidUrl($value)) {
             $this->context->buildViolation($constraint->message)
                 ->addViolation();
         }

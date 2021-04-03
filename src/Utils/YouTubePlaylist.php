@@ -17,7 +17,7 @@ class YouTubePlaylist
         $this->service = new Google_Service_YouTube($client);
     }
 
-    public function isValidaUrl(string $url): bool
+    public function isValidUrl(string $url): bool
     {
         $playlistId = $this->getPlaylistIdFromUrl($url);
         if (empty($playlistId)) {
