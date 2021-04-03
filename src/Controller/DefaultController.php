@@ -6,15 +6,11 @@ use App\Entity\Playlist;
 use App\Form\PlaylistType;
 use App\Utils\YouTubePlaylist;
 use Doctrine\ORM\EntityManagerInterface;
-use Google_Client;
-use Google_Service_YouTube;
-use GuzzleHttp\Exception\ConnectException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Uid\Uuid;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 class DefaultController extends AbstractController
 {
@@ -25,8 +21,6 @@ class DefaultController extends AbstractController
     public function index(
         Request $request,
         EntityManagerInterface $em,
-        TranslatorInterface $translator,
-        Google_Client $client,
         YouTubePlaylist $youTubePlaylist
     ): Response {
         $form = $this->createForm(PlaylistType::class);
@@ -35,47 +29,7 @@ class DefaultController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var Playlist $playlist */
             $playlist = $form->getData();
-
             $playlistId = $youTubePlaylist->getPlaylistIdFromUrl($playlist->getUrl());
-
-            $service = new Google_Service_YouTube($client);
-            $part = [
-                'contentDetails',
-            ];
-            $queryParams = [
-                'maxResults' => 50,
-                'playlistId' => $playlistId,
-            ];
-
-            $results = $service->playlistItems->listPlaylistItems($part, $queryParams);
-
-            try {
-                $results = $service->playlistItems->listPlaylistItems($part, $queryParams);
-            } catch (\Google_Service_Exception $e) {
-                if ($e->getCode() === 404) {
-                    dd($translator->trans('playlist.notFound'));
-                }
-            } catch (ConnectException $e) {
-                dd('ConnectException');
-            }
-
-            $total = $results->getPageInfo()->getTotalResults();
-
-            $videosIds = $this->getPageVideosIds($results);
-            while ($results->getNextPageToken()) {
-                $optParams = array_merge($queryParams, ['pageToken' => $results->getNextPageToken()]);
-                $results = $service->playlistItems->listPlaylistItems($part, $optParams);
-                $videosIds = array_merge($videosIds, $this->getPageVideosIds($results));
-            }
-
-//            $firstVideoId = array_pop($videosIds);
-//            $video = $service->videos->listVideos($part, ['id' => $firstVideoId]);
-
-            if (empty($videosIds)) {
-                throw new \InvalidArgumentException('Empty playlist');
-            }
-
-
             $playlist->setCreatedAt(new \DateTime());
             $playlist->setYoutubeId($playlistId);
             $playlist->setUuid(Uuid::v4());
@@ -88,16 +42,6 @@ class DefaultController extends AbstractController
         return $this->render('default/index.html.twig', [
             'form' => $form->createView(),
         ]);
-    }
-
-    protected function getPageVideosIds($results): array
-    {
-        $videosIds = [];
-        foreach ($results->getItems() as $item) {
-            $videosIds [] = $item->getContentDetails()->videoId;
-        }
-
-        return $videosIds;
     }
 
     /**

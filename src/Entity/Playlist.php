@@ -3,14 +3,16 @@
 namespace App\Entity;
 
 use App\Repository\PlaylistRepository;
+use App\Utils\Traits\Timestampable;
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity(repositoryClass=PlaylistRepository::class)
  */
-class Playlist
+class Playlist implements \Stringable
 {
+
+    use Timestampable;
 
     /**
      * @ORM\Id
@@ -35,16 +37,34 @@ class Playlist
     private string $youtubeId;
 
     /**
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime")
-     */
-    private \DateTime $createdAt;
-
-    /**
-     * @Gedmo\Timestampable(on="update")
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private ?\DateTime $updatedAt;
+    private ?\DateTimeInterface $publishedAt;
+
+    /**
+     * @ORM\Column(type="string", length=1024, nullable=true)
+     */
+    private ?string $title;
+
+    /**
+     * @ORM\Column(type="string", length=2048, nullable=true)
+     */
+    private ?string $description;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private ?string $channelTitle;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private ?int $videosAmount;
+
+    public function __toString(): string
+    {
+        return __CLASS__ . $this->getId();
+    }
 
     public function getId(): ?int
     {
@@ -87,28 +107,64 @@ class Playlist
         return $this;
     }
 
-    public function setCreatedAt(\DateTime $createdAt): self
+    public function getPublishedAt(): ?\DateTimeInterface
     {
-        $this->createdAt = $createdAt;
+        return $this->publishedAt;
+    }
+
+    public function setPublishedAt(?\DateTimeInterface $publishedAt): self
+    {
+        $this->publishedAt = $publishedAt;
 
         return $this;
     }
 
-    public function getCreatedAt(): \DateTime
+    public function getTitle(): ?string
     {
-        return $this->createdAt;
+        return $this->title;
     }
 
-    public function setUpdatedAt(\DateTime $updatedAt): self
+    public function setTitle(?string $title): self
     {
-        $this->updatedAt = $updatedAt;
+        $this->title = $title;
 
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTime
+    public function getDescription(): ?string
     {
-        return $this->updatedAt;
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getChannelTitle(): ?string
+    {
+        return $this->channelTitle;
+    }
+
+    public function setChannelTitle(?string $channelTitle): self
+    {
+        $this->channelTitle = $channelTitle;
+
+        return $this;
+    }
+
+    public function getVideosAmount(): ?int
+    {
+        return $this->videosAmount;
+    }
+
+    public function setVideosAmount(?int $videosAmount): self
+    {
+        $this->videosAmount = $videosAmount;
+
+        return $this;
     }
 
 }
