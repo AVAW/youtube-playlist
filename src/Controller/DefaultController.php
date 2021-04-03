@@ -2,8 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Contact;
 use App\Entity\Playlist;
+use App\Form\ContactType;
 use App\Form\PlaylistType;
+use App\Repository\ContactRepository;
 use App\Repository\PlaylistRepository;
 use App\Utils\YouTubePlaylist;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -60,10 +63,30 @@ class DefaultController extends AbstractController
     /**
      * @Route("/contact", name="contact")
      */
-    public function contact(): Response
-    {
+    public function contact(
+        Request $request,
+        ContactRepository $contactRepository
+    ): Response {
+        $form = $this->createForm(ContactType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var Contact $contact */
+            $contact = $form->getData();
+
+            $contact->setCreatedAt(new \DateTime());
+            $contact->setClientIp($request->getClientIp());
+
+            $contactRepository->save($contact);
+
+            return $this->redirectToRoute('contact');
+        }
+
+        $contacts = $contactRepository->findAll();
+
         return $this->render('default/contact.html.twig', [
-            'form' => null,
+            'form' => $form->createView(),
+            'contacts' => $contacts,
         ]);
     }
 

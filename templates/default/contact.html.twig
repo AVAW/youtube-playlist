@@ -17,50 +17,72 @@
                         </div>
                     </div>
                     <div class="column is-one-third has-text-left">
+                        {{ form_start(form) }}
                         <div class="field">
-                            <label class="label">Name</label>
-                            <div class="control">
-                                <input class="input is-medium" type="text">
+                            {{ form_label(form.name, null, {'label_attr': {'class': 'label'}}) }}
+                            <div class="control has-icons-left">
+                                {{ form_widget(form.name, {'attr': {'class': 'input is-medium'}}) }}
+                                <span class="icon is-small is-left">
+                                    <i class="fas fa-user"></i>
+                                </span>
                             </div>
+                            {% if not form.name.vars.valid %}
+                                <p class="help is-danger">{{ form_errors(form.name) }}</p>
+                            {% endif %}
                         </div>
                         <div class="field">
-                            <label class="label">Email</label>
-                            <div class="control">
-                                <input class="input is-medium" type="text">
+                            {{ form_label(form.email, null, {'label_attr': {'class': 'label'}}) }}
+                            <div class="control has-icons-left">
+                                {{ form_widget(form.email, {'attr': {'class': 'input is-medium'}}) }}
+                                <span class="icon is-small is-left">
+                                    <i class="fas fa-at"></i>
+                                </span>
                             </div>
+                            {% if not form.email.vars.valid %}
+                                <p class="help is-danger">{{ form_errors(form.email) }}</p>
+                            {% endif %}
                         </div>
                         <div class="field">
-                            <label class="label">Message</label>
+                            {{ form_label(form.message, null, {'label_attr': {'class': 'label'}}) }}
                             <div class="control">
-                                <textarea class="textarea is-medium"></textarea>
+                                {{ form_widget(form.message, {'attr': {'class': 'textarea is-medium'}}) }}
                             </div>
+                            {% if not form.message.vars.valid %}
+                                <p class="help is-danger">{{ form_errors(form.message) }}</p>
+                            {% endif %}
                         </div>
                         <div class="control">
-                            <button type="submit" class="button is-link is-fullwidth has-text-weight-medium is-medium">Send Message</button>
+                            <button type="submit" class="button is-link is-fullwidth has-text-weight-medium is-medium">
+                                Send Message
+                            </button>
                         </div>
+                        {{ form_end(form) }}
                     </div>
                 </div>
             </div>
         </div>
     </section>
     <div class="container">
-        <div class="box">
-            <article class="media">
-                <div class="media-left">
-                    <figure class="image is-64x64">
-                        <img src="https://bulma.io/images/placeholders/128x128.png" alt="Image">
-                    </figure>
-                </div>
-                <div class="media-content">
-                    <div class="content">
-                        <p>
-                            <strong>John Smith</strong> <small>@johnsmith</small> <small>31m</small>
-                            <br>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean efficitur sit amet massa fringilla egestas. Nullam condimentum luctus turpis.
-                        </p>
+        {% for contact in contacts %}
+            <div class="box">
+                <article class="media">
+                    <div class="media-left">
+                        <figure class="image is-64x64">
+                            <img src="https://bulma.io/images/placeholders/128x128.png" alt="Image">
+                        </figure>
                     </div>
-                </div>
-            </article>
-        </div>
+                    <div class="media-content">
+                        <div class="content">
+                            <p>
+                                <strong>{{ contact.name }}</strong> {{ contact.email }}
+                                <small>{{ contact.createdAt|date('m.d.Y H:i:s') }}</small>
+                                <br>
+                                {{ contact.message|limit }}
+                            </p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        {% endfor %}
     </div>
 {% endblock %}
