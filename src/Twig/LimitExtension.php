@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Twig;
 
 use Twig\Extension\AbstractExtension;
@@ -15,9 +17,13 @@ class LimitExtension extends AbstractExtension
         ];
     }
 
-    public function limit($value, $signs = 1024)
+    public function limit($value, $signs = 1024): string
     {
-        return substr($value, 0, $signs) . '...';
+        if (strlen($value) > $signs) {
+            return substr($value, 0, $signs) . '...';
+        }
+
+        return $value;
     }
 
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Repository\ContactRepository;
@@ -9,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass=ContactRepository::class)
  */
-class Contact
+class Contact implements \Stringable
 {
 
     use Timestampable;
@@ -19,27 +21,32 @@ class Contact
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private int $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $email;
+    private string $email;
 
     /**
      * @ORM\Column(type="text", nullable=true)
      */
-    private $message;
+    private string $message;
 
     /**
      * @ORM\Column(type="string", length=64)
      */
-    private $clientIp;
+    private string $clientIp;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $name;
+    private string $name;
+
+    public function __toString(): string
+    {
+        return __CLASS__ . '_' . $this->getId();
+    }
 
     public function getId(): ?int
     {

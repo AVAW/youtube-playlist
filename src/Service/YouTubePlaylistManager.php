@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service;
 
+use App\Dto\Playlist\VideoDto;
 use App\Entity\Playlist;
 use Google_Client;
 use Google_Service_YouTube;
@@ -71,13 +74,13 @@ class YouTubePlaylistManager
         return $videos;
     }
 
-    protected function getVideoData(Google_Service_YouTube_PlaylistItem $item): array
+    protected function getVideoData(Google_Service_YouTube_PlaylistItem $item): VideoDto
     {
-        return [
-            'id' => $item->getContentDetails()->videoId,
-            'title' => $item->getSnippet()->title,
-            'publishedAt' => \DateTime::createFromFormat(DATE_ISO8601, $item->getSnippet()->getPublishedAt()),
-        ];
+        return new VideoDto(
+            $item->getContentDetails()->videoId,
+            $item->getSnippet()->title,
+            \DateTime::createFromFormat(DATE_ISO8601, $item->getSnippet()->getPublishedAt()),
+        );
     }
 
     public function getVideosAmountInPlaylist(Playlist $playlist): void

@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Repository\PlaylistRepository;
 use App\Utils\Traits\Timestampable;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=PlaylistRepository::class)
@@ -23,6 +26,7 @@ class Playlist implements \Stringable
 
     /**
      * @ORM\Column(type="uuid")
+     * @Groups({"simple"})
      */
     private string $uuid;
 
@@ -33,6 +37,7 @@ class Playlist implements \Stringable
 
     /**
      * @ORM\Column(type="string", length=64)
+     * @Groups({"simple"})
      */
     private string $youtubeId;
 
@@ -63,7 +68,7 @@ class Playlist implements \Stringable
 
     public function __toString(): string
     {
-        return __CLASS__ . $this->getId();
+        return __CLASS__ . '_' . $this->getId();
     }
 
     public function getId(): ?int

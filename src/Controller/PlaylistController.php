@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\Playlist;
@@ -8,7 +10,6 @@ use App\Response\JsonResponseMethods;
 use App\Service\YouTubePlaylistManager;
 use Doctrine\DBAL\Types\ConversionException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -26,38 +27,6 @@ class PlaylistController extends AbstractController
     public function none()
     {
         $this->redirectToRoute('home');
-    }
-
-    /**
-     * @Route("/videos")
-     */
-    public function videos(
-        Request $request,
-        PlaylistRepository $playlistRepository,
-        YouTubePlaylistManager $youTubePlaylistManager
-    ): Response {
-        $content = (array) json_decode($request->getContent());
-
-        if (empty($content['uuid'])) {
-            throw new \InvalidArgumentException('Can not find playlist');
-        }
-        try {
-            $playlist = $playlistRepository->findOneBy(['uuid' => $content['uuid']]);
-        } catch (ConversionException $e) {
-            throw new \InvalidArgumentException('Can not find playlist');
-        }
-        if (!$playlist instanceof Playlist) {
-            throw new \InvalidArgumentException('Can not find playlist');
-        }
-
-        $videos = $youTubePlaylistManager->getPlaylistVideos($playlist);
-
-        return $this->jsonSuccess([
-            'playlist' => [
-                'uuid' => $playlist->getUuid(),
-                'videos' => $videos,
-            ],
-        ]);
     }
 
     /**
@@ -79,6 +48,8 @@ class PlaylistController extends AbstractController
 
         $youTubePlaylistManager->getPlaylistDetails($playlist);
         $youTubePlaylistManager->getVideosAmountInPlaylist($playlist);
+
+        $playlistRepository->save($playlist);
 
         return $this->render('playlist/index.html.twig', [
             'playlist' => $playlist,

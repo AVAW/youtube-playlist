@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
         uuid: document.querySelector('.js-playlist-uuid').value,
     })
         .then(response => {
-            playlist = response.data.playlist.videos;
+            playlist = response.videos;
             playNext();
             generatePlaylist(playlist);
             stopLoading();
@@ -122,7 +122,7 @@ function playNext() {
 function playVideo(index) {
     console.log('playVideo');
     // curIdx = t >= 0 ? t % vids.length : t + vids.length;
-    player.loadVideoById(playlist[index].id);
+    player.loadVideoById(playlist[curIdx].id);
     curIdx += 1;
     // $("#curv").html(pad(curIdx + 1)), $("#list").val("" + curIdx);
     // localStorage.setItem(ytplr.idx, curIdx + "");

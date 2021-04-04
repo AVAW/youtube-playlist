@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\Contact;
 use App\Entity\Playlist;
 use App\Form\ContactType;
-use App\Form\PlaylistType;
+use App\Form\YouTubePlaylistType;
 use App\Repository\ContactRepository;
 use App\Repository\PlaylistRepository;
 use App\Utils\YouTubePlaylist;
@@ -29,14 +31,13 @@ class DefaultController extends AbstractController
         PlaylistRepository $playlistRepository,
         YouTubePlaylist $youTubePlaylist
     ): Response {
-        $form = $this->createForm(PlaylistType::class);
+        $form = $this->createForm(YouTubePlaylistType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var Playlist $playlist */
             $playlist = $form->getData();
 
-            $playlist->setCreatedAt(new \DateTime());
             $playlistId = $youTubePlaylist->getPlaylistIdFromUrl($playlist->getUrl());
             $playlist->setYoutubeId($playlistId);
             $playlist->setUuid(Uuid::v4());
