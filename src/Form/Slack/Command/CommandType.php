@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Form\Slack\Command;
 
 use App\Entity\Slack\Command;
-use App\Model\Slack\GetOrGetOrGetOrCreateRequest;
+use App\Model\Slack\GetOrCreateRequest;
 use App\Validator\Token\Valid;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Form\AbstractType;
@@ -77,7 +77,7 @@ class CommandType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => GetOrGetOrGetOrCreateRequest::class,
+            'data_class' => GetOrCreateRequest::class,
             'csrf_protection' => false,
         ]);
     }

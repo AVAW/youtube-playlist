@@ -9,7 +9,7 @@ use App\Handler\Request\Slack\Command\CommandCreateInterface;
 use App\Handler\Request\Slack\Team\TeamGetOrCreateInterface;
 use App\Handler\Request\Slack\User\UserGetOrCreateInterface;
 
-class GetOrGetOrGetOrCreateRequest implements TeamGetOrCreateInterface, ChannelGetOrCreateInterface, UserGetOrCreateInterface, CommandCreateInterface
+class GetOrCreateRequest implements TeamGetOrCreateInterface, ChannelGetOrCreateInterface, UserGetOrCreateInterface, CommandCreateInterface
 {
 
     protected string $token;

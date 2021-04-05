@@ -13,7 +13,7 @@ use App\Handler\Request\Slack\Channel\ChannelGetOrCreateRequestHandler;
 use App\Handler\Request\Slack\Command\CommandCreateRequestHandler;
 use App\Handler\Request\Slack\Team\TeamGetOrCreateRequestHandler;
 use App\Handler\Request\Slack\User\UserGetOrCreateRequestHandler;
-use App\Model\Slack\GetOrGetOrGetOrCreateRequest;
+use App\Model\Slack\GetOrCreateRequest;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,7 +41,7 @@ class CommandController extends AbstractFOSRestController
         // todo: add https://api.slack.com/authentication/verifying-requests-from-slack#about
         // hash('sha256', $request->request->all() . $request->headers->get('x-slack-signature'));
 
-        $command = new GetOrGetOrGetOrCreateRequest();
+        $command = new GetOrCreateRequest();
         $form = $this->createForm(CommandType::class, $command);
         $form->submit([
             'token' => $request->request->get('token'),
@@ -56,7 +56,7 @@ class CommandController extends AbstractFOSRestController
         ]);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var GetOrGetOrGetOrCreateRequest $command */
+            /** @var GetOrCreateRequest $command */
             $command = $form->getData();
 
             $team = $teamRequestHandler->handle($command);
