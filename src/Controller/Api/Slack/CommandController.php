@@ -4,13 +4,16 @@ declare(strict_types=1);
 
 namespace App\Controller\Api\Slack;
 
-use App\Event\SlackCommand\CommandEvent;
+use App\Event\Slack\ChannelEvent;
+use App\Event\Slack\CommandEvent;
+use App\Event\Slack\TeamEvent;
+use App\Event\Slack\UserEvent;
 use App\Form\Slack\Command\CommandType;
-use App\Handler\Request\ChannelRequestHandler;
-use App\Handler\Request\CommandRequestHandler;
-use App\Handler\Request\TeamRequestHandler;
-use App\Handler\Request\UserRequestHandler;
-use App\Model\Slack\Command\CommandRequest;
+use App\Handler\Request\Slack\Channel\ChannelGetOrCreateRequestHandler;
+use App\Handler\Request\Slack\Command\CommandCreateRequestHandler;
+use App\Handler\Request\Slack\Team\TeamGetOrCreateRequestHandler;
+use App\Handler\Request\Slack\User\UserGetOrCreateRequestHandler;
+use App\Model\Slack\GetOrGetOrGetOrCreateRequest;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,19 +32,19 @@ class CommandController extends AbstractFOSRestController
      */
     public function index(
         Request $request,
-        TeamRequestHandler $teamRequestHandler,
-        ChannelRequestHandler $channelRequestHandler,
-        UserRequestHandler $userRequestHandler,
-        CommandRequestHandler $commandRequestHandler,
+        TeamGetOrCreateRequestHandler $teamRequestHandler,
+        ChannelGetOrCreateRequestHandler $channelRequestHandler,
+        UserGetOrCreateRequestHandler $userRequestHandler,
+        CommandCreateRequestHandler $commandRequestHandler,
         EventDispatcherInterface $dispatcher
     ): object {
         // todo: add https://api.slack.com/authentication/verifying-requests-from-slack#about
         // hash('sha256', $request->request->all() . $request->headers->get('x-slack-signature'));
 
-        $command = new CommandRequest();
+        $command = new GetOrGetOrGetOrCreateRequest();
         $form = $this->createForm(CommandType::class, $command);
         $form->submit([
-            'token' =>$request->request->get('token'),
+            'token' => $request->request->get('token'),
             'teamId' => $request->request->get('team_id'),
             'teamDomain' => $request->request->get('team_domain'),
             'channelId' => $request->request->get('channel_id'),
@@ -53,14 +56,19 @@ class CommandController extends AbstractFOSRestController
         ]);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var CommandRequest $command */
+            /** @var GetOrGetOrGetOrCreateRequest $command */
             $command = $form->getData();
 
             $team = $teamRequestHandler->handle($command);
-            $channel = $channelRequestHandler->handle($command);
-            $user = $userRequestHandler->handle($command);
-            $command = $commandRequestHandler->handle($team, $channel, $user, $command);
+            $dispatcher->dispatch(new TeamEvent($team));
 
+            $channel = $channelRequestHandler->handle($command);
+            $dispatcher->dispatch(new ChannelEvent($channel));
+
+            $user = $userRequestHandler->handle($command);
+            $dispatcher->dispatch(new UserEvent($user));
+
+            $command = $commandRequestHandler->handle($team, $channel, $user, $command);
             $dispatcher->dispatch(new CommandEvent($command));
 
             return $this->render('slack_command/commands.html.twig');

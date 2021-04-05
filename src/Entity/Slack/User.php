@@ -6,6 +6,8 @@ namespace App\Entity\Slack;
 
 use App\Repository\Slack\UserRepository;
 use App\Utils\Traits\Timestampable;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -32,6 +34,61 @@ class User implements \Stringable
      * @ORM\Column(type="string", length=255)
      */
     private string $name;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private ?string $realName;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Team::class, inversedBy="users")
+     */
+    private ?Team $team;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private ?string $displayedName;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private ?string $title;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private ?string $phone;
+
+    /**
+     * @ORM\Column(type="string", length=1024, nullable=true)
+     */
+    private ?string $imageOriginalUrl;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private ?string $firstName;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private ?string $lastName;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Channel::class, inversedBy="users")
+     */
+    private Collection $channels;
+
+    /**
+     * @ORM\OneToOne(targetEntity=UserPresence::class, inversedBy="user", cascade={"persist", "remove"})
+     */
+    private ?UserPresence $presence;
+
+    public function __construct()
+    {
+        $this->channels = new ArrayCollection();
+    }
 
     public function __toString(): string
     {
@@ -63,6 +120,138 @@ class User implements \Stringable
     public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getRealName(): ?string
+    {
+        return $this->realName;
+    }
+
+    public function setRealName(?string $realName): self
+    {
+        $this->realName = $realName;
+
+        return $this;
+    }
+
+    public function getTeam(): ?Team
+    {
+        return $this->team;
+    }
+
+    public function setTeam(?Team $team): self
+    {
+        $this->team = $team;
+
+        return $this;
+    }
+
+    public function getDisplayedName(): ?string
+    {
+        return $this->displayedName;
+    }
+
+    public function setDisplayedName(?string $displayedName): self
+    {
+        $this->displayedName = $displayedName;
+
+        return $this;
+    }
+
+    public function getTitle(): ?string
+    {
+        return $this->title;
+    }
+
+    public function setTitle(?string $title): self
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    public function getPhone(): ?string
+    {
+        return $this->phone;
+    }
+
+    public function setPhone(?string $phone): self
+    {
+        $this->phone = $phone;
+
+        return $this;
+    }
+
+    public function getImageOriginalUrl(): ?string
+    {
+        return $this->imageOriginalUrl;
+    }
+
+    public function setImageOriginalUrl(?string $imageOriginalUrl): self
+    {
+        $this->imageOriginalUrl = $imageOriginalUrl;
+
+        return $this;
+    }
+
+    public function getFirstName(): ?string
+    {
+        return $this->firstName;
+    }
+
+    public function setFirstName(?string $firstName): self
+    {
+        $this->firstName = $firstName;
+
+        return $this;
+    }
+
+    public function getLastName(): ?string
+    {
+        return $this->lastName;
+    }
+
+    public function setLastName(?string $lastName): self
+    {
+        $this->lastName = $lastName;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Channel[]
+     */
+    public function getChannels(): Collection
+    {
+        return $this->channels;
+    }
+
+    public function addChannel(Channel $channel): self
+    {
+        if (!$this->channels->contains($channel)) {
+            $this->channels[] = $channel;
+        }
+
+        return $this;
+    }
+
+    public function removeChannel(Channel $channel): self
+    {
+        $this->channels->removeElement($channel);
+
+        return $this;
+    }
+
+    public function getPresence(): ?UserPresence
+    {
+        return $this->presence;
+    }
+
+    public function setPresence(?UserPresence $presence): self
+    {
+        $this->presence = $presence;
 
         return $this;
     }

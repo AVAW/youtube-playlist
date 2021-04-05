@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Form;
 
-use App\Model\Playlist\PlaylistRequest;
+use App\Model\Playlist\PlaylistFindRequest;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -29,7 +29,7 @@ class PlaylistType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => PlaylistRequest::class,
+            'data_class' => PlaylistFindRequest::class,
             'csrf_protection' => false,
         ]);
     }

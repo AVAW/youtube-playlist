@@ -39,6 +39,10 @@ services:
         calls:
             - [ setAnnotationReader, [ '@annotation_reader' ] ]
 
+    JoliCode\Slack\Api\Client:
+        factory: 'JoliCode\Slack\ClientFactory::create'
+        arguments:
+            $token: '%env(SLACK_TOKEN)%'
 
 
 

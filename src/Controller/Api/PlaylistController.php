@@ -6,8 +6,8 @@ namespace App\Controller\Api;
 
 use App\Entity\Playlist;
 use App\Form\PlaylistType;
-use App\Handler\Request\PlaylistHandler;
-use App\Model\Playlist\PlaylistRequest;
+use App\Handler\Request\Playlist\PlaylistFindHandler;
+use App\Model\Playlist\PlaylistFindRequest;
 use App\Service\YouTubePlaylistManager;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
@@ -28,15 +28,15 @@ class PlaylistController extends AbstractFOSRestController
      */
     public function videos(
         Request $request,
-        PlaylistHandler $playlistHandler,
+        PlaylistFindHandler $playlistHandler,
         YouTubePlaylistManager $youTubePlaylistManager
     ): Response {
-        $command = new PlaylistRequest();
+        $command = new PlaylistFindRequest();
         $form = $this->createForm(PlaylistType::class, $command);
         $form->submit($request->toArray());
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var PlaylistRequest $command */
+            /** @var PlaylistFindRequest $command */
             $command = $form->getData();
 
             $playlist = $playlistHandler->handle($command);
