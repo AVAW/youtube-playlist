@@ -35,7 +35,6 @@ class UserManager
             ->setUserId($userId)
             ->setName($userName)
             ->setTeam($team)
-            ->addChannel($channel)
             ->setRealName($realName)
             ->setDisplayedName($displayedName)
             ->setTitle($title)
@@ -43,6 +42,10 @@ class UserManager
             ->setImageOriginalUrl($imageOriginalUrl)
             ->setFirstName($firstName)
             ->setLastName($lastName);
+
+        if ($channel instanceof Channel) {
+            $user->addChannel($channel);
+        }
 
         $this->provider->save($user);
 
