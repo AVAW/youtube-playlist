@@ -24,3 +24,9 @@ monolog:
             path: "%kernel.logs_dir%/%kernel.environment%.log"
             # log *all* messages (debug is lowest level)
             level: error
+
+        slack:
+            type: slack
+            token: '%env(SLACK_TOKEN)%'
+            channel: 'U01DDGBHA5U'
+            level: error

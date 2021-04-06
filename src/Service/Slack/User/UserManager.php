@@ -63,7 +63,7 @@ class UserManager
         ?string $imageOriginalUrl,
         ?string $firstName,
         ?string $lastName
-    ): User {
+    ): void {
         $user
             ->setTeam($team)
             ->setRealName($realName)
@@ -79,8 +79,6 @@ class UserManager
         }
 
         $this->provider->save($user);
-
-        return $user;
     }
 
 }

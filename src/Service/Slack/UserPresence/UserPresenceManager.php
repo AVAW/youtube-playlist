@@ -48,7 +48,7 @@ class UserPresenceManager
         ?bool $manualAway,
         ?bool $online,
         ?string $presence
-    ): UserPresence {
+    ): void {
         $userPresence
             ->setAutoAway($autoAway)
             ->setConnectionCount($connectionCount)
@@ -58,8 +58,6 @@ class UserPresenceManager
             ->setPresence($presence);
 
         $this->provider->save($userPresence);
-
-        return $userPresence;
     }
 
 }

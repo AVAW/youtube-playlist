@@ -81,7 +81,6 @@ class ConversationManager
         }
 
         $this->provider->save($channel);
-
     }
 
 }

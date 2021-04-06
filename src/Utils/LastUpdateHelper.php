@@ -15,12 +15,16 @@ class LastUpdateHelper
         $now = new \DateTime();
         $now->sub($interval);
 
+        if ($object->getUpdatedAt() === $object->getCreatedAt()) {
+            return false;
+        }
+
         if ($object->getUpdatedAt() instanceof \DateTimeInterface) {
 
             return $object->getUpdatedAt()->getTimestamp() >= $now->getTimestamp();
         }
 
-        return false;
+        return $object->getCreatedAt()->getTimestamp() >= $now->getTimestamp();
     }
 
 }

@@ -34,7 +34,7 @@ class TeamManager
         ?string $name,
         ?string $emailDomain,
         ?string $iconUrl
-    ) {
+    ): void {
         $team
             ->setName($name)
             ->setEmailDomain($emailDomain)

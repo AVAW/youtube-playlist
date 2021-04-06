@@ -65,7 +65,6 @@ class ConversationSubscriber implements EventSubscriberInterface
                     continue;
                 }
 
-                $this->logger->error(print_r($slackUser, true));
                 $userCreateRequest = UserUpdateOrCreateRequest::createFromObjsUser($slackUser);
                 $userCreateRequest->setChannelId($conversation->getConversationId());
                 $this->userCreateFullRequestHandler->handle($userCreateRequest);

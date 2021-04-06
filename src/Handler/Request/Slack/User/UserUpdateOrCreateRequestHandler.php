@@ -53,7 +53,6 @@ class UserUpdateOrCreateRequestHandler
             return $user;
         }
 
-
         return $this->userManager->create(
             $command->getUserId(),
             $command->getUserName(),
