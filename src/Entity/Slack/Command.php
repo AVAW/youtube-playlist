@@ -16,8 +16,10 @@ class Command implements \Stringable, TimestampableInterface
 {
 
     const NAME_AMOUNT = '/amount';
+    const NAME_BLAME = '/blame';
     const NAME_COMMANDS = '/commands';
     const NAME_NEXT = '/next';
+    const NAME_PLAY = '/play';
     const NAME_SKIP = '/skip';
     const NAME_SONG = '/song';
     const NAME_START = '/start';
@@ -27,8 +29,10 @@ class Command implements \Stringable, TimestampableInterface
 
     const NAME_VALUES = [
         self::NAME_AMOUNT,
+        self::NAME_BLAME,
         self::NAME_COMMANDS,
         self::NAME_NEXT,
+        self::NAME_PLAY,
         self::NAME_SKIP,
         self::NAME_SONG,
         self::NAME_START,
