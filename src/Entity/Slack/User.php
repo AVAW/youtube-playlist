@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity\Slack;
 
+use App\Entity\TimestampableInterface;
 use App\Repository\Slack\UserRepository;
 use App\Utils\Traits\Timestampable;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -13,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  */
-class User implements \Stringable
+class User implements \Stringable, TimestampableInterface
 {
 
     use Timestampable;
@@ -76,9 +77,9 @@ class User implements \Stringable
     private ?string $lastName;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Channel::class, inversedBy="users")
+     * @ORM\ManyToMany(targetEntity=Conversation::class, inversedBy="users")
      */
-    private Collection $channels;
+    private Collection $conversations;
 
     /**
      * @ORM\OneToOne(targetEntity=UserPresence::class, inversedBy="user", cascade={"persist", "remove"})
@@ -87,7 +88,7 @@ class User implements \Stringable
 
     public function __construct()
     {
-        $this->channels = new ArrayCollection();
+        $this->conversations = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -221,25 +222,25 @@ class User implements \Stringable
     }
 
     /**
-     * @return Collection|Channel[]
+     * @return Collection|Conversation[]
      */
-    public function getChannels(): Collection
+    public function getConversations(): Collection
     {
-        return $this->channels;
+        return $this->conversations;
     }
 
-    public function addChannel(Channel $channel): self
+    public function addConversation(Conversation $channel): self
     {
-        if (!$this->channels->contains($channel)) {
-            $this->channels[] = $channel;
+        if (!$this->conversations->contains($channel)) {
+            $this->conversations[] = $channel;
         }
 
         return $this;
     }
 
-    public function removeChannel(Channel $channel): self
+    public function removeConversation(Conversation $channel): self
     {
-        $this->channels->removeElement($channel);
+        $this->conversations->removeElement($channel);
 
         return $this;
     }

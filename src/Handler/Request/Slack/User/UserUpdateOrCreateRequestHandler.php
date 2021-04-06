@@ -1,23 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Handler\Request\Slack\User;
 
 use App\Entity\Slack\User;
-use App\Service\Slack\Channel\ChannelProvider;
+use App\Service\Slack\Conversation\ConversationProvider;
 use App\Service\Slack\Team\TeamProvider;
 use App\Service\Slack\User\UserManager;
 use App\Service\Slack\User\UserProvider;
 
-class UserCreateRequestHandler
+class UserUpdateOrCreateRequestHandler
 {
 
-    private ChannelProvider $channelProvider;
+    private ConversationProvider $channelProvider;
     private TeamProvider $teamProvider;
     private UserManager $userManager;
     private UserProvider $userProvider;
 
     public function __construct(
-        ChannelProvider $channelProvider,
+        ConversationProvider $channelProvider,
         TeamProvider $teamProvider,
         UserManager $userManager,
         UserProvider $userProvider
@@ -28,10 +30,29 @@ class UserCreateRequestHandler
         $this->userProvider = $userProvider;
     }
 
-    public function handle(UserCreateInterface $command): User
+    public function handle(UserUpdateOrCreateInterface $command): User
     {
-        $team = $this->teamProvider->findByTeamId($command->getTeamId());
-        $channel = $this->channelProvider->findByChannelId($command->getChannelId());
+        $team = $this->teamProvider->findOneByTeamId($command->getTeamId());
+        $channel = $this->channelProvider->findByConversationId($command->getChannelId());
+
+        $user = $this->userProvider->findByUserId($command->getUserId());
+        if ($user instanceof User) {
+            $this->userManager->update(
+                $user,
+                $team,
+                $channel,
+                $command->getRealName(),
+                $command->getDisplayedName(),
+                $command->getTitle(),
+                $command->getPhone(),
+                $command->getImageOriginalUrl(),
+                $command->getFirstName(),
+                $command->getLastName(),
+            );
+
+            return $user;
+        }
+
 
         return $this->userManager->create(
             $command->getUserId(),

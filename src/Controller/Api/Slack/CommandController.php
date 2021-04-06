@@ -4,18 +4,19 @@ declare(strict_types=1);
 
 namespace App\Controller\Api\Slack;
 
-use App\Event\Slack\ChannelEvent;
+use App\Event\Slack\ConversationEvent;
 use App\Event\Slack\CommandEvent;
 use App\Event\Slack\TeamEvent;
 use App\Event\Slack\UserEvent;
 use App\Form\Slack\Command\CommandType;
-use App\Handler\Request\Slack\Channel\ChannelGetOrCreateRequestHandler;
+use App\Handler\Request\Slack\Conversation\ConversationGetOrCreateRequestHandler;
 use App\Handler\Request\Slack\Command\CommandCreateRequestHandler;
 use App\Handler\Request\Slack\Team\TeamGetOrCreateRequestHandler;
 use App\Handler\Request\Slack\User\UserGetOrCreateRequestHandler;
 use App\Model\Slack\GetOrCreateRequest;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\View\View;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -33,7 +34,7 @@ class CommandController extends AbstractFOSRestController
     public function index(
         Request $request,
         TeamGetOrCreateRequestHandler $teamRequestHandler,
-        ChannelGetOrCreateRequestHandler $channelRequestHandler,
+        ConversationGetOrCreateRequestHandler $channelRequestHandler,
         UserGetOrCreateRequestHandler $userRequestHandler,
         CommandCreateRequestHandler $commandRequestHandler,
         EventDispatcherInterface $dispatcher
@@ -62,13 +63,13 @@ class CommandController extends AbstractFOSRestController
             $team = $teamRequestHandler->handle($command);
             $dispatcher->dispatch(new TeamEvent($team));
 
-            $channel = $channelRequestHandler->handle($command);
-            $dispatcher->dispatch(new ChannelEvent($channel));
+            $conversation = $channelRequestHandler->handle($command);
+            $dispatcher->dispatch(new ConversationEvent($conversation));
 
             $user = $userRequestHandler->handle($command);
             $dispatcher->dispatch(new UserEvent($user));
 
-            $command = $commandRequestHandler->handle($team, $channel, $user, $command);
+            $command = $commandRequestHandler->handle($team, $conversation, $user, $command);
             $dispatcher->dispatch(new CommandEvent($command));
 
             return $this->render('slack_command/commands.html.twig');

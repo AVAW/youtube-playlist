@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity\Slack;
 
+use App\Entity\TimestampableInterface;
 use App\Repository\Slack\CommandRepository;
 use App\Utils\Traits\Timestampable;
 use Doctrine\ORM\Mapping as ORM;
@@ -11,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass=CommandRepository::class)
  */
-class Command implements \Stringable
+class Command implements \Stringable, TimestampableInterface
 {
 
     const NAME_AMOUNT = '/amount';
@@ -62,10 +63,10 @@ class Command implements \Stringable
     private Team $team;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Channel::class)
+     * @ORM\ManyToOne(targetEntity=Conversation::class)
      * @ORM\JoinColumn(nullable=false)
      */
-    private Channel $channel;
+    private Conversation $conversation;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class)
@@ -119,14 +120,14 @@ class Command implements \Stringable
         return $this;
     }
 
-    public function getChannel(): Channel
+    public function getConversation(): Conversation
     {
-        return $this->channel;
+        return $this->conversation;
     }
 
-    public function setChannel(Channel $channel): self
+    public function setConversation(Conversation $conversation): self
     {
-        $this->channel = $channel;
+        $this->conversation = $conversation;
 
         return $this;
     }

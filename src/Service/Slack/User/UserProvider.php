@@ -10,21 +10,21 @@ use App\Repository\Slack\UserRepository;
 class UserProvider
 {
 
-    protected UserRepository $userRepository;
+    protected UserRepository $repository;
 
     public function __construct(UserRepository $userRepository)
     {
-        $this->userRepository = $userRepository;
+        $this->repository = $userRepository;
     }
 
     public function findByUserId(string $userId): ?User
     {
-        return $this->userRepository->findOneBy(['userId' => $userId]);
+        return $this->repository->findOneBy(['userId' => $userId]);
     }
 
     public function save(User $user)
     {
-        $this->userRepository->save($user);
+        $this->repository->save($user);
     }
 
 }

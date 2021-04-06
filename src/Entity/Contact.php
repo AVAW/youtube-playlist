@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass=ContactRepository::class)
  */
-class Contact implements \Stringable
+class Contact implements \Stringable, TimestampableInterface
 {
 
     use Timestampable;

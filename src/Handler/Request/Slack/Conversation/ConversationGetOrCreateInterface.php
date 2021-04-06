@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Handler\Request\Slack\Channel;
+namespace App\Handler\Request\Slack\Conversation;
 
-interface ChannelGetOrCreateInterface
+interface ConversationGetOrCreateInterface
 {
 
     public function getChannelId(): string;

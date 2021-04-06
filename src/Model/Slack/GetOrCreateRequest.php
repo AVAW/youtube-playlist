@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Model\Slack;
 
-use App\Handler\Request\Slack\Channel\ChannelGetOrCreateInterface;
+use App\Handler\Request\Slack\Conversation\ConversationGetOrCreateInterface;
 use App\Handler\Request\Slack\Command\CommandCreateInterface;
 use App\Handler\Request\Slack\Team\TeamGetOrCreateInterface;
 use App\Handler\Request\Slack\User\UserGetOrCreateInterface;
 
-class GetOrCreateRequest implements TeamGetOrCreateInterface, ChannelGetOrCreateInterface, UserGetOrCreateInterface, CommandCreateInterface
+class GetOrCreateRequest implements TeamGetOrCreateInterface, ConversationGetOrCreateInterface, UserGetOrCreateInterface, CommandCreateInterface
 {
 
     protected string $token;

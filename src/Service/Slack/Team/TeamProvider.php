@@ -10,21 +10,26 @@ use App\Repository\Slack\TeamRepository;
 class TeamProvider
 {
 
-    protected TeamRepository $teamRepository;
+    protected TeamRepository $repository;
 
     public function __construct(TeamRepository $teamRepository)
     {
-        $this->teamRepository = $teamRepository;
+        $this->repository = $teamRepository;
     }
 
-    public function findByTeamId(string $teamId): ?Team
+    public function findOneByTeamId(string $teamId): ?Team
     {
-        return $this->teamRepository->findOneBy(['teamId' => $teamId]);
+        return $this->repository->findOneBy(['teamId' => $teamId]);
+    }
+
+    public function findByTeamId(array $teamsIds): ?array
+    {
+        return $this->repository->findBy(['teamId' => $teamsIds]);
     }
 
     public function save(Team $team)
     {
-        $this->teamRepository->save($team);
+        $this->repository->save($team);
     }
 
 }

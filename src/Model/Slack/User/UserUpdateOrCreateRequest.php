@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Model\Slack\User;
 
-use App\Handler\Request\Slack\User\UserCreateInterface;
+use App\Handler\Request\Slack\User\UserUpdateOrCreateInterface;
 use JoliCode\Slack\Api\Model\ObjsUser;
 
-class UserCreateRequest implements UserCreateInterface
+class UserUpdateOrCreateRequest implements UserUpdateOrCreateInterface
 {
 
     protected string $userId;
@@ -25,8 +27,8 @@ class UserCreateRequest implements UserCreateInterface
         $slackUserProfile = $slackUser->getProfile();
 
         return (new static)
-            ->setUserId($slackUserProfile->getUserId())
-            ->setUserName($slackUserProfile->getUsername())
+            ->setUserId($slackUser->getId())
+            ->setUserName($slackUser->getName())
             ->setTeamId($slackUser->getTeamId())
             ->setDisplayedName($slackUserProfile->getDisplayNameNormalized())
             ->setTitle($slackUserProfile->getTitle())

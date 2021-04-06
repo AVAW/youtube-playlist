@@ -4,14 +4,18 @@ declare(strict_types=1);
 
 namespace App\Entity\Slack;
 
+use App\Entity\TimestampableInterface;
 use App\Repository\Slack\UserPresenceRepository;
+use App\Utils\Traits\Timestampable;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=UserPresenceRepository::class)
  */
-class UserPresence implements \Stringable
+class UserPresence implements \Stringable, TimestampableInterface
 {
+
+    use Timestampable;
 
     const PRESENCE_ACTIVE = 'active';
     const PRESENCE_AWAY = 'away';

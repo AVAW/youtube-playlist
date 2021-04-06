@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Handler\Request\Slack\Command;
 
-use App\Entity\Slack\Channel;
+use App\Entity\Slack\Conversation;
 use App\Entity\Slack\Command;
 use App\Entity\Slack\Team;
 use App\Entity\Slack\User;
@@ -21,11 +21,11 @@ class CommandCreateRequestHandler
         $this->commandManager = $commandManager;
     }
 
-    public function handle(Team $team, Channel $channel, User $user, CommandCreateInterface $command): Command
+    public function handle(Team $team, Conversation $conversation, User $user, CommandCreateInterface $command): Command
     {
         return $this->commandManager->create(
             $team,
-            $channel,
+            $conversation,
             $user,
             $command->getCommand(),
             $command->getText()

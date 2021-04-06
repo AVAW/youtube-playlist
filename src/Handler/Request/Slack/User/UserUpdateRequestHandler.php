@@ -24,11 +24,12 @@ class UserUpdateRequestHandler
 
     public function handle(User $user, UserUpdateInterface $command)
     {
-        $team = $this->teamProvider->findByTeamId($command->getTeamId());
+        $team = $this->teamProvider->findOneByTeamId($command->getTeamId());
 
         $this->userManager->update(
             $user,
             $team,
+            null,
             $command->getRealName(),
             $command->getDisplayedName(),
             $command->getTitle(),

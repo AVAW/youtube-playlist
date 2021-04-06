@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Slack\User;
 
-use App\Entity\Slack\Channel;
+use App\Entity\Slack\Conversation;
 use App\Entity\Slack\Team;
 use App\Entity\Slack\User;
 
@@ -20,9 +20,9 @@ class UserManager
 
     public function create(
         string $userId,
-        string $userName,
+        string $name,
         ?Team $team = null,
-        ?Channel $channel = null,
+        ?Conversation $channel = null,
         ?string $realName = null,
         ?string $displayedName = null,
         ?string $title = null,
@@ -33,7 +33,7 @@ class UserManager
     ): User {
         $user = (new User())
             ->setUserId($userId)
-            ->setName($userName)
+            ->setName($name)
             ->setTeam($team)
             ->setRealName($realName)
             ->setDisplayedName($displayedName)
@@ -43,8 +43,8 @@ class UserManager
             ->setFirstName($firstName)
             ->setLastName($lastName);
 
-        if ($channel instanceof Channel) {
-            $user->addChannel($channel);
+        if ($channel instanceof Conversation) {
+            $user->addConversation($channel);
         }
 
         $this->provider->save($user);
@@ -55,6 +55,7 @@ class UserManager
     public function update(
         User $user,
         ?Team $team,
+        ?Conversation $channel,
         ?string $realName,
         ?string $displayedName,
         ?string $title,
@@ -72,6 +73,10 @@ class UserManager
             ->setImageOriginalUrl($imageOriginalUrl)
             ->setFirstName($firstName)
             ->setLastName($lastName);
+
+        if ($channel instanceof Conversation) {
+            $user->addConversation($channel);
+        }
 
         $this->provider->save($user);
 

@@ -8,11 +8,12 @@ use App\Repository\PlaylistRepository;
 use App\Utils\Traits\Timestampable;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Uid\UuidV4;
 
 /**
  * @ORM\Entity(repositoryClass=PlaylistRepository::class)
  */
-class Playlist implements \Stringable
+class Playlist implements \Stringable, TimestampableInterface
 {
 
     use Timestampable;
@@ -28,7 +29,7 @@ class Playlist implements \Stringable
      * @ORM\Column(type="uuid")
      * @Groups({"simple"})
      */
-    private string $uuid;
+    private UuidV4 $uuid;
 
     /**
      * @ORM\Column(type="string", length=1024)
@@ -76,12 +77,12 @@ class Playlist implements \Stringable
         return $this->id;
     }
 
-    public function getUuid(): string
+    public function getUuid(): UuidV4
     {
         return $this->uuid;
     }
 
-    public function setUuid($uuid): self
+    public function setUuid(UuidV4 $uuid): self
     {
         $this->uuid = $uuid;
 

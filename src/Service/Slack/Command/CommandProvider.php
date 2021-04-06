@@ -10,17 +10,17 @@ use App\Repository\Slack\CommandRepository;
 class CommandProvider
 {
 
-    protected CommandRepository $commandRepository;
+    protected CommandRepository $repository;
 
     public function __construct(
         CommandRepository $commandRepository
     ) {
-        $this->commandRepository = $commandRepository;
+        $this->repository = $commandRepository;
     }
 
     public function save(Command $command)
     {
-        $this->commandRepository->save($command);
+        $this->repository->save($command);
     }
 
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity\Slack;
 
+use App\Entity\TimestampableInterface;
 use App\Repository\Slack\TeamRepository;
 use App\Utils\Traits\Timestampable;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -13,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass=TeamRepository::class)
  */
-class Team implements \Stringable
+class Team implements \Stringable, TimestampableInterface
 {
 
     use Timestampable;
@@ -56,14 +57,14 @@ class Team implements \Stringable
     private ?string $iconUrl;
 
     /**
-     * @ORM\OneToMany(targetEntity=Channel::class, mappedBy="team")
+     * @ORM\ManyToMany(targetEntity=Conversation::class, mappedBy="teams")
      */
-    private Collection $channels;
+    private Collection $conversations;
 
     public function __construct()
     {
         $this->users = new ArrayCollection();
-        $this->channels = new ArrayCollection();
+        $this->conversations = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -167,30 +168,27 @@ class Team implements \Stringable
     }
 
     /**
-     * @return Collection|Channel[]
+     * @return Collection|Conversation[]
      */
-    public function getChannels(): Collection
+    public function getConversations(): Collection
     {
-        return $this->channels;
+        return $this->conversations;
     }
 
-    public function addChannel(Channel $channel): self
+    public function addConversation(Conversation $channel): self
     {
-        if (!$this->channels->contains($channel)) {
-            $this->channels[] = $channel;
-            $channel->setTeam($this);
+        if (!$this->conversations->contains($channel)) {
+            $this->conversations[] = $channel;
+            $channel->addTeam($this);
         }
 
         return $this;
     }
 
-    public function removeChannel(Channel $channel): self
+    public function removeConversation(Conversation $channel): self
     {
-        if ($this->channels->removeElement($channel)) {
-            // set the owning side to null (unless already changed)
-            if ($channel->getTeam() === $this) {
-                $channel->setTeam(null);
-            }
+        if ($this->conversations->removeElement($channel)) {
+            $channel->removeTeam($this);
         }
 
         return $this;

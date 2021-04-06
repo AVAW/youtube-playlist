@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Slack\Command;
 
-use App\Entity\Slack\Channel;
+use App\Entity\Slack\Conversation;
 use App\Entity\Slack\Command;
 use App\Entity\Slack\Team;
 use App\Entity\Slack\User;
@@ -21,7 +21,7 @@ class CommandManager
 
     public function create(
         Team $team,
-        Channel $channel,
+        Conversation $conversation,
         User $user,
         string $name,
         ?string $text
@@ -29,7 +29,7 @@ class CommandManager
         $command = (new Command())
             ->setName($name)
             ->setTeam($team)
-            ->setChannel($channel)
+            ->setConversation($conversation)
             ->setUser($user)
             ->setText($text);
 

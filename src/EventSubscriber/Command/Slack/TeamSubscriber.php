@@ -7,6 +7,7 @@ namespace App\EventSubscriber\Command\Slack;
 use App\Event\Slack\TeamEvent;
 use App\Handler\Request\Slack\Team\TeamUpdateRequestHandler;
 use App\Model\Slack\Team\TeamUpdateRequest;
+use App\Utils\LastUpdateHelper;
 use JoliCode\Slack\Api\Client;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -31,21 +32,16 @@ class TeamSubscriber implements EventSubscriberInterface
     public function onTeamEvent(TeamEvent $event)
     {
         $team = $event->getTeam();
-        // todo: check last update time
 
         // Get team info
-        try {
-            $slackTeam = $this->client->teamInfo(['team' => $team->getTeamId()])->getTeam();
-
-            $teamUpdateRequest = TeamUpdateRequest::createFromObjsTeam($slackTeam);
-            $this->teamUpdateRequestHandler->handle($team, $teamUpdateRequest);
-
-            $team->setName($slackTeam->getName());
-            $team->setEmailDomain($slackTeam->getEmailDomain());
-            $team->setIconUrl($slackTeam->getIcon()->getImage230());
-            // todo: save team
-        } catch (\Exception $e) {
-            $this->logger->error($e->getMessage());
+        if (!LastUpdateHelper::isUpdatedInLastXMinutes($team, 10)) {
+            try {
+                $slackTeam = $this->client->teamInfo(['team' => $team->getTeamId()])->getTeam();
+                $teamUpdateRequest = TeamUpdateRequest::createFromObjsTeam($slackTeam);
+                $this->teamUpdateRequestHandler->handle($team, $teamUpdateRequest);
+            } catch (\Exception $e) {
+                $this->logger->error($e->getMessage());
+            }
         }
     }
 

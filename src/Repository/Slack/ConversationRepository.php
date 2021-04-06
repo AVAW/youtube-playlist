@@ -4,22 +4,22 @@ declare(strict_types=1);
 
 namespace App\Repository\Slack;
 
-use App\Entity\Slack\Channel;
+use App\Entity\Slack\Conversation;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method Channel|null find($id, $lockMode = null, $lockVersion = null)
- * @method Channel|null findOneBy(array $criteria, array $orderBy = null)
- * @method Channel[]    findAll()
- * @method Channel[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Conversation|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Conversation|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Conversation[]    findAll()
+ * @method Conversation[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class ChannelRepository extends ServiceEntityRepository
+class ConversationRepository extends ServiceEntityRepository
 {
 
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Channel::class);
+        parent::__construct($registry, Conversation::class);
     }
 
     // /**
@@ -51,9 +51,9 @@ class ChannelRepository extends ServiceEntityRepository
     }
     */
 
-    public function save(Channel $channel)
+    public function save(Conversation $conversation)
     {
-        $this->getEntityManager()->persist($channel);
+        $this->getEntityManager()->persist($conversation);
         $this->getEntityManager()->flush();
     }
 

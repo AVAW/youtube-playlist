@@ -29,9 +29,9 @@ class CommandSubscriber implements EventSubscriberInterface
         $command = $event->getCommand();
 
         $team = $command->getTeam();
-        $channel = $command->getChannel();
+        $channel = $command->getConversation();
         $user = $command->getUser();
-        $user->addChannel($channel);
+        $user->addConversation($channel);
 
 
 

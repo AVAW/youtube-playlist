@@ -24,7 +24,7 @@ class TeamGetOrCreateRequestHandler
 
     public function handle(TeamGetOrCreateInterface $command): Team
     {
-        $team = $this->teamProvider->findByTeamId($command->getTeamId());
+        $team = $this->teamProvider->findOneByTeamId($command->getTeamId());
         if (!$team instanceof Team) {
             $team = $this->teamManager->create($command->getTeamId(), $command->getTeamDomain());
         }

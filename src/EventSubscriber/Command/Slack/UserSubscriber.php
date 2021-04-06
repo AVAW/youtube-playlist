@@ -7,6 +7,7 @@ namespace App\EventSubscriber\Command\Slack;
 use App\Event\Slack\UserEvent;
 use App\Handler\Request\Slack\User\UserUpdateRequestHandler;
 use App\Model\Slack\User\UserUpdateRequest;
+use App\Utils\LastUpdateHelper;
 use JoliCode\Slack\Api\Client;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -30,18 +31,17 @@ class UserSubscriber implements EventSubscriberInterface
 
     public function onUserEvent(UserEvent $event)
     {
-        // Get user data
         $user = $event->getUser();
-        // todo: check last update time
 
-        try {
-            $slackUser = $this->client->usersInfo(['user' => $user->getUserId()])->getUser();
-
-            $updateUserRequest = UserUpdateRequest::createFromObjsUser($slackUser);
-
-            $this->userUpdateRequestHandler->handle($user, $updateUserRequest);
-        } catch (\Exception $e) {
-            $this->logger->error($e->getMessage());
+        // Get user data
+        if (!LastUpdateHelper::isUpdatedInLastXMinutes($user, 10)) {
+            try {
+                $slackUser = $this->client->usersInfo(['user' => $user->getUserId()])->getUser();
+                $updateUserRequest = UserUpdateRequest::createFromObjsUser($slackUser);
+                $this->userUpdateRequestHandler->handle($user, $updateUserRequest);
+            } catch (\Exception $e) {
+                $this->logger->error($e->getMessage());
+            }
         }
     }
 

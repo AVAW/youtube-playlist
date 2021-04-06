@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Handler\Request\Slack\UserPresence;
 
 use App\Entity\Slack\User;
