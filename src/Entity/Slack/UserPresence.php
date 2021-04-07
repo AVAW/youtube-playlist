@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Entity\Slack;
 
-use App\Entity\TimestampableInterface;
 use App\Repository\Slack\UserPresenceRepository;
-use App\Utils\Traits\Timestampable;
+use App\Utils\Timestampable\Timestampable;
+use App\Utils\Timestampable\TimestampableInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**

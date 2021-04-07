@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Utils\Traits;
+namespace App\Utils\Timestampable;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;

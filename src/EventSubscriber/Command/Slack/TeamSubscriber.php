@@ -7,7 +7,7 @@ namespace App\EventSubscriber\Command\Slack;
 use App\Event\Slack\TeamEvent;
 use App\Handler\Request\Slack\Team\TeamUpdateRequestHandler;
 use App\Model\Slack\Team\TeamUpdateRequest;
-use App\Utils\LastUpdateHelper;
+use App\Utils\Timestampable\TimestampableHelper;
 use JoliCode\Slack\Api\Client;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -34,7 +34,7 @@ class TeamSubscriber implements EventSubscriberInterface
         $team = $event->getTeam();
 
         // Get team info
-        if (!LastUpdateHelper::isUpdatedInLastXMinutes($team, 10)) {
+        if (!TimestampableHelper::isUpdatedInLastXMinutes($team, 10)) {
             try {
                 $slackTeam = $this->client->teamInfo(['team' => $team->getTeamId()])->getTeam();
                 $teamUpdateRequest = TeamUpdateRequest::createFromObjsTeam($slackTeam);

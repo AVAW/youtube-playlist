@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\PlaylistRepository;
-use App\Utils\Traits\Timestampable;
+use App\Utils\Timestampable\Timestampable;
+use App\Utils\Timestampable\TimestampableInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\UuidV4;

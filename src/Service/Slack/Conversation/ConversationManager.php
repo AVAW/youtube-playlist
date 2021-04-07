@@ -80,6 +80,9 @@ class ConversationManager
             }
         }
 
+        // Force to update because Doctrine knows when entity didnt change
+        $channel->setUpdatedAt(new \DateTime());
+
         $this->provider->save($channel);
     }
 

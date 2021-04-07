@@ -17,6 +17,12 @@ class ConversationProvider
         $this->repository = $channelRepository;
     }
 
+    /** @return Conversation[] */
+    public function findAll(): iterable
+    {
+        return $this->repository->findAll();
+    }
+
     public function findByConversationId(string $channelId): ?Conversation
     {
         return $this->repository->findOneBy(['conversationId' => $channelId]);

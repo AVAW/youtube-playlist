@@ -2,11 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Utils;
+namespace App\Utils\Timestampable;
 
-use App\Entity\TimestampableInterface;
-
-class LastUpdateHelper
+class TimestampableHelper
 {
 
     public static function isUpdatedInLastXMinutes(TimestampableInterface $object, int $minutes): bool
@@ -21,10 +19,10 @@ class LastUpdateHelper
 
         if ($object->getUpdatedAt() instanceof \DateTimeInterface) {
 
-            return $object->getUpdatedAt()->getTimestamp() >= $now->getTimestamp();
+            return $object->getUpdatedAt() >= $now;
         }
 
-        return $object->getCreatedAt()->getTimestamp() >= $now->getTimestamp();
+        return $object->getCreatedAt() >= $now;
     }
 
 }

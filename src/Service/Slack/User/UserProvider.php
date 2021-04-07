@@ -17,6 +17,12 @@ class UserProvider
         $this->repository = $userRepository;
     }
 
+    /** @return User[] */
+    public function findAll(): iterable
+    {
+        return $this->repository->findAll();
+    }
+
     public function findByUserId(string $userId): ?User
     {
         return $this->repository->findOneBy(['userId' => $userId]);

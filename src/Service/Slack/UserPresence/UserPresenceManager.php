@@ -57,6 +57,9 @@ class UserPresenceManager
             ->setOnline($online)
             ->setPresence($presence);
 
+        // Force to update because Doctrine knows when entity didnt change
+        $userPresence->setUpdatedAt(new \DateTime());
+
         $this->provider->save($userPresence);
     }
 

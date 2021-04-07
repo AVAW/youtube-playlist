@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Entity\Slack;
 
-use App\Entity\TimestampableInterface;
 use App\Repository\Slack\CommandRepository;
-use App\Utils\Traits\Timestampable;
+use App\Utils\Timestampable\Timestampable;
+use App\Utils\Timestampable\TimestampableInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -14,6 +14,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Command implements \Stringable, TimestampableInterface
 {
+
+    use Timestampable;
 
     const NAME_AMOUNT = '/amount';
     const NAME_BLAME = '/blame';
@@ -40,8 +42,6 @@ class Command implements \Stringable, TimestampableInterface
         self::NAME_VOL_DOWN,
         self::NAME_VOL_UP,
     ];
-
-    use Timestampable;
 
     /**
      * @ORM\Id

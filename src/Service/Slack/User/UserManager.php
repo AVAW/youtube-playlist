@@ -78,6 +78,9 @@ class UserManager
             $user->addConversation($channel);
         }
 
+        // Force to update because Doctrine knows when entity didnt change
+        $user->setUpdatedAt(new \DateTime());
+
         $this->provider->save($user);
     }
 
