@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Entity\Playlist;
 use App\Repository\PlaylistRepository;
 use App\Response\JsonResponseMethods;
+use App\Service\Playlist\PlaylistProvider;
 use App\Service\YouTubePlaylistManager;
 use Doctrine\DBAL\Types\ConversionException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -34,14 +35,10 @@ class PlaylistController extends AbstractController
      */
     public function index(
         $identifier,
-        PlaylistRepository $playlistRepository,
+        PlaylistProvider $playlistProvider,
         YouTubePlaylistManager $youTubePlaylistManager
     ): Response {
-        try {
-            $playlist = $playlistRepository->findOneBy(['identifier' => $identifier]);
-        } catch (ConversionException $e) {
-            throw new \InvalidArgumentException('Can not find playlist');
-        }
+        $playlist = $playlistProvider->findByIdentifier($identifier);
         if (!$playlist instanceof Playlist) {
             throw new \InvalidArgumentException('Can not find playlist');
         }
@@ -49,7 +46,7 @@ class PlaylistController extends AbstractController
         $youTubePlaylistManager->getPlaylistDetails($playlist);
         $youTubePlaylistManager->getVideosAmountInPlaylist($playlist);
 
-        $playlistRepository->save($playlist);
+        $playlistProvider->save($playlist);
 
         return $this->render('playlist/index.html.twig', [
             'playlist' => $playlist,

@@ -10,20 +10,25 @@ use App\Repository\PlaylistRepository;
 class PlaylistProvider
 {
 
-    protected PlaylistRepository $playlistRepository;
+    protected PlaylistRepository $repository;
 
     public function __construct(PlaylistRepository $playlistRepository)
     {
-        $this->playlistRepository = $playlistRepository;
+        $this->repository = $playlistRepository;
     }
 
-    public function findByUuid(string $uuid): ?Playlist
+    public function findByIdentifier(string $identifier): ?Playlist
     {
         try {
-            return $this->playlistRepository->findOneBy(['uuid' => $uuid]);
+            return $this->repository->findOneBy(['identifier' => $identifier]);
         } catch (\Exception $e) {
             return null;
         }
+    }
+
+    public function save(Playlist $playlist)
+    {
+        $this->repository->save($playlist);
     }
 
 }

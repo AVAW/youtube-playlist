@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
     loadingButton = document.querySelector('.js-loading-play');
     playlistList = document.querySelector('.js-playlist-list');
     postData(document.querySelector('.js-get-playlist-data-url').value, {
-        uuid: document.querySelector('.js-playlist-uuid').value,
+        identifier: document.querySelector('.js-playlist-identifier').value,
     })
         .then(response => {
             playlist = response.videos;

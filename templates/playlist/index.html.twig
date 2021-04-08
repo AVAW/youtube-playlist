@@ -7,7 +7,7 @@
 {% endblock javascripts %}
 
 {% block body %}
-    <input class="js-playlist-uuid" type="hidden" value="{{ playlist.identifier }}">
+    <input class="js-playlist-identifier" type="hidden" value="{{ playlist.identifier }}">
     <input class="js-get-playlist-data-url" type="hidden" value="{{ path('app_api_playlist_playlist_videos') }}">
     <section class="hero">
         <div class="hero-body">
