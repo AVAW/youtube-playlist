@@ -8,13 +8,9 @@ use App\Entity\Contact;
 use App\Entity\Playlist;
 use App\Form\ContactType;
 use App\Form\YouTubePlaylistType;
-use App\Model\Slack\Conversation\ConversationUpdateRequest;
 use App\Repository\ContactRepository;
 use App\Repository\PlaylistRepository;
-use App\Service\Slack\Conversation\ConversationProvider;
 use App\Utils\YouTubePlaylist;
-use JoliCode\Slack\Api\Client;
-use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -33,20 +29,8 @@ class DefaultController extends AbstractController
     public function index(
         Request $request,
         PlaylistRepository $playlistRepository,
-        YouTubePlaylist $youTubePlaylist,
-        ConversationProvider $conversationProvider,
-        Client $client,
-        LoggerInterface $infoLogger
+        YouTubePlaylist $youTubePlaylist
     ): Response {
-        $conversation = $conversationProvider->findByConversationId('D01TN9RGJMP');
-        $slackUser = $client->usersInfo(['user' => 'U01DDGBHA5U'])->getUser();
-        dump($slackUser);
-        $slackUser = $client->usersInfo(['user' => 'U01TDVA4P9A'])->getUser();
-        dd($slackUser);
-        $slackChannel = $client->conversationsInfo(['channel' => 'D01TN9RGJMP'])->getChannel();
-        dd($slackChannel);
-        $command = ConversationUpdateRequest::createFromObjConversation($slackChannel);
-        $this->conversationUpdateRequestHandler->handle($conversation, $command);
         $form = $this->createForm(YouTubePlaylistType::class);
         $form->handleRequest($request);
 
@@ -55,12 +39,13 @@ class DefaultController extends AbstractController
             $playlist = $form->getData();
 
             $playlistId = $youTubePlaylist->getPlaylistIdFromUrl($playlist->getUrl());
-            $playlist->setYoutubeId($playlistId);
-            $playlist->setUuid(Uuid::v4());
+            $playlist
+                ->setYoutubeId($playlistId)
+                ->setIdentifier(Uuid::v4());
 
             $playlistRepository->save($playlist);
 
-            return $this->redirectToRoute('playlist', ['uuid' => $playlist->getUuid()]);
+            return $this->redirectToRoute('playlist', ['identifier' => $playlist->getIdentifier()]);
         }
 
         return $this->render('default/index.html.twig', [
@@ -91,8 +76,10 @@ class DefaultController extends AbstractController
             /** @var Contact $contact */
             $contact = $form->getData();
 
-            $contact->setCreatedAt(new \DateTime());
-            $contact->setClientIp($request->getClientIp());
+            $contact
+                ->setCreatedAt(new \DateTime())
+                ->setClientIp($request->getClientIp())
+                ->setIdentifier(Uuid::v4());
 
             $contactRepository->save($contact);
 

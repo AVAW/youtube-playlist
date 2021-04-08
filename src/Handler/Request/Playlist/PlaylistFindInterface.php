@@ -7,6 +7,6 @@ namespace App\Handler\Request\Playlist;
 interface PlaylistFindInterface
 {
 
-    public function getUuid();
+    public function getIdentifier();
 
 }

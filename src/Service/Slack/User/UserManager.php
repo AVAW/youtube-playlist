@@ -7,6 +7,7 @@ namespace App\Service\Slack\User;
 use App\Entity\Slack\Conversation;
 use App\Entity\Slack\Team;
 use App\Entity\Slack\User;
+use Symfony\Component\Uid\Uuid;
 
 class UserManager
 {
@@ -41,7 +42,8 @@ class UserManager
             ->setPhone($phone)
             ->setImageOriginalUrl($imageOriginalUrl)
             ->setFirstName($firstName)
-            ->setLastName($lastName);
+            ->setLastName($lastName)
+            ->setIdentifier(Uuid::v4());
 
         if ($channel instanceof Conversation) {
             $user->addConversation($channel);

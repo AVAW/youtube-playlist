@@ -30,15 +30,15 @@ class PlaylistController extends AbstractController
     }
 
     /**
-     * @Route("/{uuid}", name="playlist")
+     * @Route("/{identifier}", name="playlist")
      */
     public function index(
-        $uuid,
+        $identifier,
         PlaylistRepository $playlistRepository,
         YouTubePlaylistManager $youTubePlaylistManager
     ): Response {
         try {
-            $playlist = $playlistRepository->findOneBy(['uuid' => $uuid]);
+            $playlist = $playlistRepository->findOneBy(['identifier' => $identifier]);
         } catch (ConversionException $e) {
             throw new \InvalidArgumentException('Can not find playlist');
         }

@@ -18,7 +18,7 @@ class PlaylistType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('uuid', TextType::class, [
+            ->add('identifier', TextType::class, [
                 'constraints' => [
                     new NotNull(),
                     new Uuid(null, null, [Uuid::V4_RANDOM]),

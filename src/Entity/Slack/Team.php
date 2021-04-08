@@ -10,6 +10,7 @@ use App\Utils\Timestampable\TimestampableInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Uid\UuidV4;
 
 /**
  * @ORM\Entity(repositoryClass=TeamRepository::class)
@@ -60,6 +61,11 @@ class Team implements \Stringable, TimestampableInterface
      * @ORM\ManyToMany(targetEntity=Conversation::class, mappedBy="teams")
      */
     private Collection $conversations;
+
+    /**
+     * @ORM\Column(type="uuid")
+     */
+    private UuidV4 $identifier;
 
     public function __construct()
     {
@@ -190,6 +196,18 @@ class Team implements \Stringable, TimestampableInterface
         if ($this->conversations->removeElement($channel)) {
             $channel->removeTeam($this);
         }
+
+        return $this;
+    }
+
+    public function getIdentifier()
+    {
+        return $this->identifier;
+    }
+
+    public function setIdentifier($identifier): self
+    {
+        $this->identifier = $identifier;
 
         return $this;
     }

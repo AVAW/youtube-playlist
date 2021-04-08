@@ -8,6 +8,7 @@ use App\Repository\Slack\CommandRepository;
 use App\Utils\Timestampable\Timestampable;
 use App\Utils\Timestampable\TimestampableInterface;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Uid\UuidV4;
 
 /**
  * @ORM\Entity(repositoryClass=CommandRepository::class)
@@ -78,6 +79,11 @@ class Command implements \Stringable, TimestampableInterface
      */
     private User $user;
 
+    /**
+     * @ORM\Column(type="uuid")
+     */
+    private UuidV4 $identifier;
+
     public function __toString(): string
     {
         return __CLASS__ . ' ' . $this->getName();
@@ -144,6 +150,18 @@ class Command implements \Stringable, TimestampableInterface
     public function setUser(User $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getIdentifier()
+    {
+        return $this->identifier;
+    }
+
+    public function setIdentifier($identifier): self
+    {
+        $this->identifier = $identifier;
 
         return $this;
     }

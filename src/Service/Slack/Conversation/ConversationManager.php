@@ -6,6 +6,7 @@ namespace App\Service\Slack\Conversation;
 
 use App\Entity\Slack\Conversation;
 use App\Entity\Slack\Team;
+use Symfony\Component\Uid\Uuid;
 
 class ConversationManager
 {
@@ -23,7 +24,8 @@ class ConversationManager
     ): Conversation {
         $channel = (new Conversation())
             ->setConversationId($channelId)
-            ->setName($channelName);
+            ->setName($channelName)
+            ->setIdentifier(Uuid::v4());
 
         $this->provider->save($channel);
 

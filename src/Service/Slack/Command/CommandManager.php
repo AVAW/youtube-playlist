@@ -8,6 +8,7 @@ use App\Entity\Slack\Conversation;
 use App\Entity\Slack\Command;
 use App\Entity\Slack\Team;
 use App\Entity\Slack\User;
+use Symfony\Component\Uid\Uuid;
 
 class CommandManager
 {
@@ -31,7 +32,8 @@ class CommandManager
             ->setTeam($team)
             ->setConversation($conversation)
             ->setUser($user)
-            ->setText($text);
+            ->setText($text)
+            ->setIdentifier(Uuid::v4());
 
         $this->provider->save($command);
 

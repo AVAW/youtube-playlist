@@ -10,6 +10,7 @@ use App\Utils\Timestampable\TimestampableInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Uid\UuidV4;
 
 /**
  * @ORM\Entity(repositoryClass=ConversationRepository::class)
@@ -135,6 +136,11 @@ class Conversation implements \Stringable, TimestampableInterface
      * @ORM\Column(type="text", nullable=true)
      */
     private ?string $topic;
+
+    /**
+     * @ORM\Column(type="uuid")
+     */
+    private UuidV4 $identifier;
 
     public function __construct()
     {
@@ -439,6 +445,18 @@ class Conversation implements \Stringable, TimestampableInterface
     public function setTopic(string $topic): self
     {
         $this->topic = $topic;
+
+        return $this;
+    }
+
+    public function getIdentifier()
+    {
+        return $this->identifier;
+    }
+
+    public function setIdentifier($identifier): self
+    {
+        $this->identifier = $identifier;
 
         return $this;
     }

@@ -9,16 +9,16 @@ use App\Handler\Request\Playlist\PlaylistFindInterface;
 class PlaylistFindRequest implements PlaylistFindInterface
 {
 
-    private string $uuid;
+    private string $identifier;
 
-    public function getUuid(): string
+    public function getIdentifier(): string
     {
-        return $this->uuid;
+        return $this->identifier;
     }
 
-    public function setUuid($uuid): self
+    public function setIdentifier($identifier): self
     {
-        $this->uuid = $uuid;
+        $this->identifier = $identifier;
 
         return $this;
     }

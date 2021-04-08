@@ -10,6 +10,7 @@ use App\Utils\Timestampable\TimestampableInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Uid\UuidV4;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
@@ -140,6 +141,11 @@ class User implements \Stringable, TimestampableInterface
      * @ORM\Column(type="boolean", nullable=true)
      */
     private ?bool $isUltraRestricted;
+
+    /**
+     * @ORM\Column(type="uuid")
+     */
+    private UuidV4 $identifier;
 
     public function __construct()
     {
@@ -441,6 +447,18 @@ class User implements \Stringable, TimestampableInterface
     public function setIsUltraRestricted(?bool $isUltraRestricted): self
     {
         $this->isUltraRestricted = $isUltraRestricted;
+
+        return $this;
+    }
+
+    public function getIdentifier()
+    {
+        return $this->identifier;
+    }
+
+    public function setIdentifier($identifier): self
+    {
+        $this->identifier = $identifier;
 
         return $this;
     }

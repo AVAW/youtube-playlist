@@ -20,7 +20,7 @@ class PlaylistFindHandler
 
     public function handle(PlaylistFindInterface $command): ?Playlist
     {
-        return $this->playlistProvider->findByUuid($command->getUuid());
+        return $this->playlistProvider->findByUuid($command->getIdentifier());
     }
 
 }

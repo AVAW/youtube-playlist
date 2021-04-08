@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service\Slack\Team;
 
 use App\Entity\Slack\Team;
+use Symfony\Component\Uid\Uuid;
 
 class TeamManager
 {
@@ -22,7 +23,8 @@ class TeamManager
     ): Team {
         $team = (new Team())
             ->setTeamId($teamId)
-            ->setDomain($teamDomain);
+            ->setDomain($teamDomain)
+            ->setIdentifier(Uuid::v4());
 
         $this->provider->save($team);
 

@@ -30,7 +30,7 @@ class Playlist implements \Stringable, TimestampableInterface
      * @ORM\Column(type="uuid")
      * @Groups({"simple"})
      */
-    private UuidV4 $uuid;
+    private UuidV4 $identifier;
 
     /**
      * @ORM\Column(type="string", length=1024)
@@ -78,14 +78,14 @@ class Playlist implements \Stringable, TimestampableInterface
         return $this->id;
     }
 
-    public function getUuid(): UuidV4
+    public function getIdentifier(): UuidV4
     {
-        return $this->uuid;
+        return $this->identifier;
     }
 
-    public function setUuid(UuidV4 $uuid): self
+    public function setIdentifier(UuidV4 $identifier): self
     {
-        $this->uuid = $uuid;
+        $this->identifier = $identifier;
 
         return $this;
     }

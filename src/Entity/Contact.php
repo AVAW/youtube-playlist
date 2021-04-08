@@ -8,6 +8,7 @@ use App\Repository\ContactRepository;
 use App\Utils\Timestampable\Timestampable;
 use App\Utils\Timestampable\TimestampableInterface;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Uid\UuidV4;
 
 /**
  * @ORM\Entity(repositoryClass=ContactRepository::class)
@@ -43,6 +44,11 @@ class Contact implements \Stringable, TimestampableInterface
      * @ORM\Column(type="string", length=255)
      */
     private string $name;
+
+    /**
+     * @ORM\Column(type="uuid")
+     */
+    private UuidV4 $identifier;
 
     public function __toString(): string
     {
@@ -98,6 +104,18 @@ class Contact implements \Stringable, TimestampableInterface
     public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getIdentifier()
+    {
+        return $this->identifier;
+    }
+
+    public function setIdentifier($identifier): self
+    {
+        $this->identifier = $identifier;
 
         return $this;
     }
