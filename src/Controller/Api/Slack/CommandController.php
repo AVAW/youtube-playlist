@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace App\Controller\Api\Slack;
 
-use App\Event\Slack\NewConversationEvent;
-use App\Event\Slack\NewCommandEvent;
-use App\Event\Slack\NewTeamEvent;
-use App\Event\Slack\NewUserEvent;
 use App\Form\Slack\Command\CommandType;
+use App\Handler\Request\Command\CommandHandlerCollection;
+use App\Handler\Request\Command\CommandInterface;
 use App\Handler\Request\Slack\Conversation\ConversationGetOrCreateRequestHandler;
 use App\Handler\Request\Slack\Command\CommandCreateRequestHandler;
 use App\Handler\Request\Slack\Team\TeamGetOrCreateRequestHandler;
@@ -19,7 +17,6 @@ use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
  * @Route("/api/slack")
@@ -36,7 +33,7 @@ class CommandController extends AbstractFOSRestController
         ConversationGetOrCreateRequestHandler $channelRequestHandler,
         UserGetOrCreateRequestHandler $userRequestHandler,
         CommandCreateRequestHandler $commandRequestHandler,
-        EventDispatcherInterface $dispatcher
+        CommandHandlerCollection $commandHandlers
     ): object {
         // todo: add https://api.slack.com/authentication/verifying-requests-from-slack#about
         // hash('sha256', $request->request->all() . $request->headers->get('x-slack-signature'));
@@ -62,11 +59,18 @@ class CommandController extends AbstractFOSRestController
             $team = $teamRequestHandler->handle($command);
             $conversation = $channelRequestHandler->handle($command);
             $user = $userRequestHandler->handle($command);
-
             $command = $commandRequestHandler->handle($team, $conversation, $user, $command);
 
+            /** @var CommandInterface[] $commandHandlers */
+            foreach ($commandHandlers as $handler) {
+                if ($handler->supports($command)) {
+                    $res = $handler->handle($command);
 
-            return $this->render('slack_command/commands.html.twig');
+                    return new Response($res);
+                }
+            }
+
+            return new Response('Wrong command. Please try again.');
         }
 
         return $this->handleView(View::create(['form' => $form], Response::HTTP_UNPROCESSABLE_ENTITY));

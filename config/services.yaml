@@ -44,5 +44,6 @@ services:
         arguments:
             $token: '%env(SLACK_TOKEN)%'
 
-
+    App\Handler\Request\Command\CommandHandlerCollection:
+        arguments: [!tagged { tag: 'app.command.handler' }]
 

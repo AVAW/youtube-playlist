@@ -23,29 +23,15 @@ class NewCommandSubscriber implements EventSubscriberInterface
         $this->logger = $logger;
     }
 
-    public function onCommandEvent(NewCommandEvent $event)
+    public function onNewCommandEvent(NewCommandEvent $event)
     {
         $command = $event->getCommand();
-
-        $team = $command->getTeam();
-        $channel = $command->getConversation();
-        $user = $command->getUser();
-        $user->addConversation($channel);
-
-
-
-        // Send messgae to chat
-//        $response = $this->client->chatPostMessage([
-//            'channel' => '#mniejsze-okna-playlist',
-////            'username' => 'example bot',
-//            'text' => 'Hello world',
-//        ]);
     }
 
     public static function getSubscribedEvents(): array
     {
         return [
-            NewCommandEvent::class => 'onCommandEvent',
+            NewCommandEvent::class => 'onNewCommandEvent',
         ];
     }
 
