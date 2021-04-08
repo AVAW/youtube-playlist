@@ -8,21 +8,25 @@ use App\Entity\Slack\Team;
 use App\Event\Slack\NewTeamEvent;
 use App\Service\Slack\Team\TeamManager;
 use App\Service\Slack\Team\TeamProvider;
+use Psr\Log\LoggerInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class TeamGetOrCreateRequestHandler
 {
 
     private EventDispatcherInterface $dispatcher;
+    private LoggerInterface $infoLogger;
     private TeamManager $teamManager;
     private TeamProvider $teamProvider;
 
     public function __construct(
         EventDispatcherInterface $dispatcher,
+        LoggerInterface $infoLogger,
         TeamManager $teamManager,
         TeamProvider $teamProvider
     ) {
         $this->dispatcher = $dispatcher;
+        $this->infoLogger =$infoLogger;
         $this->teamManager = $teamManager;
         $this->teamProvider = $teamProvider;
     }
@@ -34,6 +38,7 @@ class TeamGetOrCreateRequestHandler
             $team = $this->teamManager->create($command->getTeamId(), $command->getTeamDomain());
 
             $this->dispatcher->dispatch(new NewTeamEvent($team));
+            $this->infoLogger->info("New team: {$team->getName()}, domain: {$team->getDomain()}");
         }
 
         return $team;

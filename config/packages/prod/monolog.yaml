@@ -1,10 +1,11 @@
 monolog:
+    channels: [ "info" ]
     handlers:
         main:
             type: fingers_crossed
             action_level: error
             handler: nested
-            excluded_http_codes: [404, 405]
+            excluded_http_codes: [ 404, 405 ]
             buffer_size: 50 # How many messages should be saved? Prevent memory leaks
         nested:
             type: stream
@@ -14,4 +15,18 @@ monolog:
         console:
             type: console
             process_psr_3_messages: false
-            channels: ["!event", "!doctrine"]
+            channels: [ "!event", "!doctrine" ]
+        slack:
+            type: slack
+            channels: info
+            token: '%env(SLACK_TOKEN)%'
+            channel: 'U01DDGBHA5U'
+            level: info
+            timeout: 1
+            use_short_attachment: true
+        slackwebhook:
+            type: slackwebhook
+            webhook_url: '%env(SLACK_ERROR_WEBHOOK_URL)%'
+            channel: '#youtube-playlist-error-log'
+            level: error
+            use_short_attachment: true
