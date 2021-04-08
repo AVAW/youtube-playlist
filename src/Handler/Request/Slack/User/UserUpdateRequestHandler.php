@@ -37,6 +37,17 @@ class UserUpdateRequestHandler
             $command->getImageOriginalUrl(),
             $command->getFirstName(),
             $command->getLastName(),
+            $command->getIsAdmin(),
+            $command->getIsAppUser(),
+            $command->getIsBot(),
+            $command->getIsExternal(),
+            $command->getIsForgotten(),
+            $command->getIsInvitedUser(),
+            $command->getIsOwner(),
+            $command->getIsPrimaryOwner(),
+            $command->getIsRestricted(),
+            $command->getIsStranger(),
+            $command->getIsUltraRestricted()
         );
     }
 

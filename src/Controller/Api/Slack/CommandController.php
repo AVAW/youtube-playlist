@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Controller\Api\Slack;
 
-use App\Event\Slack\ConversationEvent;
-use App\Event\Slack\CommandEvent;
-use App\Event\Slack\TeamEvent;
-use App\Event\Slack\UserEvent;
+use App\Event\Slack\NewConversationEvent;
+use App\Event\Slack\NewCommandEvent;
+use App\Event\Slack\NewTeamEvent;
+use App\Event\Slack\NewUserEvent;
 use App\Form\Slack\Command\CommandType;
 use App\Handler\Request\Slack\Conversation\ConversationGetOrCreateRequestHandler;
 use App\Handler\Request\Slack\Command\CommandCreateRequestHandler;
@@ -16,7 +16,6 @@ use App\Handler\Request\Slack\User\UserGetOrCreateRequestHandler;
 use App\Model\Slack\GetOrCreateRequest;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\View\View;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -61,16 +60,11 @@ class CommandController extends AbstractFOSRestController
             $command = $form->getData();
 
             $team = $teamRequestHandler->handle($command);
-            $dispatcher->dispatch(new TeamEvent($team));
-
             $conversation = $channelRequestHandler->handle($command);
-            $dispatcher->dispatch(new ConversationEvent($conversation));
-
             $user = $userRequestHandler->handle($command);
-            $dispatcher->dispatch(new UserEvent($user));
 
             $command = $commandRequestHandler->handle($team, $conversation, $user, $command);
-            $dispatcher->dispatch(new CommandEvent($command));
+
 
             return $this->render('slack_command/commands.html.twig');
         }

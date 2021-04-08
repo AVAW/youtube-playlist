@@ -7,7 +7,7 @@ namespace App\Event\Slack;
 use App\Entity\Slack\Conversation;
 use Symfony\Contracts\EventDispatcher\Event;
 
-class ConversationEvent extends Event
+class NewConversationEvent extends Event
 {
 
     private Conversation $conversation;

@@ -25,4 +25,26 @@ interface UserUpdateInterface
 
     public function getLastName(): ?string;
 
+    public function getIsAdmin(): ?bool;
+
+    public function getIsAppUser(): ?bool;
+
+    public function getIsBot(): ?bool;
+
+    public function getIsExternal(): ?bool;
+
+    public function getIsForgotten(): ?bool;
+
+    public function getIsInvitedUser(): ?bool;
+
+    public function getIsOwner(): ?bool;
+
+    public function getIsPrimaryOwner(): ?bool;
+
+    public function getIsRestricted(): ?bool;
+
+    public function getIsStranger(): ?bool;
+
+    public function getIsUltraRestricted(): ?bool;
+
 }

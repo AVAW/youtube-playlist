@@ -7,7 +7,7 @@ namespace App\Event\Slack;
 use App\Entity\Slack\User;
 use Symfony\Contracts\EventDispatcher\Event;
 
-class UserEvent extends Event
+class NewUserEvent extends Event
 {
 
     private User $user;

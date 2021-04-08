@@ -7,7 +7,7 @@ namespace App\Event\Slack;
 use App\Entity\Slack\Team;
 use Symfony\Contracts\EventDispatcher\Event;
 
-class TeamEvent extends Event
+class NewTeamEvent extends Event
 {
 
     private Team $team;

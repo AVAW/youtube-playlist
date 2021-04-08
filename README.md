@@ -10,7 +10,8 @@ Features
 Run
 ---
 - `docker-compose up -d`
-- log into `php` container with `docker-compose exec php bash` and run inside `bin/console doctrine:migrations:migrate`
+- log into `php` container with `docker-compose exec php bash` and run inside:
+  - `bin/console d:m:m`
 
 Docker fix permissions
 ----------------------

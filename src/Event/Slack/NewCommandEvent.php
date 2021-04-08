@@ -7,7 +7,7 @@ namespace App\Event\Slack;
 use App\Entity\Slack\Command;
 use Symfony\Contracts\EventDispatcher\Event;
 
-class CommandEvent extends Event
+class NewCommandEvent extends Event
 {
 
     private Command $command;

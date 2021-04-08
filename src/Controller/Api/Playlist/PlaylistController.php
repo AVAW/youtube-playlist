@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\Api;
+namespace App\Controller\Api\Playlist;
 
 use App\Entity\Playlist;
 use App\Form\PlaylistType;

@@ -1,12 +1,11 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Command;
 
-use App\Handler\Request\Slack\User\UserCollectionGetOrCreateRequestHandler;
-use App\Model\Slack\User\UserCollectionGetOrCreateRequest;
-use App\Service\Slack\Conversation\ConversationProvider;
+use App\Handler\Request\Slack\Team\TeamUpdateRequestHandler;
+use App\Model\Slack\Team\TeamUpdateRequest;
+use App\Service\Slack\Team\TeamProvider;
+use App\Utils\Timestampable\TimestampableHelper;
 use JoliCode\Slack\Api\Client;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -16,28 +15,28 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class PullSlackConversationUsersCommand extends Command
+class PullSlackTeamCommand extends Command
 {
 
-    protected static $defaultName = 'app:pull-slack-conversation-users';
-    protected static string $defaultDescription = 'Pull conversation users from Slack API';
+    protected static $defaultName = 'app:pull-slack-team';
+    protected static $defaultDescription = 'Add a short description for your command';
 
     protected Client $client;
-    protected ConversationProvider $conversationProvider;
     protected LoggerInterface $logger;
-    protected UserCollectionGetOrCreateRequestHandler $userCollectionGetOrCreateRequestHandler;
+    protected TeamProvider $teamProvider;
+    protected TeamUpdateRequestHandler $teamUpdateRequestHandler;
 
     public function __construct(
         Client $client,
-        ConversationProvider $conversationProvider,
         LoggerInterface $logger,
-        UserCollectionGetOrCreateRequestHandler $userCollectionGetOrCreateRequestHandler,
+        TeamProvider $teamProvider,
+        TeamUpdateRequestHandler $teamUpdateRequestHandler,
         string $name = null
     ) {
         $this->client = $client;
-        $this->conversationProvider = $conversationProvider;
         $this->logger = $logger;
-        $this->userCollectionGetOrCreateRequestHandler = $userCollectionGetOrCreateRequestHandler;
+        $this->teamProvider = $teamProvider;
+        $this->teamUpdateRequestHandler = $teamUpdateRequestHandler;
         parent::__construct($name);
     }
 
@@ -54,14 +53,17 @@ class PullSlackConversationUsersCommand extends Command
         $io = new SymfonyStyle($input, $output);
 
         // todo: add pagination
-        $conversations = $this->conversationProvider->findAll();
+        $teams = $this->teamProvider->findAll();
 
-        foreach ($conversations as $conversation) {
+        foreach ($teams as $team) {
+            if (TimestampableHelper::isUpdatedInLastXMinutes($team, 10)) {
+                continue;
+            }
             try {
-                $slackConversationMembers = $this->client->conversationsMembers(['channel' => $conversation->getConversationId()]);
-                $command = UserCollectionGetOrCreateRequest::createFromArray($slackConversationMembers->getMembers());
-                $this->userCollectionGetOrCreateRequestHandler->handle($command);
-            } catch (\Throwable $e) {
+                $slackTeam = $this->client->teamInfo(['team' => $team->getTeamId()])->getTeam();
+                $command = TeamUpdateRequest::createFromObjsTeam($slackTeam);
+                $this->teamUpdateRequestHandler->handle($team, $command);
+            } catch (\Exception $e) {
                 $this->logger->error($e->getMessage());
                 $io->error($e->getMessage());
             }

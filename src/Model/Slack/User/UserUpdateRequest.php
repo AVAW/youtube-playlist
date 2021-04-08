@@ -18,6 +18,17 @@ class UserUpdateRequest implements UserUpdateInterface
     private ?string $imageOriginalUrl;
     private ?string $firstName;
     private ?string $lastName;
+    private ?bool $isAdmin;
+    private ?bool $isAppUser;
+    private ?bool $isBot;
+    private ?bool $isExternal;
+    private ?bool $isForgotten;
+    private ?bool $isInvitedUser;
+    private ?bool $isOwner;
+    private ?bool $isPrimaryOwner;
+    private ?bool $isRestricted;
+    private ?bool $isStranger;
+    private ?bool $isUltraRestricted;
 
     public static function createFromObjsUser(ObjsUser $slackUser): self
     {
@@ -31,7 +42,18 @@ class UserUpdateRequest implements UserUpdateInterface
             ->setPhone($slackUserProfile->getPhone())
             ->setImageOriginalUrl($slackUserProfile->getImageOriginal())
             ->setFirstName($slackUserProfile->getFirstName())
-            ->setLastName($slackUserProfile->getLastName());
+            ->setLastName($slackUserProfile->getLastName())
+            ->setIsAdmin($slackUser->getIsAdmin())
+            ->setIsAppUser($slackUser->getIsAppUser())
+            ->setIsBot($slackUser->getIsBot())
+            ->setIsExternal($slackUser->getIsExternal())
+            ->setIsForgotten($slackUser->getIsForgotten())
+            ->setIsInvitedUser($slackUser->getIsInvitedUser())
+            ->setIsOwner($slackUser->getIsOwner())
+            ->setIsPrimaryOwner($slackUser->getIsPrimaryOwner())
+            ->setIsRestricted($slackUser->getIsRestricted())
+            ->setIsStranger($slackUser->getIsStranger())
+            ->setIsUltraRestricted($slackUser->getIsUltraRestricted());
     }
 
     public function getTeamId(): ?string
@@ -126,6 +148,138 @@ class UserUpdateRequest implements UserUpdateInterface
     public function setLastName(?string $lastName): self
     {
         $this->lastName = $lastName;
+
+        return $this;
+    }
+
+    public function getIsAdmin(): ?bool
+    {
+        return $this->isAdmin;
+    }
+
+    public function setIsAdmin(?bool $isAdmin): self
+    {
+        $this->isAdmin = $isAdmin;
+
+        return $this;
+    }
+
+    public function getIsAppUser(): ?bool
+    {
+        return $this->isAppUser;
+    }
+
+    public function setIsAppUser(?bool $isAppUser): self
+    {
+        $this->isAppUser = $isAppUser;
+
+        return $this;
+    }
+
+    public function getIsBot(): ?bool
+    {
+        return $this->isBot;
+    }
+
+    public function setIsBot(?bool $isBot): self
+    {
+        $this->isBot = $isBot;
+
+        return $this;
+    }
+
+    public function getIsExternal(): ?bool
+    {
+        return $this->isExternal;
+    }
+
+    public function setIsExternal(?bool $isExternal): self
+    {
+        $this->isExternal = $isExternal;
+
+        return $this;
+    }
+
+    public function getIsForgotten(): ?bool
+    {
+        return $this->isForgotten;
+    }
+
+    public function setIsForgotten(?bool $isForgotten): self
+    {
+        $this->isForgotten = $isForgotten;
+
+        return $this;
+    }
+
+    public function getIsInvitedUser(): ?bool
+    {
+        return $this->isInvitedUser;
+    }
+
+    public function setIsInvitedUser(?bool $isInvitedUser): self
+    {
+        $this->isInvitedUser = $isInvitedUser;
+
+        return $this;
+    }
+
+    public function getIsOwner(): ?bool
+    {
+        return $this->isOwner;
+    }
+
+    public function setIsOwner(?bool $isOwner): self
+    {
+        $this->isOwner = $isOwner;
+
+        return $this;
+    }
+
+    public function getIsPrimaryOwner(): ?bool
+    {
+        return $this->isPrimaryOwner;
+    }
+
+    public function setIsPrimaryOwner(?bool $isPrimaryOwner): self
+    {
+        $this->isPrimaryOwner = $isPrimaryOwner;
+
+        return $this;
+    }
+
+    public function getIsRestricted(): ?bool
+    {
+        return $this->isRestricted;
+    }
+
+    public function setIsRestricted(?bool $isRestricted): self
+    {
+        $this->isRestricted = $isRestricted;
+
+        return $this;
+    }
+
+    public function getIsStranger(): ?bool
+    {
+        return $this->isStranger;
+    }
+
+    public function setIsStranger(?bool $isStranger): self
+    {
+        $this->isStranger = $isStranger;
+
+        return $this;
+    }
+
+    public function getIsUltraRestricted(): ?bool
+    {
+        return $this->isUltraRestricted;
+    }
+
+    public function setIsUltraRestricted(?bool $isUltraRestricted): self
+    {
+        $this->isUltraRestricted = $isUltraRestricted;
 
         return $this;
     }

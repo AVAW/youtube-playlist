@@ -17,6 +17,12 @@ class TeamProvider
         $this->repository = $teamRepository;
     }
 
+    /** @return Team[] */
+    public function findAll(): iterable
+    {
+        return $this->repository->findAll();
+    }
+
     public function findOneByTeamId(string $teamId): ?Team
     {
         return $this->repository->findOneBy(['teamId' => $teamId]);

@@ -7,7 +7,7 @@ namespace App\Handler\Request\Slack\Conversation;
 interface ConversationUpdateInterface
 {
 
-    public function getName(): string;
+    public function getName(): ?string;
 
     public function getTeams(): array;
 

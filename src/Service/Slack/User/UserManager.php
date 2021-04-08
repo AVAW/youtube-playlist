@@ -20,7 +20,7 @@ class UserManager
 
     public function create(
         string $userId,
-        string $name,
+        string $name = null,
         ?Team $team = null,
         ?Conversation $channel = null,
         ?string $realName = null,
@@ -62,7 +62,18 @@ class UserManager
         ?string $phone,
         ?string $imageOriginalUrl,
         ?string $firstName,
-        ?string $lastName
+        ?string $lastName,
+        ?bool $isAdmin,
+        ?bool $isAppUser,
+        ?bool $isBot,
+        ?bool $isExternal,
+        ?bool $isForgotten,
+        ?bool $isInvitedUser,
+        ?bool $isOwner,
+        ?bool $isPrimaryOwner,
+        ?bool $isRestricted,
+        ?bool $isStranger,
+        ?bool $isUltraRestricted
     ): void {
         $user
             ->setTeam($team)
@@ -72,7 +83,18 @@ class UserManager
             ->setPhone($phone)
             ->setImageOriginalUrl($imageOriginalUrl)
             ->setFirstName($firstName)
-            ->setLastName($lastName);
+            ->setLastName($lastName)
+            ->setIsAdmin($isAdmin)
+            ->setIsAppUser($isAppUser)
+            ->setIsBot($isBot)
+            ->setIsExternal($isExternal)
+            ->setIsForgotten($isForgotten)
+            ->setIsInvitedUser($isInvitedUser)
+            ->setIsOwner($isOwner)
+            ->setIsPrimaryOwner($isPrimaryOwner)
+            ->setIsRestricted($isRestricted)
+            ->setIsStranger($isStranger)
+            ->setIsUltraRestricted($isUltraRestricted);
 
         if ($channel instanceof Conversation) {
             $user->addConversation($channel);

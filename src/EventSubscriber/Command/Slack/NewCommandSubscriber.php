@@ -7,11 +7,10 @@ namespace App\EventSubscriber\Command\Slack;
 use JoliCode\Slack\Api\Client;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use App\Event\Slack\CommandEvent;
+use App\Event\Slack\NewCommandEvent;
 
-class CommandSubscriber implements EventSubscriberInterface
+class NewCommandSubscriber implements EventSubscriberInterface
 {
-
 
     private Client $client;
     private LoggerInterface $logger;
@@ -24,7 +23,7 @@ class CommandSubscriber implements EventSubscriberInterface
         $this->logger = $logger;
     }
 
-    public function onCommandEvent(CommandEvent $event)
+    public function onCommandEvent(NewCommandEvent $event)
     {
         $command = $event->getCommand();
 
@@ -46,7 +45,7 @@ class CommandSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            CommandEvent::class => 'onCommandEvent',
+            NewCommandEvent::class => 'onCommandEvent',
         ];
     }
 

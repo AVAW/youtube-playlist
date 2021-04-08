@@ -40,6 +40,9 @@ class TeamManager
             ->setEmailDomain($emailDomain)
             ->setIconUrl($iconUrl);
 
+        // Force to update because Doctrine knows when entity didnt change
+        $team->setUpdatedAt(new \DateTime());
+
         $this->provider->save($team);
     }
 

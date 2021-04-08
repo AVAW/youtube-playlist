@@ -32,9 +32,9 @@ class User implements \Stringable, TimestampableInterface
     private string $userId;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private string $name;
+    private ?string $name;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -86,9 +86,65 @@ class User implements \Stringable, TimestampableInterface
      */
     private ?UserPresence $presence;
 
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private ?bool $isAdmin;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private ?bool $isAppUser;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private ?bool $isBot;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private ?bool $isExternal;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private ?bool $isForgotten;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private ?bool $isInvitedUser;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private ?bool $isOwner;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private ?bool $isPrimaryOwner;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private ?bool $isRestricted;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private ?bool $isStranger;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private ?bool $isUltraRestricted;
+
     public function __construct()
     {
         $this->conversations = new ArrayCollection();
+        $this->presence = null;
     }
 
     public function __toString(): string
@@ -118,7 +174,7 @@ class User implements \Stringable, TimestampableInterface
         return $this->name;
     }
 
-    public function setName(string $name): self
+    public function setName(?string $name): self
     {
         $this->name = $name;
 
@@ -253,6 +309,138 @@ class User implements \Stringable, TimestampableInterface
     public function setPresence(?UserPresence $presence): self
     {
         $this->presence = $presence;
+
+        return $this;
+    }
+
+    public function getIsAdmin(): ?bool
+    {
+        return $this->isAdmin;
+    }
+
+    public function setIsAdmin(?bool $isAdmin): self
+    {
+        $this->isAdmin = $isAdmin;
+
+        return $this;
+    }
+
+    public function getIsAppUser(): ?bool
+    {
+        return $this->isAppUser;
+    }
+
+    public function setIsAppUser(?bool $isAppUser): self
+    {
+        $this->isAppUser = $isAppUser;
+
+        return $this;
+    }
+
+    public function getIsBot(): ?bool
+    {
+        return $this->isBot;
+    }
+
+    public function setIsBot(?bool $isBot): self
+    {
+        $this->isBot = $isBot;
+
+        return $this;
+    }
+
+    public function getIsExternal(): ?bool
+    {
+        return $this->isExternal;
+    }
+
+    public function setIsExternal(?bool $isExternal): self
+    {
+        $this->isExternal = $isExternal;
+
+        return $this;
+    }
+
+    public function getIsForgotten(): ?bool
+    {
+        return $this->isForgotten;
+    }
+
+    public function setIsForgotten(?bool $isForgotten): self
+    {
+        $this->isForgotten = $isForgotten;
+
+        return $this;
+    }
+
+    public function getIsInvitedUser(): ?bool
+    {
+        return $this->isInvitedUser;
+    }
+
+    public function setIsInvitedUser(?bool $isInvitedUser): self
+    {
+        $this->isInvitedUser = $isInvitedUser;
+
+        return $this;
+    }
+
+    public function getIsOwner(): ?bool
+    {
+        return $this->isOwner;
+    }
+
+    public function setIsOwner(?bool $isOwner): self
+    {
+        $this->isOwner = $isOwner;
+
+        return $this;
+    }
+
+    public function getIsPrimaryOwner(): ?bool
+    {
+        return $this->isPrimaryOwner;
+    }
+
+    public function setIsPrimaryOwner(?bool $isPrimaryOwner): self
+    {
+        $this->isPrimaryOwner = $isPrimaryOwner;
+
+        return $this;
+    }
+
+    public function getIsRestricted(): ?bool
+    {
+        return $this->isRestricted;
+    }
+
+    public function setIsRestricted(?bool $isRestricted): self
+    {
+        $this->isRestricted = $isRestricted;
+
+        return $this;
+    }
+
+    public function getIsStranger(): ?bool
+    {
+        return $this->isStranger;
+    }
+
+    public function setIsStranger(?bool $isStranger): self
+    {
+        $this->isStranger = $isStranger;
+
+        return $this;
+    }
+
+    public function getIsUltraRestricted(): ?bool
+    {
+        return $this->isUltraRestricted;
+    }
+
+    public function setIsUltraRestricted(?bool $isUltraRestricted): self
+    {
+        $this->isUltraRestricted = $isUltraRestricted;
 
         return $this;
     }

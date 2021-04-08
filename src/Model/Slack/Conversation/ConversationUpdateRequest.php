@@ -10,7 +10,7 @@ use JoliCode\Slack\Api\Model\ObjsConversation;
 class ConversationUpdateRequest implements ConversationUpdateInterface
 {
 
-    private string $name;
+    private ?string $name;
     private array $teams;
     private ?string $creatorId;
     private ?bool $isArchived;
@@ -56,12 +56,12 @@ class ConversationUpdateRequest implements ConversationUpdateInterface
             ->setTopic($conversation->getTopic()->getValue());
     }
 
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function setName(string $name): self
+    public function setName(?string $name): self
     {
         $this->name = $name;
 
