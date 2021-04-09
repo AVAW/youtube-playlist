@@ -5,15 +5,11 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Contact;
-use App\Entity\Playlist;
 use App\Form\ContactType;
 use App\Form\YouTubePlaylistType;
-use App\Handler\Request\Command\CommandHandlerCollection;
-use App\Handler\Request\Command\CommandInterface;
+use App\Handler\Request\Playlist\PlaylistCreateRequestHandler;
+use App\Model\Playlist\PlaylistCreateRequest;
 use App\Repository\ContactRepository;
-use App\Repository\PlaylistRepository;
-use App\Service\Slack\Command\CommandProvider;
-use App\Utils\YouTubePlaylist;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,9 +27,7 @@ class DefaultController extends AbstractController
      */
     public function index(
         Request $request,
-        PlaylistRepository $playlistRepository,
-        YouTubePlaylist $youTubePlaylist
-
+        PlaylistCreateRequestHandler $playlistCreateRequestHandler
     ): Response {
         // PLAYGROUND
 
@@ -42,20 +36,14 @@ class DefaultController extends AbstractController
 
 
 
-
-        $form = $this->createForm(YouTubePlaylistType::class);
+        $command = new PlaylistCreateRequest();
+        $form = $this->createForm(YouTubePlaylistType::class, $command);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var Playlist $playlist */
-            $playlist = $form->getData();
-
-            $playlistId = $youTubePlaylist->getPlaylistIdFromUrl($playlist->getUrl());
-            $playlist
-                ->setYoutubeId($playlistId)
-                ->setIdentifier(Uuid::v4());
-
-            $playlistRepository->save($playlist);
+            /** @var PlaylistCreateRequest $command */
+            $command = $form->getData();
+            $playlist = $playlistCreateRequestHandler->handle($command);
 
             return $this->redirectToRoute('playlist', ['identifier' => $playlist->getIdentifier()]);
         }

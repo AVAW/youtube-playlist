@@ -8,7 +8,7 @@ use ArrayIterator;
 use IteratorAggregate;
 use Traversable;
 
-class CommandHandlerCollection implements IteratorAggregate
+final class CommandHandlerCollection implements IteratorAggregate
 {
 
     /** @var CommandInterface[] */

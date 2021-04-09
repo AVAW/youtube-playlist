@@ -11,6 +11,6 @@ interface CommandInterface
 
     public function supports(Command $command): bool;
 
-    public function handle(Command $command);
+    public function handle(Command $command): string;
 
 }

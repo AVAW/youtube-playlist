@@ -35,10 +35,13 @@ class TeamGetOrCreateRequestHandler
     {
         $team = $this->teamProvider->findOneByTeamId($command->getTeamId());
         if (!$team instanceof Team) {
-            $team = $this->teamManager->create($command->getTeamId(), $command->getTeamDomain());
+            $team = $this->teamManager->create(
+                $command->getTeamId(),
+                $command->getTeamDomain()
+            );
 
             $this->dispatcher->dispatch(new NewTeamEvent($team));
-            $this->infoLogger->info("New team: {$team->getName()}, domain: {$team->getDomain()}");
+            $this->infoLogger->info("New team, domain: {$team->getDomain()}");
         }
 
         return $team;

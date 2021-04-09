@@ -7,7 +7,7 @@ namespace App\Utils;
 use Google_Client;
 use Google_Service_YouTube;
 
-class YouTubePlaylist
+class YouTubePlaylistHelper
 {
 
     protected Google_Client $client;

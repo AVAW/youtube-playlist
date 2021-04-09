@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Validator\YouTube;
 
-use App\Utils\YouTubePlaylist;
+use App\Utils\YouTubePlaylistHelper;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
@@ -12,9 +12,9 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 class YouTubePlaylistUrlValidator extends ConstraintValidator
 {
 
-    protected YouTubePlaylist $validator;
+    protected YouTubePlaylistHelper $validator;
 
-    public function __construct(YouTubePlaylist $youTubePlaylist)
+    public function __construct(YouTubePlaylistHelper $youTubePlaylist)
     {
         $this->validator = $youTubePlaylist;
     }

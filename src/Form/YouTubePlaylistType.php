@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Form;
 
-use App\Entity\Playlist;
+use App\Model\Playlist\PlaylistCreateRequest;
 use App\Validator\YouTube\YouTubePlaylistUrl;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -20,10 +20,6 @@ class YouTubePlaylistType extends AbstractType
     {
         $builder
             ->add('url', TextType::class, [
-                'label' => 'playlist.url',
-                'attr' => [
-                    'placeholder' => 'playlist.realUrl',
-                ],
                 'constraints' => [
                     new NotNull(),
                     new Url(),
@@ -35,7 +31,8 @@ class YouTubePlaylistType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Playlist::class,
+            'data_class' => PlaylistCreateRequest::class,
+            'csrf_protection' => false,
         ]);
     }
 

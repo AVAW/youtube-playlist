@@ -17,6 +17,7 @@ use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @Route("/api/slack")
@@ -33,7 +34,8 @@ class CommandController extends AbstractFOSRestController
         ConversationGetOrCreateRequestHandler $channelRequestHandler,
         UserGetOrCreateRequestHandler $userRequestHandler,
         CommandCreateRequestHandler $commandRequestHandler,
-        CommandHandlerCollection $commandHandlers
+        CommandHandlerCollection $commandHandlers,
+        TranslatorInterface $translator
     ): object {
         // todo: add https://api.slack.com/authentication/verifying-requests-from-slack#about
         // hash('sha256', $request->request->all() . $request->headers->get('x-slack-signature'));
@@ -69,10 +71,9 @@ class CommandController extends AbstractFOSRestController
                     return new Response($res);
                 }
             }
-
-            return new Response('Wrong command. Please try again.');
         }
 
+        return new Response($translator->trans('command.wrong'));
         return $this->handleView(View::create(['form' => $form], Response::HTTP_UNPROCESSABLE_ENTITY));
     }
 

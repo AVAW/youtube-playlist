@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Dto\Playlist\PlaylistDto;
 use App\Dto\Playlist\VideoDto;
 use App\Entity\Playlist;
 use Google_Client;
@@ -83,34 +84,33 @@ class YouTubePlaylistManager
         );
     }
 
-    public function getVideosAmountInPlaylist(Playlist $playlist): void
+    public function getVideosAmountInPlaylist(string $youTubeId): ?int
     {
         $part = [
             'contentDetails',
         ];
         $queryParams = [
             'maxResults' => 1,
-            'playlistId' => $playlist->getYoutubeId(),
+            'playlistId' => $youTubeId,
         ];
 
         try {
             $results = $this->service->playlistItems->listPlaylistItems($part, $queryParams);
-            $amount = $results->getPageInfo()->getTotalResults();
-            $playlist->setVideosAmount($amount);
+            return $results->getPageInfo()->getTotalResults();
         } catch (\Exception $e) {
-            return;
+            return null;
         }
     }
 
     /**
      * IDK why but I can't get it in youtube lib
      */
-    public function getPlaylistDetails(Playlist $playlist): void
+    public function getPlaylistDetails(string $youTubeId): ?PlaylistDto
     {
         $apiUrl = 'https://www.googleapis.com/youtube/v3/playlists';
         $queryParameters = [
             'part' => implode(',', ['snippet']),
-            'id' => $playlist->getYoutubeId(),
+            'id' => $youTubeId,
             'fields' => 'items(snippet)',
             'key' => $this->client->getConfig('developer_key'),
         ];
@@ -126,12 +126,12 @@ class YouTubePlaylistManager
 
         $result = (array) json_decode($output);
         if (empty($result['items'])) {
-            return;
+            return null;
         }
 
         $item = array_pop($result['items']);
         if (!property_exists($item, 'snippet')) {
-            return;
+            return null;
         }
 
         $snippet = $item->snippet;
@@ -141,14 +141,15 @@ class YouTubePlaylistManager
             || !property_exists($snippet, 'publishedAt')
             || !property_exists($snippet, 'channelTitle')
         ) {
-            return;
+            return null;
         }
 
-        $playlist->setTitle($snippet->title);
-        $playlist->setDescription($snippet->description);
-        $playlist->setPublishedAt(\DateTime::createFromFormat(DATE_ISO8601, $snippet->publishedAt));
-        $playlist->setChannelTitle($snippet->channelTitle);
+        return new PlaylistDto(
+            $snippet->title,
+            $snippet->description,
+            \DateTime::createFromFormat(DATE_ISO8601, $snippet->publishedAt),
+            $snippet->channelTitle
+        );
     }
-
 
 }

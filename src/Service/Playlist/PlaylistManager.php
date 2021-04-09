@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Service\Playlist;
 
 use App\Entity\Playlist;
-use App\Repository\PlaylistRepository;
+use Symfony\Component\Uid\Uuid;
 
 class PlaylistManager
 {
@@ -15,6 +15,30 @@ class PlaylistManager
     public function __construct(PlaylistProvider $provider)
     {
         $this->provider = $provider;
+    }
+
+    public function create(
+        string $url,
+        string $youTubeId,
+        ?string $title,
+        ?string $description,
+        ?\DateTimeInterface $publishedAt,
+        ?string $channelTitle,
+        ?int $amount
+    ): Playlist {
+        $playlist = (new Playlist())
+            ->setUrl($url)
+            ->setYoutubeId($youTubeId)
+            ->setTitle($title)
+            ->setDescription($description)
+            ->setPublishedAt($publishedAt)
+            ->setChannelTitle($channelTitle)
+            ->setVideosAmount($amount)
+            ->setIdentifier(Uuid::v4());
+
+        $this->provider->save($playlist);
+
+        return $playlist;
     }
 
 }

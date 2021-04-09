@@ -5,3 +5,5 @@ playlist:
     notFound: The playlist cannot be found.
     url: YouTube playlist URL
     realUrl: https://www.youtube.com/watch?list=xyz
+command:
+    wrong: Wrong command. Please try again.
