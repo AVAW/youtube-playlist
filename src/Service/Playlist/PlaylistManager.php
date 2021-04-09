@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Service\Playlist;
 
 use App\Entity\Playlist;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Symfony\Component\Uid\Uuid;
 
 class PlaylistManager
@@ -17,6 +19,10 @@ class PlaylistManager
         $this->provider = $provider;
     }
 
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
     public function create(
         string $url,
         string $youTubeId,

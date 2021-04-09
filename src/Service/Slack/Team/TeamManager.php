@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Service\Slack\Team;
 
 use App\Entity\Slack\Team;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Symfony\Component\Uid\Uuid;
 
 class TeamManager
@@ -17,6 +19,10 @@ class TeamManager
         $this->provider = $provider;
     }
 
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
     public function create(
         string $teamId,
         string $teamDomain
@@ -31,6 +37,10 @@ class TeamManager
         return $team;
     }
 
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
     public function update(
         Team $team,
         ?string $name,

@@ -8,6 +8,8 @@ use App\Entity\Slack\Conversation;
 use App\Entity\Slack\Command;
 use App\Entity\Slack\Team;
 use App\Entity\Slack\User;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Symfony\Component\Uid\Uuid;
 
 class CommandManager
@@ -20,6 +22,10 @@ class CommandManager
         $this->provider = $commandProvider;
     }
 
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
     public function create(
         Team $team,
         Conversation $conversation,

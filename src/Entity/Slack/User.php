@@ -28,6 +28,11 @@ class User implements \Stringable, TimestampableInterface
     private int $id;
 
     /**
+     * @ORM\Column(type="uuid")
+     */
+    private UuidV4 $identifier;
+
+    /**
      * @ORM\Column(type="string", length=64)
      */
     private string $userId;
@@ -142,11 +147,6 @@ class User implements \Stringable, TimestampableInterface
      */
     private ?bool $isUltraRestricted;
 
-    /**
-     * @ORM\Column(type="uuid")
-     */
-    private UuidV4 $identifier;
-
     public function __construct()
     {
         $this->conversations = new ArrayCollection();
@@ -161,6 +161,18 @@ class User implements \Stringable, TimestampableInterface
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getIdentifier(): UuidV4
+    {
+        return $this->identifier;
+    }
+
+    public function setIdentifier(UuidV4 $identifier): self
+    {
+        $this->identifier = $identifier;
+
+        return $this;
     }
 
     public function getUserId(): ?string
@@ -447,18 +459,6 @@ class User implements \Stringable, TimestampableInterface
     public function setIsUltraRestricted(?bool $isUltraRestricted): self
     {
         $this->isUltraRestricted = $isUltraRestricted;
-
-        return $this;
-    }
-
-    public function getIdentifier()
-    {
-        return $this->identifier;
-    }
-
-    public function setIdentifier($identifier): self
-    {
-        $this->identifier = $identifier;
 
         return $this;
     }

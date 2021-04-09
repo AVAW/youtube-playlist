@@ -6,6 +6,8 @@ namespace App\Service\Slack\UserPresence;
 
 use App\Entity\Slack\User;
 use App\Entity\Slack\UserPresence;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 
 class UserPresenceManager
 {
@@ -17,6 +19,10 @@ class UserPresenceManager
         $this->provider = $provider;
     }
 
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
     public function create(
         User $user,
         ?bool $autoAway,
@@ -40,6 +46,10 @@ class UserPresenceManager
         return $userPresence;
     }
 
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
     public function update(
         UserPresence $userPresence,
         ?bool $autoAway,

@@ -8,6 +8,8 @@ use App\Entity\Slack\Team;
 use App\Event\Slack\NewTeamEvent;
 use App\Service\Slack\Team\TeamManager;
 use App\Service\Slack\Team\TeamProvider;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Psr\Log\LoggerInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
@@ -31,6 +33,10 @@ class TeamGetOrCreateRequestHandler
         $this->teamProvider = $teamProvider;
     }
 
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
     public function handle(TeamGetOrCreateInterface $command): Team
     {
         $team = $this->teamProvider->findOneByTeamId($command->getTeamId());

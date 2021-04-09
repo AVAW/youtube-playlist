@@ -6,6 +6,8 @@ namespace App\Repository;
 
 use App\Entity\Contact;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -51,6 +53,10 @@ class ContactRepository extends ServiceEntityRepository
     }
     */
 
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
     public function save(Contact $contact)
     {
         $this->getEntityManager()->persist($contact);

@@ -6,6 +6,8 @@ namespace App\Service\Slack\Command;
 
 use App\Entity\Slack\Command;
 use App\Repository\Slack\CommandRepository;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 
 class CommandProvider
 {
@@ -18,6 +20,10 @@ class CommandProvider
         $this->repository = $commandRepository;
     }
 
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
     public function save(Command $command)
     {
         $this->repository->save($command);

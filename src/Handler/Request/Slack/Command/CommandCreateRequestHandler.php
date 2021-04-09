@@ -10,6 +10,8 @@ use App\Entity\Slack\Team;
 use App\Entity\Slack\User;
 use App\Event\Slack\NewCommandEvent;
 use App\Service\Slack\Command\CommandManager;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class CommandCreateRequestHandler
@@ -26,6 +28,10 @@ class CommandCreateRequestHandler
         $this->commandManager = $commandManager;
     }
 
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
     public function handle(Team $team, Conversation $conversation, User $user, CommandCreateInterface $command): Command
     {
         $command = $this->commandManager->create(

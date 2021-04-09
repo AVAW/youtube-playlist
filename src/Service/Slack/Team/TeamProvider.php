@@ -6,6 +6,8 @@ namespace App\Service\Slack\Team;
 
 use App\Entity\Slack\Team;
 use App\Repository\Slack\TeamRepository;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 
 class TeamProvider
 {
@@ -33,6 +35,10 @@ class TeamProvider
         return $this->repository->findBy(['teamId' => $teamsIds]);
     }
 
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
     public function save(Team $team)
     {
         $this->repository->save($team);

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Playlist;
-use App\Response\JsonResponseMethods;
 use App\Service\Playlist\PlaylistProvider;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,12 +16,10 @@ use Symfony\Component\Routing\Annotation\Route;
 class PlaylistController extends AbstractController
 {
 
-    use JsonResponseMethods;
-
     /**
      * @Route("/")
      */
-    public function none()
+    public function index()
     {
         $this->redirectToRoute('home');
     }
@@ -30,7 +27,7 @@ class PlaylistController extends AbstractController
     /**
      * @Route("/{identifier}", name="playlist")
      */
-    public function index(
+    public function playlist(
         $identifier,
         PlaylistProvider $playlistProvider
     ): Response {

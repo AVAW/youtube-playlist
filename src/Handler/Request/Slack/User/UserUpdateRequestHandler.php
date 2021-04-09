@@ -7,6 +7,8 @@ namespace App\Handler\Request\Slack\User;
 use App\Entity\Slack\User;
 use App\Service\Slack\Team\TeamProvider;
 use App\Service\Slack\User\UserManager;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 
 class UserUpdateRequestHandler
 {
@@ -22,6 +24,10 @@ class UserUpdateRequestHandler
         $this->teamProvider = $teamProvider;
     }
 
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
     public function handle(User $user, UserUpdateInterface $command)
     {
         $team = $this->teamProvider->findOneByTeamId($command->getTeamId());

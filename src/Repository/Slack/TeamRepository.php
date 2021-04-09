@@ -6,6 +6,8 @@ namespace App\Repository\Slack;
 
 use App\Entity\Slack\Team;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -51,6 +53,10 @@ class TeamRepository extends ServiceEntityRepository
     }
     */
 
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
     public function save(Team $team)
     {
         $this->getEntityManager()->persist($team);

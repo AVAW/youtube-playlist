@@ -18,6 +18,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class PullSlackTeamCommand extends Command
 {
 
+    /** @var string */
     protected static $defaultName = 'app:pull-slack-team';
     protected static $defaultDescription = 'Add a short description for your command';
 

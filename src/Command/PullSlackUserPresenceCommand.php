@@ -19,6 +19,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class PullSlackUserPresenceCommand extends Command
 {
 
+    /** @var string */
     protected static $defaultName = 'app:pull-slack-user-presence';
     protected static string $defaultDescription = 'Pull all users presence from Slack API';
 

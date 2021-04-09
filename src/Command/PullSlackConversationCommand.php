@@ -18,6 +18,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class PullSlackConversationCommand extends Command
 {
 
+    /** @var string */
     protected static $defaultName = 'app:pull-slack-conversation';
     protected static string $defaultDescription = 'Pull conversation info from slack API';
 

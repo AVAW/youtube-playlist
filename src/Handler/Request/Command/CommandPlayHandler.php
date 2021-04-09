@@ -10,7 +10,8 @@ use App\Form\YouTubePlaylistType;
 use App\Handler\Request\Playlist\PlaylistCreateRequestHandler;
 use App\Model\Playlist\PlaylistCreateRequest;
 use App\Service\Playlist\PlaylistProvider;
-use App\Utils\YouTubePlaylistHelper;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use JoliCode\Slack\Api\Client;
 use JoliCode\Slack\Exception\SlackErrorResponse;
 use Psr\Log\LoggerInterface;
@@ -19,6 +20,9 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 class CommandPlayHandler implements CommandInterface
 {
@@ -31,7 +35,6 @@ class CommandPlayHandler implements CommandInterface
     private PlaylistProvider $playlistProvider;
     private RouterInterface $router;
     private TranslatorInterface $translator;
-    private YouTubePlaylistHelper $youTubePlaylistHelper;
 
     public function __construct(
         Client $client,
@@ -41,8 +44,7 @@ class CommandPlayHandler implements CommandInterface
         PlaylistCreateRequestHandler $playlistCreateRequestHandler,
         PlaylistProvider $playlistProvider,
         RouterInterface $router,
-        TranslatorInterface $translator,
-        YouTubePlaylistHelper $youTubePlaylistHelper
+        TranslatorInterface $translator
     ) {
         $this->client = $client;
         $this->twig = $twig;
@@ -52,7 +54,6 @@ class CommandPlayHandler implements CommandInterface
         $this->playlistProvider = $playlistProvider;
         $this->router = $router;
         $this->translator = $translator;
-        $this->youTubePlaylistHelper = $youTubePlaylistHelper;
     }
 
     public function supports(Command $command): bool
@@ -60,19 +61,26 @@ class CommandPlayHandler implements CommandInterface
         return $command->getName() === Command::NAME_PLAY;
     }
 
-    public function handle(Command $slackCommand): string
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
+    public function handle(Command $command): string
     {
-        $command = new PlaylistCreateRequest();
-        $form = $this->formFactory->create(YouTubePlaylistType::class, $command);
+        $createCommand = new PlaylistCreateRequest();
+        $form = $this->formFactory->create(YouTubePlaylistType::class, $createCommand);
         $form->submit([
-            'url' => $slackCommand->getText(),
+            'url' => $command->getText(),
         ]);
 
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var Playlist $playlist */
-            $command = $form->getData();
+            $createCommand = $form->getData();
 
-            $playlist = $this->playlistCreateRequestHandler->handle($command);
+            $playlist = $this->playlistCreateRequestHandler->handle($createCommand);
 
             $message = $this->twig->render('command/play.html.twig', [
                 'playlist' => $playlist,
@@ -82,7 +90,7 @@ class CommandPlayHandler implements CommandInterface
             try {
                 $this->client->chatPostMessage([
                     'username' => 'YouTube playlist BOT',
-                    'channel' => '#' . $slackCommand->getConversation()->getName(),
+                    'channel' => '#' . $command->getConversation()->getName(),
                     'text' => $message,
                 ]);
             } catch (SlackErrorResponse $e) {

@@ -12,6 +12,8 @@ use App\Handler\Request\Slack\Command\CommandCreateRequestHandler;
 use App\Handler\Request\Slack\Team\TeamGetOrCreateRequestHandler;
 use App\Handler\Request\Slack\User\UserGetOrCreateRequestHandler;
 use App\Model\Slack\GetOrCreateRequest;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,6 +29,9 @@ class CommandController extends AbstractFOSRestController
 
     /**
      * @Route("/command", methods={"POST"})
+     *
+     * @throws ORMException
+     * @throws OptimisticLockException
      */
     public function index(
         Request $request,

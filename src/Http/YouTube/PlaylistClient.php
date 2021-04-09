@@ -2,30 +2,42 @@
 
 declare(strict_types=1);
 
-namespace App\Service;
+namespace App\Http\YouTube;
 
 use App\Dto\Playlist\PlaylistDto;
 use App\Dto\Playlist\VideoDto;
 use App\Entity\Playlist;
+use App\Exception\ForbiddenException;
+use App\Exception\NotExistsException;
 use Google_Client;
 use Google_Service_YouTube;
 use Google_Service_YouTube_PlaylistItem;
 use Google_Service_YouTube_PlaylistItemListResponse;
-use GuzzleHttp\Exception\ConnectException;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class YouTubePlaylistManager
+class PlaylistClient
 {
+
+    const API_URL = 'https://www.googleapis.com/youtube/v3/playlists';
 
     protected Google_Client $client;
     protected Google_Service_YouTube $service;
+    protected LoggerInterface $logger;
     protected TranslatorInterface $translator;
+    protected HttpClientInterface $httpClient;
 
     public function __construct(
+        HttpClientInterface $httpClient,
+        LoggerInterface $logger,
         TranslatorInterface $translator,
         Google_Client $client
     ) {
         $this->client = $client;
+        $this->httpClient = $httpClient;
+        $this->logger = $logger;
         $this->service = new Google_Service_YouTube($client);
         $this->translator = $translator;
     }
@@ -42,17 +54,11 @@ class YouTubePlaylistManager
             'playlistId' => $playlist->getYoutubeId(),
         ];
 
-        $results = null;
         try {
             $results = $this->service->playlistItems->listPlaylistItems($part, $queryParams);
-        } catch (\Google_Service_Exception $e) {
-            // todo
-            dd($e);
-            if ($e->getCode() === 404) {
-                dd($this->translator->trans('playlist.notFound'));
-            }
-        } catch (ConnectException $e) {
-            dd('ConnectException');
+        } catch (\Throwable $e) {
+            $this->logger->error($e->getMessage());
+            return [];
         }
 
         $videos = $this->getPageVideos($results);
@@ -107,7 +113,12 @@ class YouTubePlaylistManager
      */
     public function getPlaylistDetails(string $youTubeId): ?PlaylistDto
     {
-        $apiUrl = 'https://www.googleapis.com/youtube/v3/playlists';
+        $res = new PlaylistDto();
+
+        if (empty($youTubeId)) {
+            return $res;
+        }
+
         $queryParameters = [
             'part' => implode(',', ['snippet']),
             'id' => $youTubeId,
@@ -116,40 +127,91 @@ class YouTubePlaylistManager
         ];
 
         $query = http_build_query($queryParameters);
-        $url = $apiUrl . '?' . $query;
+        $url = static::API_URL . '?' . $query;
 
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        $output = curl_exec($ch);
-        curl_close($ch);
+        try {
+            $output = $this->httpClient->request('GET', $url)->getContent();
+        } catch (\Throwable $e) {
+            $this->logger->error($e->getMessage());
+            return $res;
+        }
 
         $result = (array) json_decode($output);
         if (empty($result['items'])) {
-            return null;
+            return $res;
         }
 
         $item = array_pop($result['items']);
         if (!property_exists($item, 'snippet')) {
-            return null;
+            return $res;
         }
 
         $snippet = $item->snippet;
 
-        if (!property_exists($snippet, 'title')
-            || !property_exists($snippet, 'description')
-            || !property_exists($snippet, 'publishedAt')
-            || !property_exists($snippet, 'channelTitle')
-        ) {
+        if (property_exists($snippet, 'title')) {
+            $res->setTitle($snippet->title);
+        }
+        if (property_exists($snippet, 'description')) {
+            $res->setDescription($snippet->description);
+        }
+        if (property_exists($snippet, 'publishedAt')) {
+            $res->setPublishedAt(\DateTime::createFromFormat(DATE_ISO8601, $snippet->publishedAt));
+        }
+        if (property_exists($snippet, 'channelTitle')) {
+            $res->setChannelTitle($snippet->channelTitle);
+        }
+
+        return $res;
+    }
+
+    /**
+     * @throws ForbiddenException
+     * @throws NotExistsException
+     */
+    public function isValidUrl(string $url): bool
+    {
+        $playlistId = $this->getPlaylistIdFromUrl($url);
+        if (empty($playlistId)) {
+            return false;
+        }
+
+        $part = [
+            'contentDetails',
+        ];
+        $queryParams = [
+            'maxResults' => 1,
+            'playlistId' => $playlistId,
+        ];
+
+        try {
+            $this->service->playlistItems->listPlaylistItems($part, $queryParams);
+        } catch (\Google\Service\Exception $e) {
+            if ($e->getCode() === Response::HTTP_FORBIDDEN) {
+                throw new ForbiddenException($this->translator->trans('playlist.error.forbidden'));
+            } elseif ($e->getCode() === Response::HTTP_NOT_FOUND) {
+                throw new NotExistsException($this->translator->trans('playlist.notFound'));
+            }
+        } catch (\Throwable $e) {
+            $this->logger->error($e->getMessage());
+        }
+
+        return true;
+    }
+
+    public function getPlaylistIdFromUrl(string $url): ?string
+    {
+        $parsedUrl = parse_url($url);
+        if (empty($parsedUrl['query'])) {
             return null;
         }
 
-        return new PlaylistDto(
-            $snippet->title,
-            $snippet->description,
-            \DateTime::createFromFormat(DATE_ISO8601, $snippet->publishedAt),
-            $snippet->channelTitle
-        );
+        $query = null;
+        parse_str($parsedUrl['query'], $query);
+        if (empty($query['list'])) {
+            return null;
+        }
+
+        return $query['list'];
     }
 
 }

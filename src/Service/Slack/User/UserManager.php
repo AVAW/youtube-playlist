@@ -7,6 +7,8 @@ namespace App\Service\Slack\User;
 use App\Entity\Slack\Conversation;
 use App\Entity\Slack\Team;
 use App\Entity\Slack\User;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Symfony\Component\Uid\Uuid;
 
 class UserManager
@@ -19,6 +21,10 @@ class UserManager
         $this->provider = $provider;
     }
 
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
     public function create(
         string $userId,
         string $name = null,
@@ -54,6 +60,10 @@ class UserManager
         return $user;
     }
 
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
     public function update(
         User $user,
         ?Team $team,

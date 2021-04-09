@@ -6,6 +6,8 @@ namespace App\Service\Playlist;
 
 use App\Entity\Playlist;
 use App\Repository\PlaylistRepository;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 
 class PlaylistProvider
 {
@@ -21,11 +23,15 @@ class PlaylistProvider
     {
         try {
             return $this->repository->findOneBy(['identifier' => $identifier]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return null;
         }
     }
 
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
     public function save(Playlist $playlist)
     {
         $this->repository->save($playlist);

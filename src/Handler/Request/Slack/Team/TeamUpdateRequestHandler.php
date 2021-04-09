@@ -6,6 +6,8 @@ namespace App\Handler\Request\Slack\Team;
 
 use App\Entity\Slack\Team;
 use App\Service\Slack\Team\TeamManager;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 
 class TeamUpdateRequestHandler
 {
@@ -18,6 +20,10 @@ class TeamUpdateRequestHandler
         $this->teamManager = $teamManager;
     }
 
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
     public function handle(Team $team, TeamUpdateInterface $command)
     {
         $this->teamManager->update(

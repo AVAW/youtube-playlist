@@ -9,6 +9,8 @@ use App\Entity\Slack\User;
 use App\Event\Slack\NewUserEvent;
 use App\Service\Slack\User\UserManager;
 use App\Service\Slack\User\UserProvider;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class UserCollectionGetOrCreateRequestHandler
@@ -28,7 +30,11 @@ class UserCollectionGetOrCreateRequestHandler
         $this->userProvider = $userProvider;
     }
 
-    /** @return User[] */
+    /**
+     * @return User[]
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
     public function handle(Conversation $conversation, UserCollectionGetOrCreateInterface $command): array
     {
         $users = [];

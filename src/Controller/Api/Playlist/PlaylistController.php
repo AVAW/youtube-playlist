@@ -7,8 +7,8 @@ namespace App\Controller\Api\Playlist;
 use App\Entity\Playlist;
 use App\Form\PlaylistType;
 use App\Handler\Request\Playlist\PlaylistFindHandler;
+use App\Http\YouTube\PlaylistClient;
 use App\Model\Playlist\PlaylistFindRequest;
-use App\Service\YouTubePlaylistManager;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as FOSRest;
 use FOS\RestBundle\View\View;
@@ -29,7 +29,7 @@ class PlaylistController extends AbstractFOSRestController
     public function videos(
         Request $request,
         PlaylistFindHandler $playlistHandler,
-        YouTubePlaylistManager $youTubePlaylistManager
+        PlaylistClient $youTubePlaylistClient
     ): Response {
         $command = new PlaylistFindRequest();
         $form = $this->createForm(PlaylistType::class, $command);
@@ -44,7 +44,7 @@ class PlaylistController extends AbstractFOSRestController
                 throw new \InvalidArgumentException('Can not find playlist');
             }
 
-            $videos = $youTubePlaylistManager->getPlaylistVideos($playlist);
+            $videos = $youTubePlaylistClient->getPlaylistVideos($playlist);
 
             return $this->handleView(View::create([
                 'playlist' => $playlist,

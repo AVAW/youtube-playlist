@@ -6,6 +6,8 @@ namespace App\Service\Slack\User;
 
 use App\Entity\Slack\User;
 use App\Repository\Slack\UserRepository;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 
 class UserProvider
 {
@@ -28,6 +30,10 @@ class UserProvider
         return $this->repository->findOneBy(['userId' => $userId]);
     }
 
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
     public function save(User $user)
     {
         $this->repository->save($user);

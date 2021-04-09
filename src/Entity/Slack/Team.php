@@ -28,6 +28,11 @@ class Team implements \Stringable, TimestampableInterface
     private int $id;
 
     /**
+     * @ORM\Column(type="uuid")
+     */
+    private UuidV4 $identifier;
+
+    /**
      * @ORM\Column(type="string", length=64)
      */
     private string $teamId;
@@ -62,11 +67,6 @@ class Team implements \Stringable, TimestampableInterface
      */
     private Collection $conversations;
 
-    /**
-     * @ORM\Column(type="uuid")
-     */
-    private UuidV4 $identifier;
-
     public function __construct()
     {
         $this->users = new ArrayCollection();
@@ -81,6 +81,18 @@ class Team implements \Stringable, TimestampableInterface
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getIdentifier(): UuidV4
+    {
+        return $this->identifier;
+    }
+
+    public function setIdentifier(UuidV4 $identifier): self
+    {
+        $this->identifier = $identifier;
+
+        return $this;
     }
 
     public function getTeamId(): ?string
@@ -196,18 +208,6 @@ class Team implements \Stringable, TimestampableInterface
         if ($this->conversations->removeElement($channel)) {
             $channel->removeTeam($this);
         }
-
-        return $this;
-    }
-
-    public function getIdentifier()
-    {
-        return $this->identifier;
-    }
-
-    public function setIdentifier($identifier): self
-    {
-        $this->identifier = $identifier;
 
         return $this;
     }

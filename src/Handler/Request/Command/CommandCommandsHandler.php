@@ -6,6 +6,9 @@ namespace App\Handler\Request\Command;
 
 use App\Entity\Slack\Command;
 use Twig\Environment;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 class CommandCommandsHandler implements CommandInterface
 {
@@ -23,9 +26,14 @@ class CommandCommandsHandler implements CommandInterface
         return $command->getName() === Command::NAME_COMMANDS;
     }
 
+    /**
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
     public function handle(Command $command): string
     {
-        return $this->twig->render('slack_command/commands.html.twig');
+        return $this->twig->render('command/commands.html.twig');
     }
 
 }

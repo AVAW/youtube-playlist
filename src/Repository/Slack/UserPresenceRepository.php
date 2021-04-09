@@ -4,6 +4,8 @@ namespace App\Repository\Slack;
 
 use App\Entity\Slack\UserPresence;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -48,6 +50,10 @@ class UserPresenceRepository extends ServiceEntityRepository
     }
     */
 
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
     public function save(UserPresence $userPresence)
     {
         $this->getEntityManager()->persist($userPresence);

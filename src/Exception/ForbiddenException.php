@@ -6,10 +6,10 @@ namespace App\Exception;
 
 use Symfony\Component\HttpFoundation\Response;
 
-class NotExistsException extends \Exception
+class ForbiddenException extends \Exception
 {
 
     /** @var int */
-    protected $code = Response::HTTP_NOT_FOUND;
+    protected $code = Response::HTTP_FORBIDDEN;
 
 }

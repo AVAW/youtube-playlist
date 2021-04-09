@@ -6,6 +6,8 @@ namespace App\Repository\Slack;
 
 use App\Entity\Slack\Command;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -50,6 +52,10 @@ class CommandRepository extends ServiceEntityRepository
     }
     */
 
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
     public function save(Command $command)
     {
         $this->getEntityManager()->persist($command);

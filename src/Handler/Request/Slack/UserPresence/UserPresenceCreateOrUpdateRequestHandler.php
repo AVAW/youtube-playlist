@@ -8,6 +8,8 @@ use App\Entity\Slack\User;
 use App\Entity\Slack\UserPresence;
 use App\Service\Slack\UserPresence\UserPresenceManager;
 use App\Service\Slack\UserPresence\UserPresenceProvider;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 
 class UserPresenceCreateOrUpdateRequestHandler
 {
@@ -23,6 +25,10 @@ class UserPresenceCreateOrUpdateRequestHandler
         $this->userPresenceProvider = $userPresenceProvider;
     }
 
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
     public function handle(User $user, UserPresenceCreateOrUpdateInterface $command): UserPresence
     {
         $userPresence = $user->getPresence();

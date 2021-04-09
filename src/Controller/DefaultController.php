@@ -8,8 +8,12 @@ use App\Entity\Contact;
 use App\Form\ContactType;
 use App\Form\YouTubePlaylistType;
 use App\Handler\Request\Playlist\PlaylistCreateRequestHandler;
+use App\Http\YouTube\PlaylistClient;
 use App\Model\Playlist\PlaylistCreateRequest;
 use App\Repository\ContactRepository;
+use DateTime;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,14 +26,19 @@ class DefaultController extends AbstractController
     /**
      * @Route("/", name="home")
      *
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws ORMException
+     * @throws OptimisticLockException
      */
     public function index(
         Request $request,
-        PlaylistCreateRequestHandler $playlistCreateRequestHandler
+        PlaylistCreateRequestHandler $playlistCreateRequestHandler,
+        PlaylistClient $playlistClient
     ): Response {
         // PLAYGROUND
+
+
+
+
 
 
 
@@ -64,6 +73,8 @@ class DefaultController extends AbstractController
 
     /**
      * @Route("/contact", name="contact")
+     * @throws ORMException
+     * @throws OptimisticLockException
      */
     public function contact(
         Request $request,
@@ -77,7 +88,7 @@ class DefaultController extends AbstractController
             $contact = $form->getData();
 
             $contact
-                ->setCreatedAt(new \DateTime())
+                ->setCreatedAt(new DateTime())
                 ->setClientIp($request->getClientIp())
                 ->setIdentifier(Uuid::v4());
 

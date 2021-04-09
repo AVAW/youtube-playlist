@@ -5,32 +5,34 @@ declare(strict_types=1);
 namespace App\Handler\Request\Playlist;
 
 use App\Entity\Playlist;
+use App\Http\YouTube\PlaylistClient;
 use App\Service\Playlist\PlaylistManager;
-use App\Service\YouTubePlaylistManager;
-use App\Utils\YouTubePlaylistHelper;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 
 class PlaylistCreateRequestHandler
 {
 
     private PlaylistManager $playlistManager;
-    private YouTubePlaylistHelper $youTubePlaylistHelper;
-    private YouTubePlaylistManager $youTubePlaylistManager;
+    private PlaylistClient $youTubePlaylistClient;
 
     public function __construct(
         PlaylistManager $playlistManager,
-        YouTubePlaylistHelper $youTubePlaylistHelper,
-        YouTubePlaylistManager $youTubePlaylistManager
+        PlaylistClient $youTubePlaylistClient
     ) {
         $this->playlistManager = $playlistManager;
-        $this->youTubePlaylistHelper = $youTubePlaylistHelper;
-        $this->youTubePlaylistManager = $youTubePlaylistManager;
+        $this->youTubePlaylistClient = $youTubePlaylistClient;
     }
 
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
     public function handle(PlaylistCreateInterface $command): Playlist
     {
-        $youTubeId = $this->youTubePlaylistHelper->getPlaylistIdFromUrl($command->getUrl());
-        $playlistDto = $this->youTubePlaylistManager->getPlaylistDetails($youTubeId);
-        $amount = $this->youTubePlaylistManager->getVideosAmountInPlaylist($youTubeId);
+        $youTubeId = $this->youTubePlaylistClient->getPlaylistIdFromUrl($command->getUrl());
+        $playlistDto = $this->youTubePlaylistClient->getPlaylistDetails($youTubeId);
+        $amount = $this->youTubePlaylistClient->getVideosAmountInPlaylist($youTubeId);
 
         return $this->playlistManager->create(
             $command->getUrl(),

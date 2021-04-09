@@ -26,6 +26,11 @@ class Contact implements \Stringable, TimestampableInterface
     private int $id;
 
     /**
+     * @ORM\Column(type="uuid")
+     */
+    private UuidV4 $identifier;
+
+    /**
      * @ORM\Column(type="string", length=255)
      */
     private string $email;
@@ -45,11 +50,6 @@ class Contact implements \Stringable, TimestampableInterface
      */
     private string $name;
 
-    /**
-     * @ORM\Column(type="uuid")
-     */
-    private UuidV4 $identifier;
-
     public function __toString(): string
     {
         return __CLASS__ . '_' . $this->getId();
@@ -58,6 +58,18 @@ class Contact implements \Stringable, TimestampableInterface
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getIdentifier(): UuidV4
+    {
+        return $this->identifier;
+    }
+
+    public function setIdentifier(UuidV4 $identifier): self
+    {
+        $this->identifier = $identifier;
+
+        return $this;
     }
 
     public function getEmail(): ?string
@@ -77,7 +89,7 @@ class Contact implements \Stringable, TimestampableInterface
         return $this->message;
     }
 
-    public function setMessage(?string $message): self
+    public function setMessage(string $message): self
     {
         $this->message = $message;
 
@@ -104,18 +116,6 @@ class Contact implements \Stringable, TimestampableInterface
     public function setName(string $name): self
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function getIdentifier()
-    {
-        return $this->identifier;
-    }
-
-    public function setIdentifier($identifier): self
-    {
-        $this->identifier = $identifier;
 
         return $this;
     }

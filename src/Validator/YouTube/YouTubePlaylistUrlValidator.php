@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Validator\YouTube;
 
-use App\Utils\YouTubePlaylistHelper;
+use App\Http\YouTube\PlaylistClient;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
@@ -12,11 +12,12 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 class YouTubePlaylistUrlValidator extends ConstraintValidator
 {
 
-    protected YouTubePlaylistHelper $validator;
+    protected PlaylistClient $validator;
 
-    public function __construct(YouTubePlaylistHelper $youTubePlaylist)
-    {
-        $this->validator = $youTubePlaylist;
+    public function __construct(
+        PlaylistClient $playlistClient
+    ) {
+        $this->validator = $playlistClient;
     }
 
     public function validate($value, Constraint $constraint)
@@ -25,7 +26,13 @@ class YouTubePlaylistUrlValidator extends ConstraintValidator
             throw new UnexpectedTypeException($constraint, __NAMESPACE__ . '\NotBlank');
         }
 
-        if (!$this->validator->isValidUrl($value)) {
+        if (null === $value || '' === $value) {
+            return;
+        }
+
+        try {
+            $this->validator->isValidUrl($value);
+        } catch (\Throwable $e) {
             $this->context->buildViolation($constraint->message)
                 ->addViolation();
         }

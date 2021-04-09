@@ -6,6 +6,8 @@ namespace App\Repository\Slack;
 
 use App\Entity\Slack\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -51,6 +53,10 @@ class UserRepository extends ServiceEntityRepository
     }
     */
 
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
     public function save(User $user)
     {
         $this->getEntityManager()->persist($user);

@@ -6,6 +6,8 @@ namespace App\Service\Slack\Conversation;
 
 use App\Entity\Slack\Conversation;
 use App\Entity\Slack\Team;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Symfony\Component\Uid\Uuid;
 
 class ConversationManager
@@ -18,6 +20,10 @@ class ConversationManager
         $this->provider = $provider;
     }
 
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
     public function create(
         string $channelId,
         string $channelName
@@ -32,6 +38,10 @@ class ConversationManager
         return $channel;
     }
 
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
     public function update(
         Conversation $channel,
         string $name,

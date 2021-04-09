@@ -28,6 +28,11 @@ class Conversation implements \Stringable, TimestampableInterface
     private int $id;
 
     /**
+     * @ORM\Column(type="uuid")
+     */
+    private UuidV4 $identifier;
+
+    /**
      * @ORM\Column(type="string", length=64)
      */
     private string $conversationId;
@@ -137,11 +142,6 @@ class Conversation implements \Stringable, TimestampableInterface
      */
     private ?string $topic;
 
-    /**
-     * @ORM\Column(type="uuid")
-     */
-    private UuidV4 $identifier;
-
     public function __construct()
     {
         $this->users = new ArrayCollection();
@@ -156,6 +156,18 @@ class Conversation implements \Stringable, TimestampableInterface
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getIdentifier(): UuidV4
+    {
+        return $this->identifier;
+    }
+
+    public function setIdentifier(UuidV4 $identifier): self
+    {
+        $this->identifier = $identifier;
+
+        return $this;
     }
 
     public function getConversationId(): ?string
@@ -445,18 +457,6 @@ class Conversation implements \Stringable, TimestampableInterface
     public function setTopic(string $topic): self
     {
         $this->topic = $topic;
-
-        return $this;
-    }
-
-    public function getIdentifier()
-    {
-        return $this->identifier;
-    }
-
-    public function setIdentifier($identifier): self
-    {
-        $this->identifier = $identifier;
 
         return $this;
     }
