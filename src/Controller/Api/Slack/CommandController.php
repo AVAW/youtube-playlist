@@ -15,7 +15,6 @@ use App\Model\Slack\GetOrCreateRequest;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
-use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -41,7 +40,7 @@ class CommandController extends AbstractFOSRestController
         CommandCreateRequestHandler $commandRequestHandler,
         CommandHandlerCollection $commandHandlers,
         TranslatorInterface $translator
-    ): object {
+    ): Response {
         // todo: add https://api.slack.com/authentication/verifying-requests-from-slack#about
         // hash('sha256', $request->request->all() . $request->headers->get('x-slack-signature'));
 
@@ -79,7 +78,6 @@ class CommandController extends AbstractFOSRestController
         }
 
         return new Response($translator->trans('command.wrong'));
-        return $this->handleView(View::create(['form' => $form], Response::HTTP_UNPROCESSABLE_ENTITY));
     }
 
 }

@@ -70,17 +70,17 @@ class CommandPlayHandler implements CommandInterface
      */
     public function handle(Command $command): string
     {
-        $createCommand = new PlaylistCreateRequest();
-        $form = $this->formFactory->create(YouTubePlaylistType::class, $createCommand);
+        $createPlaylistCommand = new PlaylistCreateRequest();
+        $form = $this->formFactory->create(YouTubePlaylistType::class, $createPlaylistCommand);
         $form->submit([
             'url' => $command->getText(),
         ]);
 
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var Playlist $playlist */
-            $createCommand = $form->getData();
+            $createPlaylistCommand = $form->getData();
 
-            $playlist = $this->playlistCreateRequestHandler->handle($createCommand);
+            $playlist = $this->playlistCreateRequestHandler->handle($createPlaylistCommand);
 
             $message = $this->twig->render('command/play.html.twig', [
                 'playlist' => $playlist,

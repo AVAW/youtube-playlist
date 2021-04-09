@@ -30,7 +30,7 @@ class PlaylistController extends AbstractFOSRestController
         Request $request,
         PlaylistFindHandler $playlistHandler,
         PlaylistClient $youTubePlaylistClient
-    ): Response {
+    ): View {
         $command = new PlaylistFindRequest();
         $form = $this->createForm(PlaylistType::class, $command);
         $form->submit($request->toArray());
@@ -46,13 +46,13 @@ class PlaylistController extends AbstractFOSRestController
 
             $videos = $youTubePlaylistClient->getPlaylistVideos($playlist);
 
-            return $this->handleView(View::create([
+            return $this->view([
                 'playlist' => $playlist,
                 'videos' => $videos,
-            ]));
+            ]);
         }
 
-        return $this->handleView(View::create(['form' => $form]));
+        return $this->view(['form' => $form]);
     }
 
 }

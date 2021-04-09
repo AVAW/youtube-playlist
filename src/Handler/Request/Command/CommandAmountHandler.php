@@ -25,7 +25,7 @@ class CommandAmountHandler implements CommandInterface
 
     public function handle(Command $command): string
     {
-        return $this->twig->render('slack_command/commands.html.twig');
+        return $this->twig->render('command/commands.html.twig');
     }
 
 }
