@@ -22,7 +22,7 @@ class PlaylistController extends AbstractFOSRestController
 
     /**
      * @Route("/", methods={"POST"})
-     * @FOSRest\View(serializerGroups={"simple"})
+     * @FOSRest\View(serializerGroups={"playlist"})
      */
     public function index(
         Request $request,

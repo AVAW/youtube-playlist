@@ -8,6 +8,7 @@ use App\Repository\Slack\UserPresenceRepository;
 use App\Utils\Timestampable\Timestampable;
 use App\Utils\Timestampable\TimestampableInterface;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=UserPresenceRepository::class)
@@ -132,6 +133,9 @@ class UserPresence implements \Stringable, TimestampableInterface
         return $this;
     }
 
+    /**
+     * @Groups({"user"})
+     */
     public function isActive(): bool
     {
         return $this->presence === static::PRESENCE_ACTIVE;

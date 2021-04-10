@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Service\Playlist;
 
 use App\Entity\Playlist\Playlist;
+use App\Entity\Slack\Command;
+use App\Entity\Slack\Conversation;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Symfony\Component\Uid\Uuid;
@@ -30,7 +32,8 @@ class PlaylistManager
         ?string $description,
         ?\DateTimeInterface $publishedAt,
         ?string $channelTitle,
-        ?int $amount
+        ?int $amount,
+        ?Command $command = null
     ): Playlist {
         $playlist = (new Playlist())
             ->setUrl($url)
@@ -40,7 +43,8 @@ class PlaylistManager
             ->setPublishedAt($publishedAt)
             ->setChannelTitle($channelTitle)
             ->setVideosAmount($amount)
-            ->setIdentifier(Uuid::v4());
+            ->setIdentifier(Uuid::v4())
+            ->setCommand($command);
 
         $this->provider->save($playlist);
 

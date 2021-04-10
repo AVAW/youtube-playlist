@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Handler\Request\Playlist;
 
 use App\Entity\Playlist\Playlist;
+use App\Entity\Slack\Command;
 use App\Http\YouTube\PlaylistClient;
 use App\Service\Playlist\PlaylistManager;
 use Doctrine\ORM\OptimisticLockException;
@@ -28,20 +29,21 @@ class PlaylistCreateRequestHandler
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function handle(PlaylistCreateInterface $command): Playlist
+    public function handle(PlaylistCreateInterface $createCommand, Command $command = null): Playlist
     {
-        $youTubeId = $this->youTubePlaylistClient->getPlaylistIdFromUrl($command->getUrl());
+        $youTubeId = $this->youTubePlaylistClient->getPlaylistIdFromUrl($createCommand->getUrl());
         $playlistDto = $this->youTubePlaylistClient->getPlaylistDetails($youTubeId);
         $amount = $this->youTubePlaylistClient->getVideosAmountInPlaylist($youTubeId);
 
         return $this->playlistManager->create(
-            $command->getUrl(),
+            $createCommand->getUrl(),
             $youTubeId,
             $playlistDto->title,
             $playlistDto->description,
             $playlistDto->publishedAt,
             $playlistDto->channelTitle,
             $amount,
+            $command
         );
     }
 

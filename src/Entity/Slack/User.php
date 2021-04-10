@@ -11,6 +11,7 @@ use App\Utils\Timestampable\TimestampableInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\UuidV4;
 
 /**
@@ -30,6 +31,7 @@ class User implements \Stringable, TimestampableInterface
 
     /**
      * @ORM\Column(type="uuid")
+     * @Groups({"playlist", "user"})
      */
     private UuidV4 $identifier;
 
@@ -40,11 +42,13 @@ class User implements \Stringable, TimestampableInterface
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"playlist", "user"})
      */
     private ?string $name;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"playlist", "user"})
      */
     private ?string $realName;
 
@@ -55,11 +59,13 @@ class User implements \Stringable, TimestampableInterface
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"playlist", "user"})
      */
     private ?string $displayedName;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"playlist", "user"})
      */
     private ?string $title;
 
@@ -90,11 +96,13 @@ class User implements \Stringable, TimestampableInterface
 
     /**
      * @ORM\OneToOne(targetEntity=UserPresence::class, inversedBy="user", cascade={"persist", "remove"})
+     * @Groups({"user"})
      */
     private ?UserPresence $presence;
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
+     * @Groups({"user"})
      */
     private ?bool $isAdmin;
 
@@ -105,6 +113,7 @@ class User implements \Stringable, TimestampableInterface
 
     /**
      * @ORM\Column(type="boolean", nullable=true)
+     * @Groups({"user"})
      */
     private ?bool $isBot;
 

@@ -27,7 +27,7 @@ class PlaylistVideo
 
     /**
      * @ORM\Column(type="uuid")
-     * @Groups({"simple"})
+     * @Groups({"playlist"})
      */
     private UuidV4 $identifier;
 
@@ -39,25 +39,25 @@ class PlaylistVideo
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"simple"})
+     * @Groups({"playlist"})
      */
     private string $videoId;
 
     /**
      * @ORM\Column(type="string", length=512)
-     * @Groups({"simple"})
+     * @Groups({"playlist"})
      */
     private string $title;
 
     /**
      * @ORM\Column(type="datetime")
-     * @Groups({"simple"})
+     * @Groups({"playlist"})
      */
     private \DateTimeInterface $publishedAt;
 
     /**
      * @ORM\ManyToMany(targetEntity=User::class, inversedBy="videos")
-     * @Groups({"simple"})
+     * @Groups({"playlist"})
      */
     private Collection $authors;
 

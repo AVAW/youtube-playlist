@@ -1,7 +1,5 @@
-{% set break = 0 %}
 {% for error in form.url.vars['errors'] %}
-    {% if break == 0 %}
-{{ error.message }}
+    {% if loop.index0 == 0 %}
+        {{ error.message }}
     {% endif %}
-    {% set break = 1 %}
 {% endfor %}

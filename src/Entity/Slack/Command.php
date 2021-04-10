@@ -8,6 +8,7 @@ use App\Repository\Slack\CommandRepository;
 use App\Utils\Timestampable\Timestampable;
 use App\Utils\Timestampable\TimestampableInterface;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\UuidV4;
 
 /**
@@ -53,11 +54,13 @@ class Command implements \Stringable, TimestampableInterface
 
     /**
      * @ORM\Column(type="uuid")
+     * @Groups({"playlist"})
      */
     private UuidV4 $identifier;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"playlist"})
      */
     private string $name;
 
@@ -69,18 +72,21 @@ class Command implements \Stringable, TimestampableInterface
     /**
      * @ORM\ManyToOne(targetEntity=Team::class)
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"playlist"})
      */
     private Team $team;
 
     /**
      * @ORM\ManyToOne(targetEntity=Conversation::class)
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"playlist"})
      */
     private Conversation $conversation;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class)
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"playlist"})
      */
     private User $user;
 

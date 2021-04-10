@@ -89,9 +89,9 @@ class CommandPlayHandler implements CommandInterface
             /** @var Playlist $playlist */
             $createPlaylistCommand = $form->getData();
 
-            $playlist = $this->playlistCreateRequestHandler->handle($createPlaylistCommand);
+            $playlist = $this->playlistCreateRequestHandler->handle($createPlaylistCommand, $command);
 
-            // todo: message to queue
+            // todo: message the queue
             $videos = $this->playlistClient->getPlaylistVideos($playlist->getYoutubeId());
             $createVideosRequest = VideosCreateRequest::create($videos);
             $this->videosCreateRequestHandler->handle($playlist, $createVideosRequest);
