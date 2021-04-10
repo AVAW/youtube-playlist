@@ -9,9 +9,11 @@ use App\Entity\Slack\Command;
 use App\Form\YouTubePlaylistType;
 use App\Handler\Request\Playlist\PlaylistCreateRequestHandler;
 use App\Handler\Request\Playlist\Video\VideosCreateRequestHandler;
+use App\Handler\Request\Slack\ConversationPlaylist\ConversationPlaylistCreateRequestHandler;
 use App\Http\YouTube\PlaylistClient;
 use App\Model\Playlist\PlaylistCreateRequest;
 use App\Model\Playlist\Video\VideosCreateRequest;
+use App\Model\Slack\ConversationPlaylist\ConversationPlaylistCreateRequest;
 use App\Service\Playlist\PlaylistProvider;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
@@ -31,6 +33,7 @@ class CommandPlayHandler implements CommandInterface
 {
 
     private Client $client;
+    private ConversationPlaylistCreateRequestHandler $conversationPlaylistCreateRequestHandler;
     private Environment $twig;
     private FormFactoryInterface $formFactory;
     private LoggerInterface $logger;
@@ -43,6 +46,7 @@ class CommandPlayHandler implements CommandInterface
 
     public function __construct(
         Client $client,
+        ConversationPlaylistCreateRequestHandler $conversationPlaylistCreateRequestHandler,
         Environment $twig,
         FormFactoryInterface $formFactory,
         LoggerInterface $logger,
@@ -54,6 +58,7 @@ class CommandPlayHandler implements CommandInterface
         VideosCreateRequestHandler $videosCreateRequestHandler
     ) {
         $this->client = $client;
+        $this->conversationPlaylistCreateRequestHandler = $conversationPlaylistCreateRequestHandler;
         $this->twig = $twig;
         $this->formFactory = $formFactory;
         $this->logger = $logger;
@@ -90,6 +95,10 @@ class CommandPlayHandler implements CommandInterface
             $createPlaylistCommand = $form->getData();
 
             $playlist = $this->playlistCreateRequestHandler->handle($createPlaylistCommand, $command);
+
+            // Bind conversation and playlist
+            $conversationPlaylistRequest = ConversationPlaylistCreateRequest::create($playlist, $command->getConversation());
+            $this->conversationPlaylistCreateRequestHandler->handle($conversationPlaylistRequest);
 
             // todo: message the queue
             $videos = $this->playlistClient->getPlaylistVideos($playlist->getYoutubeId());

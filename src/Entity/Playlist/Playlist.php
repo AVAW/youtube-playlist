@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Entity\Playlist;
 
 use App\Entity\Slack\Command;
+use App\Entity\Slack\ConversationPlaylist;
 use App\Repository\Playlist\PlaylistRepository;
 use App\Utils\Timestampable\Timestampable;
 use App\Utils\Timestampable\TimestampableInterface;
@@ -16,6 +17,7 @@ use Symfony\Component\Uid\UuidV4;
 
 /**
  * @ORM\Entity(repositoryClass=PlaylistRepository::class)
+ * @ORM\Table(indexes={@ORM\Index(name="identifier_index", columns={"identifier"})})
  */
 class Playlist implements \Stringable, TimestampableInterface
 {
@@ -88,9 +90,15 @@ class Playlist implements \Stringable, TimestampableInterface
      */
     private ?Command $command;
 
+    /**
+     * @ORM\OneToMany(targetEntity=ConversationPlaylist::class, mappedBy="playlist")
+     */
+    private Collection $conversationPlaylists;
+
     public function __construct()
     {
         $this->playlistVideos = new ArrayCollection();
+        $this->conversationPlaylists = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -237,6 +245,36 @@ class Playlist implements \Stringable, TimestampableInterface
     public function setCommand(?Command $command): self
     {
         $this->command = $command;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ConversationPlaylist[]
+     */
+    public function getConversationPlaylists(): Collection
+    {
+        return $this->conversationPlaylists;
+    }
+
+    public function addConversationPlaylist(ConversationPlaylist $conversationPlaylist): self
+    {
+        if (!$this->conversationPlaylists->contains($conversationPlaylist)) {
+            $this->conversationPlaylists[] = $conversationPlaylist;
+            $conversationPlaylist->setPlaylist($this);
+        }
+
+        return $this;
+    }
+
+    public function removeConversationPlaylist(ConversationPlaylist $conversationPlaylist): self
+    {
+        if ($this->conversationPlaylists->removeElement($conversationPlaylist)) {
+            // set the owning side to null (unless already changed)
+            if ($conversationPlaylist->getPlaylist() === $this) {
+                $conversationPlaylist->setPlaylist(null);
+            }
+        }
 
         return $this;
     }

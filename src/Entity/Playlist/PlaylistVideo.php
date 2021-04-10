@@ -6,6 +6,8 @@ namespace App\Entity\Playlist;
 
 use App\Entity\Slack\User;
 use App\Repository\Playlist\PlaylistVideoRepository;
+use App\Utils\Timestampable\Timestampable;
+use App\Utils\Timestampable\TimestampableInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -15,8 +17,10 @@ use Symfony\Component\Uid\UuidV4;
 /**
  * @ORM\Entity(repositoryClass=PlaylistVideoRepository::class)
  */
-class PlaylistVideo
+class PlaylistVideo implements \Stringable, TimestampableInterface
 {
+
+    use Timestampable;
 
     /**
      * @ORM\Id
@@ -64,6 +68,11 @@ class PlaylistVideo
     public function __construct()
     {
         $this->authors = new ArrayCollection();
+    }
+
+    public function __toString(): string
+    {
+        return __CLASS__ . ' ' . $this->getId();
     }
 
     public function getId(): ?int

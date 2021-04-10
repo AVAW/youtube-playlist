@@ -145,10 +145,17 @@ class Conversation implements \Stringable, TimestampableInterface
      */
     private ?string $topic;
 
+    /**
+     * @ORM\OneToMany(targetEntity=ConversationPlaylist::class, mappedBy="conversation", orphanRemoval=true)
+     * @Groups({"playlist"})
+     */
+    private Collection $conversationPlaylists;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
         $this->teams = new ArrayCollection();
+        $this->conversationPlaylists = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -460,6 +467,36 @@ class Conversation implements \Stringable, TimestampableInterface
     public function setTopic(string $topic): self
     {
         $this->topic = $topic;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ConversationPlaylist[]
+     */
+    public function getConversationPlaylists(): Collection
+    {
+        return $this->conversationPlaylists;
+    }
+
+    public function addConversationPlaylist(ConversationPlaylist $conversationPlaylist): self
+    {
+        if (!$this->conversationPlaylists->contains($conversationPlaylist)) {
+            $this->conversationPlaylists[] = $conversationPlaylist;
+            $conversationPlaylist->setConversation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeConversationPlaylist(ConversationPlaylist $conversationPlaylist): self
+    {
+        if ($this->conversationPlaylists->removeElement($conversationPlaylist)) {
+            // set the owning side to null (unless already changed)
+            if ($conversationPlaylist->getConversation() === $this) {
+                $conversationPlaylist->setConversation(null);
+            }
+        }
 
         return $this;
     }
