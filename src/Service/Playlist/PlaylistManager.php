@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Playlist;
 
-use App\Entity\Playlist;
+use App\Entity\Playlist\Playlist;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Symfony\Component\Uid\Uuid;

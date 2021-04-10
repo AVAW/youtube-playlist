@@ -47,7 +47,7 @@ class TeamGetOrCreateRequestHandler
             );
 
             $this->dispatcher->dispatch(new NewTeamEvent($team));
-            $this->infoLogger->info("New team, domain: {$team->getDomain()}");
+            $this->infoLogger->info("New team. Domain: {$team->getDomain()}");
         }
 
         return $team;

@@ -2,11 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Entity;
+namespace App\Entity\Playlist;
 
-use App\Repository\PlaylistRepository;
+use App\Repository\Playlist\PlaylistRepository;
 use App\Utils\Timestampable\Timestampable;
 use App\Utils\Timestampable\TimestampableInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\UuidV4;
@@ -45,28 +47,44 @@ class Playlist implements \Stringable, TimestampableInterface
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
+     * @Groups({"simple"})
      */
     private ?\DateTimeInterface $publishedAt;
 
     /**
      * @ORM\Column(type="string", length=1024, nullable=true)
+     * @Groups({"simple"})
      */
     private ?string $title;
 
     /**
      * @ORM\Column(type="string", length=2048, nullable=true)
+     * @Groups({"simple"})
      */
     private ?string $description;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"simple"})
      */
     private ?string $channelTitle;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"simple"})
      */
     private ?int $videosAmount;
+
+    /**
+     * @ORM\OneToMany(targetEntity=PlaylistVideo::class, mappedBy="playlist", orphanRemoval=true)
+     * @Groups({"simple"})
+     */
+    private Collection $playlistVideos;
+
+    public function __construct()
+    {
+        $this->playlistVideos = new ArrayCollection();
+    }
 
     public function __toString(): string
     {
@@ -170,6 +188,36 @@ class Playlist implements \Stringable, TimestampableInterface
     public function setVideosAmount(?int $videosAmount): self
     {
         $this->videosAmount = $videosAmount;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|PlaylistVideo[]
+     */
+    public function getPlaylistVideos(): Collection
+    {
+        return $this->playlistVideos;
+    }
+
+    public function addPlaylistVideo(PlaylistVideo $video): self
+    {
+        if (!$this->playlistVideos->contains($video)) {
+            $this->playlistVideos[] = $video;
+            $video->setPlaylist($this);
+        }
+
+        return $this;
+    }
+
+    public function removePlaylistVideo(PlaylistVideo $video): self
+    {
+        if ($this->playlistVideos->removeElement($video)) {
+            // set the owning side to null (unless already changed)
+            if ($video->getPlaylist() === $this) {
+                $video->setPlaylist(null);
+            }
+        }
 
         return $this;
     }

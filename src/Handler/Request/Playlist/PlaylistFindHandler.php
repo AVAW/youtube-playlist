@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Handler\Request\Playlist;
 
-use App\Entity\Playlist;
+use App\Entity\Playlist\Playlist;
 use App\Service\Playlist\PlaylistProvider;
 
 class PlaylistFindHandler

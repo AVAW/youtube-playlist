@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity\Slack;
 
+use App\Entity\Playlist\PlaylistVideo;
 use App\Repository\Slack\UserRepository;
 use App\Utils\Timestampable\Timestampable;
 use App\Utils\Timestampable\TimestampableInterface;
@@ -147,10 +148,16 @@ class User implements \Stringable, TimestampableInterface
      */
     private ?bool $isUltraRestricted;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=PlaylistVideo::class, mappedBy="authors")
+     */
+    private Collection $playlistVideos;
+
     public function __construct()
     {
         $this->conversations = new ArrayCollection();
         $this->presence = null;
+        $this->playlistVideos = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -459,6 +466,33 @@ class User implements \Stringable, TimestampableInterface
     public function setIsUltraRestricted(?bool $isUltraRestricted): self
     {
         $this->isUltraRestricted = $isUltraRestricted;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|PlaylistVideo[]
+     */
+    public function getPlaylistVideos(): Collection
+    {
+        return $this->playlistVideos;
+    }
+
+    public function addPlaylistVideo(PlaylistVideo $video): self
+    {
+        if (!$this->playlistVideos->contains($video)) {
+            $this->playlistVideos[] = $video;
+            $video->addAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removePlaylistVideo(PlaylistVideo $video): self
+    {
+        if ($this->playlistVideos->removeElement($video)) {
+            $video->removeAuthor($this);
+        }
 
         return $this;
     }

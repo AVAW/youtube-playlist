@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace App\Handler\Request\Command;
 
-use App\Entity\Playlist;
+use App\Entity\Playlist\Playlist;
 use App\Entity\Slack\Command;
 use App\Form\YouTubePlaylistType;
 use App\Handler\Request\Playlist\PlaylistCreateRequestHandler;
+use App\Handler\Request\Playlist\Video\VideosCreateRequestHandler;
+use App\Http\YouTube\PlaylistClient;
 use App\Model\Playlist\PlaylistCreateRequest;
+use App\Model\Playlist\Video\VideosCreateRequest;
 use App\Service\Playlist\PlaylistProvider;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
@@ -31,29 +34,35 @@ class CommandPlayHandler implements CommandInterface
     private Environment $twig;
     private FormFactoryInterface $formFactory;
     private LoggerInterface $logger;
+    private PlaylistClient $playlistClient;
     private PlaylistCreateRequestHandler $playlistCreateRequestHandler;
     private PlaylistProvider $playlistProvider;
     private RouterInterface $router;
     private TranslatorInterface $translator;
+    private VideosCreateRequestHandler $videosCreateRequestHandler;
 
     public function __construct(
         Client $client,
         Environment $twig,
         FormFactoryInterface $formFactory,
         LoggerInterface $logger,
+        PlaylistClient $playlistClient,
         PlaylistCreateRequestHandler $playlistCreateRequestHandler,
         PlaylistProvider $playlistProvider,
         RouterInterface $router,
-        TranslatorInterface $translator
+        TranslatorInterface $translator,
+        VideosCreateRequestHandler $videosCreateRequestHandler
     ) {
         $this->client = $client;
         $this->twig = $twig;
         $this->formFactory = $formFactory;
         $this->logger = $logger;
+        $this->playlistClient = $playlistClient;
         $this->playlistCreateRequestHandler = $playlistCreateRequestHandler;
         $this->playlistProvider = $playlistProvider;
         $this->router = $router;
         $this->translator = $translator;
+        $this->videosCreateRequestHandler = $videosCreateRequestHandler;
     }
 
     public function supports(Command $command): bool
@@ -81,6 +90,11 @@ class CommandPlayHandler implements CommandInterface
             $createPlaylistCommand = $form->getData();
 
             $playlist = $this->playlistCreateRequestHandler->handle($createPlaylistCommand);
+
+            // todo: message to queue
+            $videos = $this->playlistClient->getPlaylistVideos($playlist->getYoutubeId());
+            $createVideosRequest = VideosCreateRequest::create($videos);
+            $this->videosCreateRequestHandler->handle($playlist, $createVideosRequest);
 
             $message = $this->twig->render('command/play.html.twig', [
                 'playlist' => $playlist,

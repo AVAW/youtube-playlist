@@ -6,7 +6,6 @@ namespace App\Http\YouTube;
 
 use App\Dto\Playlist\PlaylistDto;
 use App\Dto\Playlist\VideoDto;
-use App\Entity\Playlist;
 use App\Exception\ForbiddenException;
 use App\Exception\NotExistsException;
 use Google_Client;
@@ -42,7 +41,8 @@ class PlaylistClient
         $this->translator = $translator;
     }
 
-    public function getPlaylistVideos(Playlist $playlist): array
+    /** @return VideoDto[] */
+    public function getPlaylistVideos(string $youTubeId): array
     {
         $part = [
             'id',
@@ -51,7 +51,7 @@ class PlaylistClient
         ];
         $queryParams = [
             'maxResults' => 50,
-            'playlistId' => $playlist->getYoutubeId(),
+            'playlistId' => $youTubeId,
         ];
 
         try {
@@ -83,10 +83,12 @@ class PlaylistClient
 
     protected function getVideoData(Google_Service_YouTube_PlaylistItem $item): VideoDto
     {
+        $snippet = $item->getSnippet();
+
         return new VideoDto(
-            $item->getContentDetails()->videoId,
-            $item->getSnippet()->title,
-            \DateTime::createFromFormat(DATE_ISO8601, $item->getSnippet()->getPublishedAt()),
+            $item->getContentDetails()->getVideoId(),
+            $snippet->getTitle(),
+            \DateTime::createFromFormat(DATE_ISO8601, $snippet->getPublishedAt()),
         );
     }
 

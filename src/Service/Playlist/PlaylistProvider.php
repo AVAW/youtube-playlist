@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Service\Playlist;
 
-use App\Entity\Playlist;
-use App\Repository\PlaylistRepository;
+use App\Entity\Playlist\Playlist;
+use App\Repository\Playlist\PlaylistRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 

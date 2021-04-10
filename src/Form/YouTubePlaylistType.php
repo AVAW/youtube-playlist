@@ -29,6 +29,10 @@ class YouTubePlaylistType extends AbstractType
     {
         $builder
             ->add('url', TextType::class, [
+                'label' => 'playlist.url',
+                'attr' => [
+                    'placeholder' => 'playlist.realUrl',
+                ],
                 'constraints' => [
                     new NotNull(),
                     new Url(null, $this->translator->trans('playlist.error.invalidUrl')),
