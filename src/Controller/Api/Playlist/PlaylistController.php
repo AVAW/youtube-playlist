@@ -21,10 +21,10 @@ class PlaylistController extends AbstractFOSRestController
 {
 
     /**
-     * @Route("/videos", methods={"POST"})
+     * @Route("/", methods={"POST"})
      * @FOSRest\View(serializerGroups={"simple"})
      */
-    public function videos(
+    public function index(
         Request $request,
         PlaylistFindHandler $playlistHandler
     ): View {

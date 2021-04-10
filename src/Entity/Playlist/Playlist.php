@@ -76,7 +76,7 @@ class Playlist implements \Stringable, TimestampableInterface
     private ?int $videosAmount;
 
     /**
-     * @ORM\OneToMany(targetEntity=PlaylistVideo::class, mappedBy="playlist", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=PlaylistVideo::class, mappedBy="playlist", orphanRemoval=true, fetch="EAGER")
      * @Groups({"simple"})
      */
     private Collection $playlistVideos;
