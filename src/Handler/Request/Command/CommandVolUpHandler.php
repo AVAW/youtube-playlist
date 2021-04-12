@@ -20,7 +20,7 @@ class CommandVolUpHandler implements CommandInterface
 
     public function supports(Command $command): bool
     {
-        return $command->getName() === Command::NAME_COMMANDS;
+        return $command->getName() === Command::NAME_VOL_UP;
     }
 
     public function handle(Command $command): string

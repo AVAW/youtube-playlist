@@ -20,7 +20,7 @@ class CommandStartHandler implements CommandInterface
 
     public function supports(Command $command): bool
     {
-        return $command->getName() === Command::NAME_COMMANDS;
+        return $command->getName() === Command::NAME_START;
     }
 
     public function handle(Command $command): string
