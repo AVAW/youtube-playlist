@@ -11,6 +11,13 @@ class PlaylistFindRequest implements PlaylistFindInterface
 
     private string $identifier;
 
+    public static function create(
+        string $identifier
+    ): self {
+        return (new static)
+            ->setIdentifier($identifier);
+    }
+
     public function getIdentifier(): string
     {
         return $this->identifier;

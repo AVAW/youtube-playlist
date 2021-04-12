@@ -2,8 +2,10 @@
 
 namespace App\Repository\Slack;
 
+use App\Entity\Slack\Conversation;
 use App\Entity\Slack\ConversationPlaylist;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
@@ -16,9 +18,26 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ConversationPlaylistRepository extends ServiceEntityRepository
 {
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, ConversationPlaylist::class);
+    }
+
+    /**
+     * @throws NonUniqueResultException
+     */
+    public function findLastConversationPlaylist(Conversation $conversation)
+    {
+        return $this->createQueryBuilder('cp')
+            ->addSelect('playlist')
+            ->join('cp.playlist', 'playlist')
+            ->andWhere('cp.conversation = :conversation')
+            ->setParameter('conversation', $conversation)
+            ->orderBy('cp.id', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
     // /**
