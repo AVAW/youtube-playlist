@@ -1,3 +1,4 @@
+name: YouTube playlist BOT
 allRightsReserved: All rights reserved
 submit: Submit
 shuffle: Shuffle
@@ -7,6 +8,8 @@ playlist:
         notFound: The playlist cannot be found or might be private.
         errorsMessage: There is a problem with your YouTube playlist URL
         forbidden: Plalist might me private.
+    success:
+        created: Your playlist was successfully created. Link to playlist was already posted.
     url: YouTube playlist URL
     realUrl: https://www.youtube.com/watch?list=xyz
 command:

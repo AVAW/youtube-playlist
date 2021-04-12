@@ -146,6 +146,12 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/clue/stream-filter" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/php-jsonpointer/php-jsonpointer" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/bin/.phpunit" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/amqp-messenger" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/doctrine-messenger" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/redis-messenger" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/messenger" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/twig/markdown-extra" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/league/html-to-markdown" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

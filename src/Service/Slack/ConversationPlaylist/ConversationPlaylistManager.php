@@ -9,6 +9,7 @@ use App\Entity\Slack\Conversation;
 use App\Entity\Slack\ConversationPlaylist;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Symfony\Component\Uid\UuidV4;
 
 class ConversationPlaylistManager
 {
@@ -31,7 +32,8 @@ class ConversationPlaylistManager
     ): ConversationPlaylist {
         $conversationPlaylist = (new ConversationPlaylist())
             ->setPlaylist($playlist)
-            ->setConversation($conversation);
+            ->setConversation($conversation)
+            ->setIdentifier(UuidV4::v4());
 
         $this->provider->save($conversationPlaylist);
 

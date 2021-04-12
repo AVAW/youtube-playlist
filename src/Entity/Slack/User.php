@@ -65,7 +65,7 @@ class User implements \Stringable, TimestampableInterface
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"playlist", "user"})
+     * @Groups({"user"})
      */
     private ?string $title;
 
@@ -76,6 +76,7 @@ class User implements \Stringable, TimestampableInterface
 
     /**
      * @ORM\Column(type="string", length=1024, nullable=true)
+     * @Groups({"playlist", "user"})
      */
     private ?string $imageOriginalUrl;
 

@@ -21,6 +21,11 @@ class UserPresence implements \Stringable, TimestampableInterface
     const PRESENCE_ACTIVE = 'active';
     const PRESENCE_AWAY = 'away';
 
+    const PRESENCE_VALUES = [
+        self::PRESENCE_ACTIVE,
+        self::PRESENCE_AWAY
+    ];
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue

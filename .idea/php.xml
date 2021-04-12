@@ -141,6 +141,12 @@
       <path value="$PROJECT_DIR$/vendor/clue/stream-filter" />
       <path value="$PROJECT_DIR$/vendor/php-jsonpointer/php-jsonpointer" />
       <path value="$PROJECT_DIR$/vendor/bin/.phpunit" />
+      <path value="$PROJECT_DIR$/vendor/symfony/amqp-messenger" />
+      <path value="$PROJECT_DIR$/vendor/symfony/doctrine-messenger" />
+      <path value="$PROJECT_DIR$/vendor/symfony/redis-messenger" />
+      <path value="$PROJECT_DIR$/vendor/symfony/messenger" />
+      <path value="$PROJECT_DIR$/vendor/twig/markdown-extra" />
+      <path value="$PROJECT_DIR$/vendor/league/html-to-markdown" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.4">

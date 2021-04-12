@@ -14,6 +14,7 @@ use App\Repository\ContactRepository;
 use DateTime;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use JoliCode\Slack\Api\Client;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,8 +32,11 @@ class DefaultController extends AbstractController
      */
     public function index(
         Request $request,
-        PlaylistCreateRequestHandler $playlistCreateRequestHandler,
-        PlaylistClient $playlistClient
+        PlaylistCreateRequestHandler $playlistCreateRequestHandler
+
+
+
+
     ): Response {
         // PLAYGROUND
 

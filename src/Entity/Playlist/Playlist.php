@@ -78,6 +78,7 @@ class Playlist implements \Stringable, TimestampableInterface
      */
     private ?int $videosAmount;
 
+    // todo: remove eager, use query builder
     /**
      * @ORM\OneToMany(targetEntity=PlaylistVideo::class, mappedBy="playlist", orphanRemoval=true, fetch="EAGER")
      * @Groups({"playlist"})

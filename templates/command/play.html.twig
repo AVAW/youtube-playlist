@@ -1,2 +1,9 @@
-Playlist URL: {{ playlistUrl }}
-For available commands write: /commands
+*Playlist URL*: {{ playlistUrl }}
+*YouTube playlist title*: {{ playlist.title }}
+{% if playlist.description %}
+*YouTube playlist description*: {{ playlist.description }}
+{% endif %}
+*YouTube playlist creator*: {{ playlist.channelTitle }}
+*Songs amount*: {{ playlist.videosAmount }}
+
+Playlist created by *@{{ creator.displayedName }}* at {{ playlist.createdAt|date('d.m.Y H:i:s') }}

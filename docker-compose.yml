@@ -35,7 +35,7 @@ services:
             - ./docker/php-fpm/php-ini-overrides.ini:/etc/php/7.3/fpm/conf.d/99-overrides.ini
 
     node:
-        image: node:12.18.1
+        image: node:12.22.1
         container_name: youtube-playlist-node
         working_dir: /application
         volumes:
@@ -46,3 +46,17 @@ services:
         ports:
             - "4040:4040"
         command: ["ngrok", "http", "web:80"]
+
+#    rabbitmq:
+#        image: rabbitmq:3.8-management
+#        container_name: youtube-playlist-rabbitmq
+#        environment:
+#            RABBITMQ_DEFAULT_USER: user
+#            RABBITMQ_DEFAULT_PASS: XGkN4W33DNtsjWYn
+#            RABBITMQ_DEFAULT_VHOST: mqdev
+#        ports: [5672, 15672]
+#        restart: always
+#
+#    redis:
+#        image: redis:5-alpine
+#        ports: [6379]

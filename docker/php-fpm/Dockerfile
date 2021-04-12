@@ -8,20 +8,26 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     zlib1g-dev \
     libxml2-dev \
-    libzip-dev
+    libzip-dev \
+    librabbitmq-dev \
+    libssh-dev
 
 RUN docker-php-ext-install \
     zip \
     intl \
     opcache \
+    bcmath \
+    sockets \
     pdo pdo_mysql
 
 RUN pecl install \
-    apcu
+    apcu \
+    amqp
 
 RUN docker-php-ext-enable \
     opcache \
-    apcu
+    apcu \
+    amqp
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer

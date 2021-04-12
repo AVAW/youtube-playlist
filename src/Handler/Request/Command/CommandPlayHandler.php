@@ -11,8 +11,8 @@ use App\Handler\Request\Playlist\PlaylistCreateRequestHandler;
 use App\Handler\Request\Playlist\Video\VideosCreateRequestHandler;
 use App\Handler\Request\Slack\ConversationPlaylist\ConversationPlaylistCreateRequestHandler;
 use App\Http\YouTube\PlaylistClient;
+use App\Message\Playlist\PullPlaylistVideos;
 use App\Model\Playlist\PlaylistCreateRequest;
-use App\Model\Playlist\Video\VideosCreateRequest;
 use App\Model\Slack\ConversationPlaylist\ConversationPlaylistCreateRequest;
 use App\Service\Playlist\PlaylistProvider;
 use Doctrine\ORM\OptimisticLockException;
@@ -21,6 +21,7 @@ use JoliCode\Slack\Api\Client;
 use JoliCode\Slack\Exception\SlackErrorResponse;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -37,6 +38,7 @@ class CommandPlayHandler implements CommandInterface
     private Environment $twig;
     private FormFactoryInterface $formFactory;
     private LoggerInterface $logger;
+    private MessageBusInterface $bus;
     private PlaylistClient $playlistClient;
     private PlaylistCreateRequestHandler $playlistCreateRequestHandler;
     private PlaylistProvider $playlistProvider;
@@ -50,6 +52,7 @@ class CommandPlayHandler implements CommandInterface
         Environment $twig,
         FormFactoryInterface $formFactory,
         LoggerInterface $logger,
+        MessageBusInterface $bus,
         PlaylistClient $playlistClient,
         PlaylistCreateRequestHandler $playlistCreateRequestHandler,
         PlaylistProvider $playlistProvider,
@@ -62,6 +65,7 @@ class CommandPlayHandler implements CommandInterface
         $this->twig = $twig;
         $this->formFactory = $formFactory;
         $this->logger = $logger;
+        $this->bus = $bus;
         $this->playlistClient = $playlistClient;
         $this->playlistCreateRequestHandler = $playlistCreateRequestHandler;
         $this->playlistProvider = $playlistProvider;
@@ -98,29 +102,40 @@ class CommandPlayHandler implements CommandInterface
 
             // Bind conversation and playlist
             $conversationPlaylistRequest = ConversationPlaylistCreateRequest::create($playlist, $command->getConversation());
-            $this->conversationPlaylistCreateRequestHandler->handle($conversationPlaylistRequest);
+            $conversationPlaylist = $this->conversationPlaylistCreateRequestHandler->handle($conversationPlaylistRequest);
 
-            // todo: message the queue
-            $videos = $this->playlistClient->getPlaylistVideos($playlist->getYoutubeId());
-            $createVideosRequest = VideosCreateRequest::create($videos);
-            $this->videosCreateRequestHandler->handle($playlist, $createVideosRequest);
+            $this->bus->dispatch(new PullPlaylistVideos((string) $playlist->getIdentifier()));
 
             $message = $this->twig->render('command/play.html.twig', [
                 'playlist' => $playlist,
                 'playlistUrl' => $this->router->generate('playlist', ['identifier' => $playlist->getIdentifier()], UrlGeneratorInterface::ABSOLUTE_URL),
+                'creator' => $command->getUser(),
+                'votesToSkip' => $conversationPlaylist->getConversation()->getUsers()->count(),
             ]);
 
             try {
                 $this->client->chatPostMessage([
-                    'username' => 'YouTube playlist BOT',
                     'channel' => '#' . $command->getConversation()->getName(),
+                    'username' => $this->translator->trans('name'),
+//                    'blocks' => json_encode([
+//                        'blocks' => [
+//                            [
+//                                'type' => 'section',
+//                                'text' => [
+//                                    'type' => 'mrkdwn',
+//                                    'text' => 'You have a new request',
+//                                ],
+//                            ],
+//                        ],
+//                    ])
                     'text' => $message,
+                    'mrkdwn' => true,
                 ]);
             } catch (SlackErrorResponse $e) {
                 $this->logger->error($e->getMessage());
             }
 
-            return '';
+            return $this->translator->trans('playlist.success.created');
         }
 
         return $this->twig->render('command/play_error.html.twig', [

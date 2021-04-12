@@ -60,7 +60,6 @@ class Command implements \Stringable, TimestampableInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"playlist"})
      */
     private string $name;
 
