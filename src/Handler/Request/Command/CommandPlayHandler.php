@@ -106,9 +106,10 @@ class CommandPlayHandler implements CommandInterface
 
             $this->bus->dispatch(new PullPlaylistVideos((string) $playlist->getIdentifier()));
 
+            $playlistUrl = $this->router->generate('playlist', ['identifier' => $playlist->getIdentifier()], UrlGeneratorInterface::ABSOLUTE_URL);
             $message = $this->twig->render('command/play.html.twig', [
                 'playlist' => $playlist,
-                'playlistUrl' => $this->router->generate('playlist', ['identifier' => $playlist->getIdentifier()], UrlGeneratorInterface::ABSOLUTE_URL),
+                'playlistUrl' => $playlistUrl,
                 'creator' => $command->getUser(),
                 'votesToSkip' => $conversationPlaylist->getConversation()->getUsers()->count(),
             ]);
@@ -117,19 +118,52 @@ class CommandPlayHandler implements CommandInterface
                 $this->client->chatPostMessage([
                     'channel' => '#' . $command->getConversation()->getName(),
                     'username' => $this->translator->trans('name'),
-//                    'blocks' => json_encode([
-//                        'blocks' => [
-//                            [
-//                                'type' => 'section',
-//                                'text' => [
-//                                    'type' => 'mrkdwn',
-//                                    'text' => 'You have a new request',
-//                                ],
-//                            ],
-//                        ],
-//                    ])
-                    'text' => $message,
-                    'mrkdwn' => true,
+                    'blocks' => json_encode([
+                        [
+                            'type' => 'section',
+                            'text' => [
+                                'type' => 'mrkdwn',
+                                'text' => "Playlist address (URL):\n*<$playlistUrl|$playlistUrl>*",
+                            ],
+                        ],
+                        [
+                            'type' => 'divider',
+                        ],
+                        [
+                            'type' => 'section',
+                            'fields' => [
+                                [
+                                    'type' => 'mrkdwn',
+                                    'text' => "*YouTube playlist title:*\n{$playlist->getTitle()}",
+                                ],
+                                [
+                                    'type' => 'mrkdwn',
+                                    'text' => "*YouTube playlist description:*\n{$playlist->getDescription()}",
+                                ],
+                                [
+                                    'type' => 'mrkdwn',
+                                    'text' => "*YouTube playlist creator:*\n{$playlist->getChannelTitle()}",
+                                ],
+                                [
+                                    'type' => 'mrkdwn',
+                                    'text' => "*Songs amount:*\n{$playlist->getVideosAmount()}",
+                                ],
+                            ],
+                        ],
+                        [
+                            'type' => 'divider',
+                        ],
+                        [
+                            'type' => 'section',
+                            'text' => [
+                                'type' => 'mrkdwn',
+                                'text' => 'Playlist created by *@' . $command->getUser()->getDisplayedName() .'* at ' . $playlist->getCreatedAt()->format('d.m.Y H:i:s'),
+                            ],
+                        ],
+                        [
+                            'type' => 'divider',
+                        ],
+                    ]),
                 ]);
             } catch (SlackErrorResponse $e) {
                 $this->logger->error($e->getMessage());
