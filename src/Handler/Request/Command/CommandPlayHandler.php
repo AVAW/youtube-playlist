@@ -125,6 +125,17 @@ class CommandPlayHandler implements CommandInterface
                                 'type' => 'mrkdwn',
                                 'text' => "Playlist address (URL):\n*<$playlistUrl|$playlistUrl>*",
                             ],
+                            'accessory' => [
+                                'type' => 'button',
+                                'text' => [
+                                    'type' => 'plain_text',
+                                    'text' => 'Open playlist',
+                                    'emoji' => true,
+                                ],
+                                'value' => $playlist->getIdentifier(),
+                                'url' => $playlistUrl,
+                                'action_id' => 'click-open-playlist-button',
+                            ],
                         ],
                         [
                             'type' => 'divider',
@@ -157,7 +168,7 @@ class CommandPlayHandler implements CommandInterface
                             'type' => 'section',
                             'text' => [
                                 'type' => 'mrkdwn',
-                                'text' => 'Playlist created by *@' . $command->getUser()->getDisplayedName() .'* at ' . $playlist->getCreatedAt()->format('d.m.Y H:i:s'),
+                                'text' => 'Playlist created by *@' . $command->getUser()->getDisplayedName() . '* at ' . $playlist->getCreatedAt()->format('d.m.Y H:i:s'),
                             ],
                         ],
                         [
