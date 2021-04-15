@@ -5,17 +5,19 @@ declare(strict_types=1);
 namespace App\Handler\Request\Command;
 
 use App\Entity\Slack\Command;
+use App\Handler\Request\Slack\ConversationPlaylistVideo\ConversationPlaylistVideoFindVideoRequestHandler;
+use App\Model\Slack\ConversationPlaylistVideo\ConversationPlaylistVideoFindVideoRequest;
 use Twig\Environment;
 
 class CommandSongHandler implements CommandInterface
 {
 
-    private Environment $twig;
+    private ConversationPlaylistVideoFindVideoRequestHandler $conversationPlaylistVideoFindVideoRequestHandler;
 
     public function __construct(
-        Environment $twig
+        ConversationPlaylistVideoFindVideoRequestHandler $conversationPlaylistVideoFindVideoRequestHandler
     ) {
-        $this->twig = $twig;
+        $this->conversationPlaylistVideoFindVideoRequestHandler = $conversationPlaylistVideoFindVideoRequestHandler;
     }
 
     public function supports(Command $command): bool
@@ -25,6 +27,10 @@ class CommandSongHandler implements CommandInterface
 
     public function handle(Command $command): string
     {
+        $findPlayedVideo = ConversationPlaylistVideoFindVideoRequest::create($command->getConversation());
+        $conversationPlaylistVideo = $this->conversationPlaylistVideoFindVideoRequestHandler->handle($findPlayedVideo);
+
+        return $conversationPlaylistVideo->getCurrentVideo()->getTitle();
     }
 
 }
