@@ -107,12 +107,6 @@ class CommandPlayHandler implements CommandInterface
             $this->bus->dispatch(new PullPlaylistVideos((string) $playlist->getIdentifier()));
 
             $playlistUrl = $this->router->generate('playlist', ['identifier' => $playlist->getIdentifier()], UrlGeneratorInterface::ABSOLUTE_URL);
-            $message = $this->twig->render('command/play.html.twig', [
-                'playlist' => $playlist,
-                'playlistUrl' => $playlistUrl,
-                'creator' => $command->getUser(),
-                'votesToSkip' => $conversationPlaylist->getConversation()->getUsers()->count(),
-            ]);
 
             try {
                 $this->client->chatPostMessage([
@@ -120,16 +114,27 @@ class CommandPlayHandler implements CommandInterface
                     'username' => $this->translator->trans('name'),
                     'blocks' => json_encode([
                         [
+                            'type' => 'header',
+                            'text' => [
+                                'type' => 'plain_text',
+                                'text' => $playlist->getTitle(),
+                                'emoji' => true,
+                            ],
+                        ],
+                        [
                             'type' => 'section',
                             'text' => [
                                 'type' => 'mrkdwn',
-                                'text' => "Playlist address (URL):\n*<$playlistUrl|$playlistUrl>*",
+                                'text' => $this->translator->trans('playlist.success.credits', [
+                                    '%author%' => $command->getUser()->getDisplayedName(),
+                                    '%at%' => $playlist->getCreatedAt()->format('d.m.Y H:i:s'),
+                                ]),
                             ],
                             'accessory' => [
                                 'type' => 'button',
                                 'text' => [
                                     'type' => 'plain_text',
-                                    'text' => 'Open playlist',
+                                    'text' => ':notes: ' . $this->translator->trans('playlist.open') . ' :notes:',
                                     'emoji' => true,
                                 ],
                                 'value' => $playlist->getIdentifier(),
@@ -145,14 +150,6 @@ class CommandPlayHandler implements CommandInterface
                             'fields' => [
                                 [
                                     'type' => 'mrkdwn',
-                                    'text' => "*YouTube playlist title:*\n{$playlist->getTitle()}",
-                                ],
-                                [
-                                    'type' => 'mrkdwn',
-                                    'text' => "*YouTube playlist description:*\n{$playlist->getDescription()}",
-                                ],
-                                [
-                                    'type' => 'mrkdwn',
                                     'text' => "*YouTube playlist creator:*\n{$playlist->getChannelTitle()}",
                                 ],
                                 [
@@ -160,19 +157,6 @@ class CommandPlayHandler implements CommandInterface
                                     'text' => "*Songs amount:*\n{$playlist->getVideosAmount()}",
                                 ],
                             ],
-                        ],
-                        [
-                            'type' => 'divider',
-                        ],
-                        [
-                            'type' => 'section',
-                            'text' => [
-                                'type' => 'mrkdwn',
-                                'text' => 'Playlist created by *@' . $command->getUser()->getDisplayedName() . '* at ' . $playlist->getCreatedAt()->format('d.m.Y H:i:s'),
-                            ],
-                        ],
-                        [
-                            'type' => 'divider',
                         ],
                     ]),
                 ]);

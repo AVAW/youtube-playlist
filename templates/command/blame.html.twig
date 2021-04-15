@@ -1,0 +1,13 @@
+{% if conversationPlaylistVideo %}
+    {% if conversationPlaylistVideo.currentVideo %}
+        {% for author in conversationPlaylistVideo.currentVideo.authors %}
+            @{{- author.displayedName -}} 
+        {% else %}
+            Empty list of authors.
+        {% endfor %}
+    {% else %}
+        Nothing is played yet. Create playlist with "/play" command.
+    {% endif %}
+{% else %}
+    Nothing is played yet. Create playlist with "/play" command.
+{% endif %}

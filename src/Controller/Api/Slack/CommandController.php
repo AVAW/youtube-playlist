@@ -21,13 +21,13 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * @Route("/api/slack")
+ * @Route("/api/slack/command")
  */
 class CommandController extends AbstractFOSRestController
 {
 
     /**
-     * @Route("/command", methods={"POST"})
+     * @Route("/", methods={"POST"})
      *
      * @throws ORMException
      * @throws OptimisticLockException

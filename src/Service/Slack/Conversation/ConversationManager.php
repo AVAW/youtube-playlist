@@ -63,7 +63,8 @@ class ConversationManager
         ?bool $isPrivate = null,
         ?bool $isShared = null,
         ?string $purpose = null,
-        ?string $topic = null
+        ?string $topic = null,
+        ?string $locale = null
     ): void {
         $channel
             ->setName($name)
@@ -84,7 +85,8 @@ class ConversationManager
             ->setIsPrivate($isPrivate)
             ->setIsShared($isShared)
             ->setPurpose($purpose)
-            ->setTopic($topic);
+            ->setTopic($topic)
+            ->setLocale($locale);
 
         foreach ($teams as $team) {
             if ($team instanceof Team) {

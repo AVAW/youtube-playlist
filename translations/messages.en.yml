@@ -10,6 +10,8 @@ playlist:
         forbidden: Plalist might me private.
     success:
         created: Your playlist was successfully created. Link to playlist was already posted.
+        credits: Playlist created by *@%author%* at %at%
+    open: Open playlist
     url: YouTube playlist URL
     realUrl: https://www.youtube.com/watch?list=xyz
 command:

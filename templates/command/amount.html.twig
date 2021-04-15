@@ -1,1 +1,5 @@
-Amount of songs in playlist: *{{ playlist.videosAmount }}*
+{% if playlist %}
+    Amount of songs in playlist: *{{ playlist.videosAmount }}*
+{% else %}
+    Nothing is played yet. Create playlist with "/play" command.
+{% endif %}

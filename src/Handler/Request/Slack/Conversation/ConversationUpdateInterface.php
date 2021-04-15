@@ -47,4 +47,6 @@ interface ConversationUpdateInterface
 
     public function getTopic(): ?string;
 
+    public function getLocale(): ?string;
+
 }

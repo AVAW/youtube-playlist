@@ -3,45 +3,48 @@
 namespace App\Repository\Slack;
 
 use App\Entity\Slack\Conversation;
-use App\Entity\Slack\ConversationPlaylist;
+use App\Entity\Slack\ConversationPlaylistVideo;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Doctrine\ORM\Query\Expr;
 use Doctrine\Persistence\ManagerRegistry;
+use function Doctrine\ORM\QueryBuilder;
 
 /**
- * @method ConversationPlaylist|null find($id, $lockMode = null, $lockVersion = null)
- * @method ConversationPlaylist|null findOneBy(array $criteria, array $orderBy = null)
- * @method ConversationPlaylist[]    findAll()
- * @method ConversationPlaylist[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method ConversationPlaylistVideo|null find($id, $lockMode = null, $lockVersion = null)
+ * @method ConversationPlaylistVideo|null findOneBy(array $criteria, array $orderBy = null)
+ * @method ConversationPlaylistVideo[]    findAll()
+ * @method ConversationPlaylistVideo[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class ConversationPlaylistRepository extends ServiceEntityRepository
+class ConversationPlaylistVideoRepository extends ServiceEntityRepository
 {
 
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, ConversationPlaylist::class);
+        parent::__construct($registry, ConversationPlaylistVideo::class);
     }
 
-    /**
-     * @throws NonUniqueResultException
-     */
-    public function findLastConversationPlaylist(Conversation $conversation)
+    public function findLastConversationPlaylistVideo(Conversation $conversation): ConversationPlaylistVideo
     {
-        return $this->createQueryBuilder('cp')
-            ->addSelect('playlist')
-            ->leftJoin('cp.playlist', 'playlist')
+
+        $res = $this->createQueryBuilder('cpv')
+            ->addSelect('authors')
+            ->addSelect('video')
+            ->leftJoin('cpv.conversationPlaylist', 'cp')
+            ->leftJoin('cpv.currentVideo', 'video')
+            ->leftJoin('video.authors', 'authors')
             ->andWhere('cp.conversation = :conversation')
             ->setParameter('conversation', $conversation)
-            ->orderBy('cp.id', 'DESC')
-            ->setMaxResults(1)
             ->getQuery()
-            ->getOneOrNullResult();
+            ->getResult();
+
+        return array_pop($res);
     }
 
     // /**
-    //  * @return ConversationPlaylist[] Returns an array of ConversationPlaylist objects
+    //  * @return ConversationPlaylistVideo[] Returns an array of ConversationPlaylistVideo objects
     //  */
     /*
     public function findByExampleField($value)
@@ -58,7 +61,7 @@ class ConversationPlaylistRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?ConversationPlaylist
+    public function findOneBySomeField($value): ?ConversationPlaylistVideo
     {
         return $this->createQueryBuilder('c')
             ->andWhere('c.exampleField = :val')
@@ -73,7 +76,7 @@ class ConversationPlaylistRepository extends ServiceEntityRepository
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function save(ConversationPlaylist $conversationPlaylist)
+    public function save(ConversationPlaylistVideo $conversationPlaylist)
     {
         $this->getEntityManager()->persist($conversationPlaylist);
         $this->getEntityManager()->flush();

@@ -30,6 +30,7 @@ class ConversationUpdateRequest implements ConversationUpdateInterface
     private ?bool $isShared;
     private ?string $purpose;
     private ?string $topic;
+    private ?string $locale;
 
     public static function createFromObjConversation(?ObjsConversation $conversation): self
     {
@@ -53,7 +54,8 @@ class ConversationUpdateRequest implements ConversationUpdateInterface
             ->setIsPrivate($conversation->getIsPrivate())
             ->setIsShared($conversation->getIsShared())
             ->setPurpose($conversation->getPurpose()->getValue())
-            ->setTopic($conversation->getTopic()->getValue());
+            ->setTopic($conversation->getTopic()->getValue())
+            ->setLocale('en-US'/*$conversation->getLocale()*/);
     }
 
     public function getName(): ?string
@@ -291,6 +293,18 @@ class ConversationUpdateRequest implements ConversationUpdateInterface
     public function setTopic(?string $topic): self
     {
         $this->topic = $topic;
+
+        return $this;
+    }
+
+    public function getLocale(): ?string
+    {
+        return $this->locale;
+    }
+
+    public function setLocale(?string $locale): self
+    {
+        $this->locale = $locale;
 
         return $this;
     }

@@ -38,7 +38,7 @@ class NewConversationSubscriber implements EventSubscriberInterface
         $conversation = $event->getConversation();
 
         try {
-            $slackChannel = $this->client->conversationsInfo(['channel' => $conversation->getConversationId()])->getChannel();
+            $slackChannel = $this->client->conversationsInfo(['channel' => $conversation->getConversationId(), 'include_locale' => true])->getChannel();
             $command = ConversationUpdateRequest::createFromObjConversation($slackChannel);
             $this->conversationUpdateRequestHandler->handle($conversation, $command);
         } catch (\Throwable $e) {

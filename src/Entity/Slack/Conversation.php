@@ -151,6 +151,11 @@ class Conversation implements \Stringable, TimestampableInterface
      */
     private Collection $conversationPlaylists;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private ?string $locale;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
@@ -497,6 +502,18 @@ class Conversation implements \Stringable, TimestampableInterface
                 $conversationPlaylist->setConversation(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getLocale(): ?string
+    {
+        return $this->locale;
+    }
+
+    public function setLocale(?string $locale): self
+    {
+        $this->locale = $locale;
 
         return $this;
     }

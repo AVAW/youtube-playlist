@@ -43,6 +43,11 @@ class ConversationPlaylist implements \Stringable, TimestampableInterface
      */
     private Playlist $playlist;
 
+    /**
+     * @ORM\OneToOne(targetEntity=ConversationPlaylistVideo::class, mappedBy="conversationPlaylist", cascade={"persist", "remove"})
+     */
+    private ConversationPlaylistVideo $conversationPlaylistVideo;
+
     public function __toString(): string
     {
         return __CLASS__ . ' ' . $this->getId();
@@ -85,6 +90,23 @@ class ConversationPlaylist implements \Stringable, TimestampableInterface
     public function setPlaylist(Playlist $playlist): self
     {
         $this->playlist = $playlist;
+
+        return $this;
+    }
+
+    public function getConversationPlaylistVideo(): ?ConversationPlaylistVideo
+    {
+        return $this->conversationPlaylistVideo;
+    }
+
+    public function setConversationPlaylistVideo(ConversationPlaylistVideo $conversationPlaylistVideo): self
+    {
+        // set the owning side of the relation if necessary
+        if ($conversationPlaylistVideo->getConversationPlaylist() !== $this) {
+            $conversationPlaylistVideo->setConversationPlaylist($this);
+        }
+
+        $this->conversationPlaylistVideo = $conversationPlaylistVideo;
 
         return $this;
     }

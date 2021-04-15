@@ -8,6 +8,8 @@ use App\Entity\Slack\Conversation;
 use App\Service\Slack\Conversation\ConversationManager;
 use App\Service\Slack\Conversation\ConversationProvider;
 use App\Service\Slack\Team\TeamProvider;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 
 class ConversationUpdateRequestHandler
 {
@@ -26,6 +28,10 @@ class ConversationUpdateRequestHandler
         $this->teamProvider = $teamProvider;
     }
 
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
     public function handle(Conversation $channel, ConversationUpdateInterface $command)
     {
         $teams = $this->teamProvider->findByTeamId($command->getTeams());
@@ -52,6 +58,7 @@ class ConversationUpdateRequestHandler
             $command->getIsShared(),
             $command->getPurpose(),
             $command->getTopic(),
+            $command->getLocale(),
         );
     }
 

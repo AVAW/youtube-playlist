@@ -43,6 +43,7 @@ services:
 
     ngrok:
         image: wernight/ngrok
+        container_name: youtube-playlist-ngrok
         ports:
             - "4040:4040"
         command: ["ngrok", "http", "web:80"]
@@ -59,4 +60,5 @@ services:
 #
 #    redis:
 #        image: redis:5-alpine
+#        container_name: youtube-playlist-redis
 #        ports: [6379]
