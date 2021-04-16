@@ -18,7 +18,7 @@ class ConversationPlaylistVideoFindVideoRequestHandler
         $this->conversationPlaylistVideoProvider = $conversationPlaylistVideoProvider;
     }
 
-    public function handle(ConversationPlaylistVideoFindVideoInterface $findPlayedVideo): ConversationPlaylistVideo
+    public function handle(ConversationPlaylistVideoFindVideoInterface $findPlayedVideo): ?ConversationPlaylistVideo
     {
         return $this->conversationPlaylistVideoProvider->findLastConversationPlaylistVideo($findPlayedVideo->getConversation());
     }

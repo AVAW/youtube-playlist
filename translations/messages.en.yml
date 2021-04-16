@@ -8,6 +8,7 @@ playlist:
         notFound: The playlist cannot be found or might be private.
         errorsMessage: There is a problem with your YouTube playlist URL
         forbidden: Plalist might me private.
+        nothingIsPlayed: Nothing is played yet. Create playlist with "/play" command.
     success:
         created: Your playlist was successfully created. Link to playlist was already posted.
         credits: Playlist created by *@%author%* at %at%

@@ -6,8 +6,8 @@
             Empty list of authors.
         {% endfor %}
     {% else %}
-        Nothing is played yet. Create playlist with "/play" command.
+        {{ 'playlist.error.nothingIsPlayed'|trans }}
     {% endif %}
 {% else %}
-    Nothing is played yet. Create playlist with "/play" command.
+    {{ 'playlist.error.nothingIsPlayed'|trans }}
 {% endif %}

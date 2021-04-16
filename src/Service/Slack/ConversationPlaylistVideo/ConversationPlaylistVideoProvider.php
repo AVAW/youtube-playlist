@@ -32,7 +32,7 @@ class ConversationPlaylistVideoProvider
         $this->repository->save($conversationPlaylist);
     }
 
-    public function findLastConversationPlaylistVideo(Conversation $conversation): ConversationPlaylistVideo
+    public function findLastConversationPlaylistVideo(Conversation $conversation): ?ConversationPlaylistVideo
     {
         return $this->repository->findLastConversationPlaylistVideo($conversation);
     }

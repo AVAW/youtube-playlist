@@ -5,12 +5,9 @@ namespace App\Repository\Slack;
 use App\Entity\Slack\Conversation;
 use App\Entity\Slack\ConversationPlaylistVideo;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
-use Doctrine\ORM\Query\Expr;
 use Doctrine\Persistence\ManagerRegistry;
-use function Doctrine\ORM\QueryBuilder;
 
 /**
  * @method ConversationPlaylistVideo|null find($id, $lockMode = null, $lockVersion = null)
@@ -26,9 +23,8 @@ class ConversationPlaylistVideoRepository extends ServiceEntityRepository
         parent::__construct($registry, ConversationPlaylistVideo::class);
     }
 
-    public function findLastConversationPlaylistVideo(Conversation $conversation): ConversationPlaylistVideo
+    public function findLastConversationPlaylistVideo(Conversation $conversation): ?ConversationPlaylistVideo
     {
-
         $res = $this->createQueryBuilder('cpv')
             ->addSelect('authors')
             ->addSelect('video')
@@ -39,6 +35,8 @@ class ConversationPlaylistVideoRepository extends ServiceEntityRepository
             ->setParameter('conversation', $conversation)
             ->getQuery()
             ->getResult();
+
+        // todo: Fix query to return only last one cpv
 
         return array_pop($res);
     }
