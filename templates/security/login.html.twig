@@ -1,0 +1,103 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Log in!{% endblock %}
+
+{% block body %}
+    <section class="section has-background-light">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-3 is-offset-3">
+                    <img src="" alt="Login">
+                </div>
+
+                <div class="column is-one-quarter is-offset-0">
+                    <h2 class="title is-2">{{ 'security.signIn'|trans }}</h2>
+
+                    {% set messages = app.flashes('messages') %}
+                    {% if messages is not empty %}
+                        <div class="notification has-background-success has-text-white msg-list">
+                            <div class="content">
+                                <ol class="">
+                                    {% for message in messages %}
+                                        <li>{{ message }}</li>
+                                    {% endfor %}
+                                </ol>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if error is not empty %}
+                        <div class="notification has-background-danger has-text-white msg-list">
+                            <div class="content">
+                                <ol class="">
+                                    <li>{{ error.messageKey|trans(error.messageData, 'security') }}</li>
+                                </ol>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <form method="POST">
+
+                        <div class="field">
+                            <p class="control has-icons-left has-icons-right">
+                                <input type="text" name="login"
+                                       value="{{ last_username }}"
+                                       id="inputLogin"
+                                       class="input"
+                                       placeholder="login"
+                                       required
+                                       autofocus
+                                >
+                                <span class="icon is-small is-left">
+                                <i class="fas fa-user"></i>
+                            </span>
+                            </p>
+                        </div>
+
+                        <div class="field">
+                            <p class="control has-icons-left">
+                                <input type="password" name="password" id="inputPassword"
+                                       class="input"
+                                       required
+                                >
+                                <span class="icon is-small is-left">
+                                    <i class="fas fa-lock"></i>
+                                </span>
+                            </p>
+                        </div>
+
+                        <div class="field">
+                            <label>
+                                <input type="checkbox" name="_remember_me"
+                                       class="checkbox"
+                                       checked
+                                > {{ 'security.remember'|trans }}
+                            </label>
+                        </div>
+
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                        <div class="field">
+                            <p class="control">
+                                <button type="submit" class="button is-black">
+                                    {{ 'security.signIn'|trans }}
+                                </button>
+                                <a href="{{ path('app_forgot_password_request') }}" class="button is-text is-pulled-right">
+                                    {{ 'security.forgotPassword'|trans }}
+                                </a>
+                            </p>
+                        </div>
+
+                        <br>
+                        <a href="{{ path('connect_google_connect') }}"
+                           class="button is-fullwidth is-danger is-outlined ">Sing in with Google</a>
+                        <br>
+                        {# <a href="{{ path('connect_slack_connect') }}" #}
+                        {# class="button is-fullwidth is-info is-outlined is-disabled">Sing in with Slack</a> #}
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

@@ -33,9 +33,6 @@ class PlaylistController extends AbstractFOSRestController
         $form->submit($request->toArray());
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var PlaylistFindRequest $command */
-            $command = $form->getData();
-
             $playlist = $playlistHandler->handle($command);
             if (!$playlist instanceof Playlist) {
                 throw new \InvalidArgumentException('Can not find playlist');

@@ -6,7 +6,7 @@ namespace App\Command;
 
 use App\Handler\Request\Slack\User\UserCollectionGetOrCreateRequestHandler;
 use App\Model\Slack\User\UserCollectionGetOrCreateRequest;
-use App\Service\Slack\Conversation\ConversationProvider;
+use App\Service\Slack\Conversation\SlackConversationProvider;
 use JoliCode\Slack\Api\Client;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -22,13 +22,13 @@ class PullSlackConversationUsersCommand extends Command
     protected static string $defaultDescription = 'Pull conversation users from Slack API';
 
     protected Client $client;
-    protected ConversationProvider $conversationProvider;
+    protected SlackConversationProvider $conversationProvider;
     protected LoggerInterface $logger;
     protected UserCollectionGetOrCreateRequestHandler $userCollectionGetOrCreateRequestHandler;
 
     public function __construct(
         Client $client,
-        ConversationProvider $conversationProvider,
+        SlackConversationProvider $conversationProvider,
         LoggerInterface $logger,
         UserCollectionGetOrCreateRequestHandler $userCollectionGetOrCreateRequestHandler,
         string $name = null
@@ -57,7 +57,7 @@ class PullSlackConversationUsersCommand extends Command
             try {
                 $slackConversationMembers = $this->client->conversationsMembers(['channel' => $conversation->getConversationId()]);
                 $command = UserCollectionGetOrCreateRequest::createFromArray($slackConversationMembers->getMembers());
-                $this->userCollectionGetOrCreateRequestHandler->handle($command);
+                $this->userCollectionGetOrCreateRequestHandler->handle($command, $conversation);
             } catch (\Throwable $e) {
                 $this->logger->error($e->getMessage());
                 $io->error($e->getMessage());

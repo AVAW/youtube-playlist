@@ -11,7 +11,7 @@
     <title>{% block title %}{% endblock %}{{ block('title') ? block('title') ~ ' | YouTube playlist | Arris' : 'Cloutteries' }}</title>
 
     <!-- Bulma Version 0.9.0-->
-    <link rel="stylesheet" href="https://unpkg.com/bulma@0.9.0/css/bulma.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/bulma@0.9.0/css/bulma.min.css"/>
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
     <link rel="stylesheet" href="{{ asset('bundles/app/css/main.css') }}">
 
@@ -48,7 +48,7 @@
         <div class="container">
             <div class="navbar-brand">
                 <a class="navbar-item is-unselectable" href="{{ path('home') }}">
-                    <i class="fab fa-youtube fa-3x"></i>  YouTube Playlist
+                    <i class="fab fa-youtube fa-3x"></i>  {{ 'name'|trans }}
                 </a>
                 <span class="navbar-burger burger" data-target="navbarMenu">
 					<span></span>
@@ -57,21 +57,31 @@
 				</span>
             </div>
             <div id="navbarMenu" class="navbar-menu">
-                {% set route = app.request.attributes.get("_route") %}
+                {% set route = app.request.attributes.get('_route') %}
                 <div class="navbar-end">
                     <a href="{{ path('home') }}" class="navbar-item {{ route == 'home' ? 'is-active' }}">Home</a>
                     <a href="{{ path('about') }}" class="navbar-item {{ route == 'about' ? 'is-active' }}">About</a>
-                    <a href="{{ path('contact') }}" class="navbar-item {{ route == 'contact' ? 'is-active' }}">Contact</a>
-{#                    <div class="navbar-item has-dropdown is-hoverable">#}
-{#                        <a class="navbar-link">Account</a>#}
-{#                        <div class="navbar-dropdown">#}
-{#                            <a class="navbar-item">Dashboard</a>#}
-{#                            <a class="navbar-item">Profile</a>#}
-{#                            <a class="navbar-item">Settings</a>#}
-{#                            <hr class="navbar-divider">#}
-{#                            <div class="navbar-item">Logout</div>#}
-{#                        </div>#}
-{#                    </div>#}
+                    <a href="{{ path('contact') }}"
+                       class="navbar-item {{ route == 'contact' ? 'is-active' }}">Contact</a>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <a href="{{ path('app_admin_default_index') }}"
+                           class="navbar-item">{{ 'admin.admin'|trans|upper }}</a>
+                    {% endif %}
+                    {% if app.user %}
+                        <div class="navbar-item has-dropdown is-hoverable">
+                            <a class="navbar-link">Account</a>
+                            <div class="navbar-dropdown">
+                                <a class="navbar-item">Dashboard</a>
+                                <a href="{{ path('user_profile') }}" class="navbar-item">Profile</a>
+                                <a href="{{ path('user_settings') }}" class="navbar-item">Settings</a>
+                                <hr class="navbar-divider">
+                                <div class="navbar-item"><a href="{{ path('app_logout') }}">Logout</a></div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <a href="{{ path('app_login') }}" class="navbar-item">{{ 'security.signIn'|trans }}</a>
+                        <a href="{{ path('app_register') }}" class="navbar-item">{{ 'security.register.register'|trans }}</a>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -79,20 +89,91 @@
 {% endblock header %}
 
 <div id="body_content">
+    {% set messages = app.flashes('messages') %}
+    {% if messages is not empty %}
+        <div class="notification has-background-success has-text-white msg-list">
+            <div class="content">
+                <ol class="">
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ol>
+            </div>
+        </div>
+    {% endif %}
+
     {% block body %}
     {% endblock body %}
 </div>
 
 {% block footer %}
-    <footer style="margin-top: 200px">
+    <footer class="footer">
         <div class="container">
-            <div class="content">
-                <p class="has-text-centered is-unselectable">
-                    {{ 'allRightsReserved'|trans }} &copy; {{ "now"|date('Y') }}
-                </p>
+            <div class="columns">
+                <div class="column is-one-third">
+                    {% if app.request.get('_route_params') is iterable %}
+                        {% for loc in locales %}
+                            <a href="{{ path(app.request.attributes.get("_route"), app.request.attributes.get('_route_params')|merge({"_locale": loc })) }}"
+                               class="{{ app.request.locale == loc ? 'active' : '' }}">{{ ('locales.' ~ loc)|trans }}</a>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="column is-two-thirds has-text-right">
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <a href="{{ path('app_admin_default_index') }}">{{ 'admin.admin'|trans }}</a>
+                    {% endif %}
+                    <a href="{{ path('home') }}">{{ 'menu.contact'|trans }}</a>
+                    <a href="{{ path('home') }}">{{ 'menu.help'|trans }}</a>
+                    <a href="{{ path('home') }}">{{ 'menu.terms'|trans }}</a>
+                    <a href="{{ path('home') }}">{{ 'menu.privacy'|trans }}</a>
+                    {% if app.user %}
+                        <a href="{{ path('app_logout') }}">{{ 'security.logout'|trans }}</a>
+                    {% else %}
+                        <a href="{{ path('app_register') }}">{{ 'security.register.register'|trans }}</a>
+                        <a href="{{ path('app_login') }}">{{ 'security.signIn'|trans }}</a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="columns">
+                <div class="column content has-text-centered">
+                    <p class="is-unselectable">
+                        <i class="fab fa-youtube fa-1x"></i>  {{ 'name'|trans }}
+                        | {{ 'allRightsReserved'|trans }}&copy; {{ "now"|date('Y') }}
+                    </p>
+                </div>
             </div>
         </div>
     </footer>
+
+    <div class="modal fade" id="gdprModal" tabindex="-1" role="dialog" aria-labelledby="gdprModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+
+                <a href="{{ path('home') }}" type="button" class="close-modal" data-dismiss="modal">&#10005;</a>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="gdprModalLabel">{{ 'gdpr.title'|trans }}</h5>
+                </div>
+
+                <div class="modal-body">
+                    <p>
+                        {{ 'gdpr.cookies'|trans({
+                            '%link_privacy_start%': '<a href="' ~ path('home') ~ '" target="_blank">',
+                            '%link_privacy_end%': '</a>',
+                            '%link_terms_start%': '<a href="' ~ path('home') ~ '" target="_blank">',
+                            '%link_terms_end%': '</a>',
+                        })|raw|nl2br }}
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"
+                            data-dismiss="modal">{{ 'gdpr.buttonClose'|trans }}</button>
+                    <button type="button" id="gdpr-accept"
+                            class="btn btn-primary">{{ 'gdpr.buttonAccept'|trans }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock footer %}
 </body>
 </html>

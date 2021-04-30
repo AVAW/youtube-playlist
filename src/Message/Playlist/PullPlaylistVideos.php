@@ -4,26 +4,19 @@ declare(strict_types=1);
 
 namespace App\Message\Playlist;
 
-use Countable;
-
-class PullPlaylistVideos implements Countable
+class PullPlaylistVideos
 {
 
-    private string $playlistIdentifier;
+    private string $identifier;
 
-    public function __construct(string $playlistIdentifier)
+    public function __construct(string $identifier)
     {
-        $this->playlistIdentifier = $playlistIdentifier;
+        $this->identifier = $identifier;
     }
 
-    public function getPlaylistIdentifier(): string
+    public function getIdentifier(): string
     {
-        return $this->playlistIdentifier;
-    }
-
-    public function count():int
-    {
-        return 1;
+        return $this->identifier;
     }
 
 }

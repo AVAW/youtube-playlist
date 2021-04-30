@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Command;
 
-use App\Entity\Slack\User;
+use App\Entity\Slack\SlackUser;
 use App\Handler\Request\Slack\User\UserUpdateRequestHandler;
 use App\Model\Slack\User\UserUpdateRequest;
-use App\Service\Slack\User\UserProvider;
+use App\Service\Slack\User\SlackUserProvider;
 use App\Utils\Timestampable\TimestampableHelper;
 use JoliCode\Slack\Api\Client;
 use Psr\Log\LoggerInterface;
@@ -26,13 +26,13 @@ class PullSlackUserCommand extends Command
     protected Client $client;
     protected LoggerInterface $logger;
     protected UserUpdateRequestHandler $userUpdateRequestHandler;
-    protected UserProvider $userProvider;
+    protected SlackUserProvider $userProvider;
 
     public function __construct(
         Client $client,
         LoggerInterface $logger,
         UserUpdateRequestHandler $userUpdateRequestHandler,
-        UserProvider $userProvider,
+        SlackUserProvider $userProvider,
         string $name = null
     ) {
         $this->client = $client;
@@ -53,15 +53,15 @@ class PullSlackUserCommand extends Command
         $io = new SymfonyStyle($input, $output);
 
         // todo: add pagination
-        /** @var User[] $users */
+        /** @var SlackUser[] $users */
         $users = $this->userProvider->findAll();
 
         foreach ($users as $user) {
-            if (TimestampableHelper::isUpdatedInLastXMinutes($user, 10)) {
+            if (TimestampableHelper::isUpdatedInLastXMinutes($user, 60)) {
                 continue;
             }
             try {
-                $slackUser = $this->client->usersInfo(['user' => $user->getUserId()])->getUser();
+                $slackUser = $this->client->usersInfo(['user' => $user->getProfileId()])->getUser();
                 $command = UserUpdateRequest::createFromObjsUser($slackUser);
                 $this->userUpdateRequestHandler->handle($user, $command);
 

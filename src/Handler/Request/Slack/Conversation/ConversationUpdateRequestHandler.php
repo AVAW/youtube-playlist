@@ -4,24 +4,24 @@ declare(strict_types=1);
 
 namespace App\Handler\Request\Slack\Conversation;
 
-use App\Entity\Slack\Conversation;
-use App\Service\Slack\Conversation\ConversationManager;
-use App\Service\Slack\Conversation\ConversationProvider;
-use App\Service\Slack\Team\TeamProvider;
+use App\Entity\Slack\SlackConversation;
+use App\Service\Slack\Conversation\SlackConversationManager;
+use App\Service\Slack\Conversation\SlackConversationProvider;
+use App\Service\Slack\Team\SlackTeamProvider;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 
 class ConversationUpdateRequestHandler
 {
 
-    private ConversationManager $channelManager;
-    private ConversationProvider $channelProvider;
-    private TeamProvider $teamProvider;
+    private SlackConversationManager $channelManager;
+    private SlackConversationProvider $channelProvider;
+    private SlackTeamProvider $teamProvider;
 
     public function __construct(
-        ConversationManager $channelManager,
-        ConversationProvider $channelProvider,
-        TeamProvider $teamProvider
+        SlackConversationManager $channelManager,
+        SlackConversationProvider $channelProvider,
+        SlackTeamProvider $teamProvider
     ) {
         $this->channelManager = $channelManager;
         $this->channelProvider = $channelProvider;
@@ -32,7 +32,7 @@ class ConversationUpdateRequestHandler
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function handle(Conversation $channel, ConversationUpdateInterface $command)
+    public function handle(SlackConversation $channel, ConversationUpdateInterface $command)
     {
         $teams = $this->teamProvider->findByTeamId($command->getTeams());
 

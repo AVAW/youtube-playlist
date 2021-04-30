@@ -4,26 +4,26 @@ declare(strict_types=1);
 
 namespace App\Model\Slack\ConversationPlaylist;
 
-use App\Entity\Slack\Conversation;
+use App\Entity\Slack\SlackConversation;
 use App\Handler\Request\Slack\ConversationPlaylist\ConversationPlaylistFindLastPlaylistInterface;
 
 class ConversationPlaylistFindLastPlaylistRequest implements ConversationPlaylistFindLastPlaylistInterface
 {
 
-    private Conversation $conversation;
+    private SlackConversation $conversation;
 
-    public static function create(Conversation $conversation): self
+    public static function create(SlackConversation $conversation): self
     {
         return (new static)
             ->setConversation($conversation);
     }
 
-    public function getConversation(): Conversation
+    public function getConversation(): SlackConversation
     {
         return $this->conversation;
     }
 
-    public function setConversation(Conversation $conversation): self
+    public function setConversation(SlackConversation $conversation): self
     {
         $this->conversation = $conversation;
 

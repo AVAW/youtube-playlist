@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Playlist\Playlist;
+use App\Exception\NotFoundException;
 use App\Service\Playlist\PlaylistProvider;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,6 +27,7 @@ class PlaylistController extends AbstractController
 
     /**
      * @Route("/{identifier}", name="playlist")
+     * @throws NotFoundException
      */
     public function playlist(
         $identifier,
@@ -33,7 +35,7 @@ class PlaylistController extends AbstractController
     ): Response {
         $playlist = $playlistProvider->findByIdentifier($identifier);
         if (!$playlist instanceof Playlist) {
-            throw new \InvalidArgumentException('Can not find playlist');
+            throw new NotFoundException('Can not find playlist');
         }
 
         return $this->render('playlist/index.html.twig', [

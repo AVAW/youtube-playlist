@@ -11,8 +11,6 @@ use App\Message\Playlist\PullPlaylistVideos;
 use App\Model\Playlist\PlaylistFindRequest;
 use App\Model\Playlist\Video\VideosCreateRequest;
 use App\Service\Playlist\PlaylistProvider;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 class PullPlaylistVideosHandler implements MessageHandlerInterface
@@ -35,13 +33,9 @@ class PullPlaylistVideosHandler implements MessageHandlerInterface
         $this->videosCreateRequestHandler = $videosCreateRequestHandler;
     }
 
-    /**
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
     public function __invoke(PullPlaylistVideos $pullPlaylistVideos)
     {
-        $findPlaylistRequest = PlaylistFindRequest::create($pullPlaylistVideos->getPlaylistIdentifier());
+        $findPlaylistRequest = PlaylistFindRequest::create($pullPlaylistVideos->getIdentifier());
         $playlist = $this->playlistFindHandler->handle($findPlaylistRequest);
 
         $videos = $this->playlistClient->getPlaylistVideos($playlist->getYoutubeId());

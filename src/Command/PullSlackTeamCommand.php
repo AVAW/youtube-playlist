@@ -6,7 +6,7 @@ namespace App\Command;
 
 use App\Handler\Request\Slack\Team\TeamUpdateRequestHandler;
 use App\Model\Slack\Team\TeamUpdateRequest;
-use App\Service\Slack\Team\TeamProvider;
+use App\Service\Slack\Team\SlackTeamProvider;
 use App\Utils\Timestampable\TimestampableHelper;
 use JoliCode\Slack\Api\Client;
 use Psr\Log\LoggerInterface;
@@ -24,13 +24,13 @@ class PullSlackTeamCommand extends Command
 
     protected Client $client;
     protected LoggerInterface $logger;
-    protected TeamProvider $teamProvider;
+    protected SlackTeamProvider $teamProvider;
     protected TeamUpdateRequestHandler $teamUpdateRequestHandler;
 
     public function __construct(
         Client $client,
         LoggerInterface $logger,
-        TeamProvider $teamProvider,
+        SlackTeamProvider $teamProvider,
         TeamUpdateRequestHandler $teamUpdateRequestHandler,
         string $name = null
     ) {

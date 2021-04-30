@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace App\Handler\Request\Slack\ConversationPlaylist;
 
-use App\Entity\Slack\ConversationPlaylist;
-use App\Service\Slack\ConversationPlaylist\ConversationPlaylistManager;
+use App\Entity\Slack\SlackConversationPlaylist;
+use App\Service\Slack\ConversationPlaylist\SlackConversationPlaylistManager;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 
 class ConversationPlaylistCreateRequestHandler
 {
 
-    private ConversationPlaylistManager $conversationPlaylistManager;
+    private SlackConversationPlaylistManager $conversationPlaylistManager;
 
     public function __construct(
-        ConversationPlaylistManager $conversationPlaylistManager
+        SlackConversationPlaylistManager $conversationPlaylistManager
     ) {
         $this->conversationPlaylistManager = $conversationPlaylistManager;
     }
@@ -24,7 +24,7 @@ class ConversationPlaylistCreateRequestHandler
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function handle(ConversationPlaylistCreateInterface $conversationPlaylistCreateRequest): ConversationPlaylist
+    public function handle(ConversationPlaylistCreateInterface $conversationPlaylistCreateRequest): SlackConversationPlaylist
     {
         return $this->conversationPlaylistManager->create(
             $conversationPlaylistCreateRequest->getPlaylist(),

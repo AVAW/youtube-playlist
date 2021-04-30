@@ -52,7 +52,7 @@ class Contact implements \Stringable, TimestampableInterface
 
     public function __toString(): string
     {
-        return __CLASS__ . '_' . $this->getId();
+        return __CLASS__ . '__' . $this->getId();
     }
 
     public function getId(): ?int

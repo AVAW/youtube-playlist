@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity\Playlist;
 
-use App\Entity\Slack\User;
+use App\Entity\Slack\SlackUser;
 use App\Repository\Playlist\PlaylistVideoRepository;
 use App\Utils\Timestampable\Timestampable;
 use App\Utils\Timestampable\TimestampableInterface;
@@ -36,7 +36,7 @@ class PlaylistVideo implements \Stringable, TimestampableInterface
     private UuidV4 $identifier;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Playlist::class, inversedBy="videos")
+     * @ORM\ManyToOne(targetEntity=Playlist::class, inversedBy="videos", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private Playlist $playlist;
@@ -60,19 +60,25 @@ class PlaylistVideo implements \Stringable, TimestampableInterface
     private \DateTimeInterface $publishedAt;
 
     /**
-     * @ORM\ManyToMany(targetEntity=User::class, inversedBy="videos")
+     * @ORM\ManyToMany(targetEntity=SlackUser::class, inversedBy="videos")
      * @Groups({"playlist"})
      */
     private Collection $authors;
 
+    /**
+     * @ORM\OneToMany(targetEntity=PlaylistPlay::class, mappedBy="video", orphanRemoval=true)
+     */
+    private Collection $plays;
+
     public function __construct()
     {
         $this->authors = new ArrayCollection();
+        $this->plays = new ArrayCollection();
     }
 
     public function __toString(): string
     {
-        return __CLASS__ . ' ' . $this->getId();
+        return __CLASS__ . '__' . $this->getId();
     }
 
     public function getId(): ?int
@@ -141,14 +147,14 @@ class PlaylistVideo implements \Stringable, TimestampableInterface
     }
 
     /**
-     * @return Collection|User[]
+     * @return Collection|SlackUser[]
      */
     public function getAuthors(): Collection
     {
         return $this->authors;
     }
 
-    public function addAuthor(User $author): self
+    public function addAuthor(SlackUser $author): self
     {
         if (!$this->authors->contains($author)) {
             $this->authors[] = $author;
@@ -157,9 +163,39 @@ class PlaylistVideo implements \Stringable, TimestampableInterface
         return $this;
     }
 
-    public function removeAuthor(User $author): self
+    public function removeAuthor(SlackUser $author): self
     {
         $this->authors->removeElement($author);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|PlaylistPlay[]
+     */
+    public function getPlays(): Collection
+    {
+        return $this->plays;
+    }
+
+    public function addPlay(PlaylistPlay $play): self
+    {
+        if (!$this->plays->contains($play)) {
+            $this->plays[] = $play;
+            $play->setVideo($this);
+        }
+
+        return $this;
+    }
+
+    public function removePlay(PlaylistPlay $play): self
+    {
+        if ($this->plays->removeElement($play)) {
+            // set the owning side to null (unless already changed)
+            if ($play->getVideo() === $this) {
+                $play->setVideo(null);
+            }
+        }
 
         return $this;
     }

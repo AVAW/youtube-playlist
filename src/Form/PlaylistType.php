@@ -9,6 +9,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\NotNull;
 use Symfony\Component\Validator\Constraints\Uuid;
 
@@ -21,6 +22,7 @@ class PlaylistType extends AbstractType
             ->add('identifier', TextType::class, [
                 'constraints' => [
                     new NotNull(),
+                    new NotBlank(),
                     new Uuid(null, null, [Uuid::V4_RANDOM]),
                 ],
             ]);

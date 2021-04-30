@@ -4,44 +4,47 @@ declare(strict_types=1);
 
 namespace App\Handler\Request\Slack\User;
 
-use App\Entity\Slack\Conversation;
-use App\Entity\Slack\User;
-use App\Event\Slack\NewUserEvent;
-use App\Service\Slack\User\UserManager;
-use App\Service\Slack\User\UserProvider;
+use App\Entity\Slack\SlackConversation;
+use App\Entity\Slack\SlackUser;
+use App\Event\Slack\NewSlackUserEvent;
+use App\Message\Slack\NewSlackUser;
+use App\Service\Slack\User\SlackUserManager;
+use App\Service\Slack\User\SlackUserProvider;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class UserCollectionGetOrCreateRequestHandler
 {
 
     private EventDispatcherInterface $dispatcher;
-    private UserManager $userManager;
-    private UserProvider $userProvider;
+    private SlackUserManager $userManager;
+    private SlackUserProvider $userProvider;
+    private MessageBusInterface $bus;
 
     public function __construct(
         EventDispatcherInterface $dispatcher,
-        UserManager $userManager,
-        UserProvider $userProvider
+        SlackUserManager $userManager,
+        SlackUserProvider $userProvider,
+        MessageBusInterface $bus
     ) {
         $this->dispatcher = $dispatcher;
         $this->userManager = $userManager;
         $this->userProvider = $userProvider;
+        $this->bus = $bus;
     }
 
     /**
-     * @return User[]
+     * @return SlackUser[]
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function handle(Conversation $conversation, UserCollectionGetOrCreateInterface $command): array
+    public function handle(UserCollectionGetOrCreateInterface $command, SlackConversation $conversation): void
     {
-        $users = [];
         foreach ($command->getUsersIds() as $usersId) {
-            $user = $this->userProvider->findByUserId($usersId);
-            if ($user instanceof User) {
-                $users [] = $user;
+            $user = $this->userProvider->findBySlackUserId($usersId);
+            if ($user instanceof SlackUser) {
                 continue;
             }
 
@@ -52,10 +55,8 @@ class UserCollectionGetOrCreateRequestHandler
                 $conversation
             );
 
-            $this->dispatcher->dispatch(new NewUserEvent($user));
+            $this->bus->dispatch(new NewSlackUser((string) $user->getIdentifier()));
         }
-
-        return $users;
     }
 
 }

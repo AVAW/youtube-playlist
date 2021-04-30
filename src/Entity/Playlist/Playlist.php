@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Entity\Playlist;
 
-use App\Entity\Slack\Command;
-use App\Entity\Slack\ConversationPlaylist;
 use App\Repository\Playlist\PlaylistRepository;
 use App\Utils\Timestampable\Timestampable;
 use App\Utils\Timestampable\TimestampableInterface;
@@ -17,7 +15,7 @@ use Symfony\Component\Uid\UuidV4;
 
 /**
  * @ORM\Entity(repositoryClass=PlaylistRepository::class)
- * @ORM\Table(indexes={@ORM\Index(name="identifier_index", columns={"identifier"})})
+ * @ORM\Table(indexes={@ORM\Index(name="identifier_idx", columns={"identifier"})})
  */
 class Playlist implements \Stringable, TimestampableInterface
 {
@@ -78,33 +76,26 @@ class Playlist implements \Stringable, TimestampableInterface
      */
     private ?int $videosAmount;
 
-    // todo: remove eager, use query builder
     /**
-     * @ORM\OneToMany(targetEntity=PlaylistVideo::class, mappedBy="playlist", orphanRemoval=true, fetch="EAGER")
+     * @ORM\OneToMany(targetEntity=PlaylistVideo::class, mappedBy="playlist", orphanRemoval=true)
      * @Groups({"playlist"})
      */
-    private Collection $playlistVideos;
+    private Collection $videos;
 
     /**
-     * @ORM\OneToOne(targetEntity=Command::class, cascade={"persist", "remove"}, fetch="EAGER")
-     * @Groups({"playlist"})
+     * @ORM\OneToMany(targetEntity=PlaylistPlay::class, mappedBy="playlist", orphanRemoval=true)
      */
-    private ?Command $command;
-
-    /**
-     * @ORM\OneToMany(targetEntity=ConversationPlaylist::class, mappedBy="playlist")
-     */
-    private Collection $conversationPlaylists;
+    private Collection $plays;
 
     public function __construct()
     {
-        $this->playlistVideos = new ArrayCollection();
-        $this->conversationPlaylists = new ArrayCollection();
+        $this->videos = new ArrayCollection();
+        $this->plays = new ArrayCollection();
     }
 
     public function __toString(): string
     {
-        return __CLASS__ . '_' . $this->getId();
+        return __CLASS__ . '__' . $this->getId();
     }
 
     public function getId(): ?int
@@ -211,24 +202,24 @@ class Playlist implements \Stringable, TimestampableInterface
     /**
      * @return Collection|PlaylistVideo[]
      */
-    public function getPlaylistVideos(): Collection
+    public function getVideos(): Collection
     {
-        return $this->playlistVideos;
+        return $this->videos;
     }
 
-    public function addPlaylistVideo(PlaylistVideo $video): self
+    public function addVideo(PlaylistVideo $video): self
     {
-        if (!$this->playlistVideos->contains($video)) {
-            $this->playlistVideos[] = $video;
+        if (!$this->videos->contains($video)) {
+            $this->videos[] = $video;
             $video->setPlaylist($this);
         }
 
         return $this;
     }
 
-    public function removePlaylistVideo(PlaylistVideo $video): self
+    public function removeVideo(PlaylistVideo $video): self
     {
-        if ($this->playlistVideos->removeElement($video)) {
+        if ($this->videos->removeElement($video)) {
             // set the owning side to null (unless already changed)
             if ($video->getPlaylist() === $this) {
                 $video->setPlaylist(null);
@@ -238,42 +229,30 @@ class Playlist implements \Stringable, TimestampableInterface
         return $this;
     }
 
-    public function getCommand(): ?Command
-    {
-        return $this->command;
-    }
-
-    public function setCommand(?Command $command): self
-    {
-        $this->command = $command;
-
-        return $this;
-    }
-
     /**
-     * @return Collection|ConversationPlaylist[]
+     * @return Collection|PlaylistPlay[]
      */
-    public function getConversationPlaylists(): Collection
+    public function getPlays(): Collection
     {
-        return $this->conversationPlaylists;
+        return $this->plays;
     }
 
-    public function addConversationPlaylist(ConversationPlaylist $conversationPlaylist): self
+    public function addPlay(PlaylistPlay $play): self
     {
-        if (!$this->conversationPlaylists->contains($conversationPlaylist)) {
-            $this->conversationPlaylists[] = $conversationPlaylist;
-            $conversationPlaylist->setPlaylist($this);
+        if (!$this->plays->contains($play)) {
+            $this->plays[] = $play;
+            $play->setPlaylist($this);
         }
 
         return $this;
     }
 
-    public function removeConversationPlaylist(ConversationPlaylist $conversationPlaylist): self
+    public function removePlay(PlaylistPlay $play): self
     {
-        if ($this->conversationPlaylists->removeElement($conversationPlaylist)) {
+        if ($this->plays->removeElement($play)) {
             // set the owning side to null (unless already changed)
-            if ($conversationPlaylist->getPlaylist() === $this) {
-                $conversationPlaylist->setPlaylist(null);
+            if ($play->getPlaylist() === $this) {
+                $play->setPlaylist(null);
             }
         }
 

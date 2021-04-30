@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Command;
 
-use App\Entity\Slack\UserPresence;
+use App\Entity\Slack\SlackUserPresence;
 use App\Handler\Request\Slack\UserPresence\UserPresenceCreateOrUpdateRequestHandler;
 use App\Model\Slack\UserPresence\UserPresenceCreateOrUpdateRequest;
-use App\Service\Slack\User\UserProvider;
+use App\Service\Slack\User\SlackUserProvider;
 use App\Utils\Timestampable\TimestampableHelper;
 use JoliCode\Slack\Api\Client;
 use Psr\Log\LoggerInterface;
@@ -26,13 +26,13 @@ class PullSlackUserPresenceCommand extends Command
     protected Client $client;
     protected LoggerInterface $logger;
     protected UserPresenceCreateOrUpdateRequestHandler $userPresenceCreateOrUpdateRequestHandler;
-    protected UserProvider $userProvider;
+    protected SlackUserProvider $userProvider;
 
     public function __construct(
         Client $client,
         LoggerInterface $logger,
         UserPresenceCreateOrUpdateRequestHandler $userPresenceCreateOrUpdateRequestHandler,
-        UserProvider $userProvider,
+        SlackUserProvider $userProvider,
         string $name = null
     ) {
         $this->client = $client;
@@ -56,13 +56,13 @@ class PullSlackUserPresenceCommand extends Command
         $users = $this->userProvider->findAll();
 
         foreach ($users as $user) {
-            if ($user->getPresence() instanceof UserPresence
+            if ($user->getPresence() instanceof SlackUserPresence
                 && TimestampableHelper::isUpdatedInLastXMinutes($user->getPresence(), 5)
             ) {
                 continue;
             }
             try {
-                $slackPresence = $this->client->usersGetPresence(['user' => $user->getUserId()]);
+                $slackPresence = $this->client->usersGetPresence(['user' => $user->getProfileId()]);
                 $command = UserPresenceCreateOrUpdateRequest::createFromUserPresence($slackPresence);
                 $this->userPresenceCreateOrUpdateRequestHandler->handle($user, $command);
             } catch (\Throwable $e) {

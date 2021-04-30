@@ -11,6 +11,7 @@ class UserUpdateRequest implements UserUpdateInterface
 {
 
     private ?string $teamId;
+    private ?string $email;
     private ?string $displayedName;
     private ?string $title;
     private ?string $realName;
@@ -36,6 +37,7 @@ class UserUpdateRequest implements UserUpdateInterface
 
         return (new static)
             ->setTeamId($slackUser->getTeamId())
+            ->setEmail($slackUserProfile->getEmail())
             ->setDisplayedName($slackUserProfile->getDisplayNameNormalized())
             ->setTitle($slackUserProfile->getTitle())
             ->setRealName($slackUserProfile->getRealNameNormalized())
@@ -64,6 +66,18 @@ class UserUpdateRequest implements UserUpdateInterface
     public function setTeamId(?string $teamId): self
     {
         $this->teamId = $teamId;
+
+        return $this;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(?string $email): self
+    {
+        $this->email = $email;
 
         return $this;
     }

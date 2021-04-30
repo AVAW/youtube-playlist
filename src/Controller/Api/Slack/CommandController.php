@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Controller\Api\Slack;
 
-use App\Form\Slack\Command\CommandType;
-use App\Handler\Request\Command\CommandHandlerCollection;
-use App\Handler\Request\Command\CommandInterface;
+use App\Form\Slack\Command\SlackCommandType;
 use App\Handler\Request\Slack\Conversation\ConversationGetOrCreateRequestHandler;
 use App\Handler\Request\Slack\Command\CommandCreateRequestHandler;
+use App\Handler\Request\Slack\SlashCommands\CommandHandlerCollection;
+use App\Handler\Request\Slack\SlashCommands\CommandInterface;
 use App\Handler\Request\Slack\Team\TeamGetOrCreateRequestHandler;
 use App\Handler\Request\Slack\User\UserGetOrCreateRequestHandler;
 use App\Model\Slack\GetOrCreateRequest;
@@ -43,9 +43,8 @@ class CommandController extends AbstractFOSRestController
     ): Response {
         // todo: add https://api.slack.com/authentication/verifying-requests-from-slack#about
         // hash('sha256', $request->request->all() . $request->headers->get('x-slack-signature'));
-
         $command = new GetOrCreateRequest();
-        $form = $this->createForm(CommandType::class, $command);
+        $form = $this->createForm(SlackCommandType::class, $command);
         $form->submit([
             'token' => $request->request->get('token'),
             'teamId' => $request->request->get('team_id'),
@@ -59,9 +58,6 @@ class CommandController extends AbstractFOSRestController
         ]);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var GetOrCreateRequest $command */
-            $command = $form->getData();
-
             $team = $teamRequestHandler->handle($command);
             $conversation = $channelRequestHandler->handle($command);
             $user = $userRequestHandler->handle($command);

@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace App\Handler\Request\Slack\User;
 
-use App\Entity\Slack\Team;
+use App\Entity\Slack\SlackTeam;
 
 interface UserUpdateInterface
 {
 
     public function getTeamId(): ?string;
+
+    public function getEmail(): ?string;
 
     public function getDisplayedName(): ?string;
 

@@ -5,17 +5,17 @@ declare(strict_types=1);
 namespace App\Handler\Request\Slack\ConversationPlaylist;
 
 use App\Entity\Playlist\Playlist;
-use App\Entity\Slack\ConversationPlaylist;
-use App\Service\Slack\ConversationPlaylist\ConversationPlaylistProvider;
+use App\Entity\Slack\SlackConversationPlaylist;
+use App\Service\Slack\ConversationPlaylist\SlackConversationPlaylistProvider;
 use Doctrine\ORM\NonUniqueResultException;
 
 class ConversationPlaylistFindLastPlaylistRequestHandler
 {
 
-    private ConversationPlaylistProvider $conversationPlaylistProvider;
+    private SlackConversationPlaylistProvider $conversationPlaylistProvider;
 
     public function __construct(
-        ConversationPlaylistProvider $conversationPlaylistProvider
+        SlackConversationPlaylistProvider $conversationPlaylistProvider
     ) {
         $this->conversationPlaylistProvider = $conversationPlaylistProvider;
     }
@@ -28,7 +28,7 @@ class ConversationPlaylistFindLastPlaylistRequestHandler
         $conversationPlaylist = $this->conversationPlaylistProvider
             ->findLastConversationPlaylist($findLastPlaylist->getConversation());
 
-        if ($conversationPlaylist instanceof ConversationPlaylist) {
+        if ($conversationPlaylist instanceof SlackConversationPlaylist) {
             return $conversationPlaylist->getPlaylist();
         }
 

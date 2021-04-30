@@ -1,0 +1,141 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block body %}
+    <section class="section has-background-light">
+        <div class="container">
+
+            <div class="columns">
+                <div class="column is-3 is-offset-3">
+                    <img src="" alt="Register">
+                </div>
+
+                <div class="column is-one-quarter is-offset-0">
+                    <h2 class="title is-2">Register</h2>
+
+                    {% set messages = app.flashes('messages') %}
+                    {% if messages is not empty %}
+                        <div class="notification has-background-success has-text-white msg-list">
+                            <div class="content">
+                                <ol class="">
+                                    {% for message in messages %}
+                                        <li>{{ message }}</li>
+                                    {% endfor %}
+                                </ol>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if error is defined and error is not empty %}
+                        <div class="notification has-background-danger has-text-white msg-list">
+                            <div class="content">
+                                <ol class="">
+                                    <li>{{ error.messageKey|trans(error.messageData, 'security') }}</li>
+                                </ol>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% for flashError in app.flashes('verify_email_error') %}
+                        <div class="alert alert-danger" role="alert">{{ flashError }}</div>
+                    {% endfor %}
+
+                    {{ form_start(registrationForm) }}
+                    <div class="field">
+                        <p class="control has-icons-left has-icons-right">
+                            {{ form_widget(registrationForm.login, {
+                                attr: {
+                                    class: 'input',
+                                },
+                            }) }}
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-user"></i>
+                            </span>
+                            <span class="icon is-small is-right is-hidden" id="loginCheck">
+                                <i class="fas fa-check"></i>
+                            </span>
+                            <span class="icon is-small is-right is-hidden" id="loginIncorrect">
+                                <i class="fas fa-times"></i>
+                            </span>
+                            <span class="icon is-small is-right is-hidden" id="loginLoader">
+                                <i class="fas fa-spinner fa-pulse"></i>
+                            </span>
+                        </p>
+                        <p class="help is-danger">
+                            {% for error in registrationForm.login.vars.errors %}
+                                {{ error.message }}
+                            {% endfor %}
+                        </p>
+                    </div>
+
+                    <div class="field">
+                        <p class="control has-icons-left ">
+                            {{ form_widget(registrationForm.email, {
+                                attr: {
+                                    class: 'input',
+                                },
+                            }) }}
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-envelope"></i>
+                            </span>
+                        </p>
+                        <p class="help is-danger">
+                            {% for error in registrationForm.email.vars.errors %}
+                                {{ error.message }}
+                            {% endfor %}
+                        </p>
+                    </div>
+
+
+                    <div class="field">
+                        <p class="control has-icons-left">
+                            {{ form_widget(registrationForm.plainPassword, {
+                                attr: {
+                                    class: 'input',
+                                },
+                            }) }}
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-lock"></i>
+                            </span>
+                        </p>
+                        <p class="help is-danger">
+                            {% for error in registrationForm.plainPassword.vars.errors %}
+                                {{ error.message }}
+                            {% endfor %}
+                        </p>
+                    </div>
+
+
+                    <div class="field is-unselectable">
+                        <label>
+                            {{ 'security.register.regulations'|trans({'%link_start%' : '<a href="' ~ path('home') ~ '" target="_blank">', '%link_end%' : '</a>'})|raw }}
+                            {{ form_widget(registrationForm.agreeTerms, {
+                                attr: {class: 'checkbox', 'required': 'norequired'}
+                            }) }}
+                        </label>
+                    </div>
+                    <span class="cr"><i class="cr-icon glyphicon glyphicon-ok"></i></span>
+                    <div class="field">
+                        <p class="control">
+                            <button class="button is-black">Register</button>
+                            <a href="{{ path('app_login') }}" class="button is-text is-pulled-right">
+                                Already have an account?
+                            </a>
+
+                        </p>
+                    </div>
+                    {{ form_end(registrationForm) }}
+
+                    <br>
+                    <a href="{{ path('connect_google_connect') }}"
+                       class="button is-fullwidth is-danger is-outlined ">Register with Google</a>
+                    <br>
+                    {# <a href="{{ path('connect_slack_connect') }}" #}
+                    {# class="button is-fullwidth is-info is-outlined is-disabled">Register with Slack</a> #}
+
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

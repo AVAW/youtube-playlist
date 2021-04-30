@@ -1,0 +1,78 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Reset your password{% endblock %}
+
+{% block body %}
+    <section class="section has-background-light">
+        <div class="container">
+
+            <div class="columns">
+                <div class="column is-3 is-offset-3">
+                    <img src="" alt="Reset password">
+                </div>
+
+                <div class="column is-one-quarter is-offset-0">
+                    <h2 class="title is-2">Reset password</h2>
+
+                    {% set messages = app.flashes('messages') %}
+                    {% if messages is not empty %}
+                        <div class="notification has-background-success has-text-white msg-list">
+                            <div class="content">
+                                <ol class="">
+                                    {% for message in messages %}
+                                        <li>{{ message }}</li>
+                                    {% endfor %}
+                                </ol>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if error is defined and error is not empty %}
+                        <div class="notification has-background-danger has-text-white msg-list">
+                            <div class="content">
+                                <ol class="">
+                                    <li>{{ error.messageKey|trans(error.messageData, 'security') }}</li>
+                                </ol>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% for flashError in app.flashes('reset_password_error') %}
+                        <div class="alert alert-danger" role="alert">{{ flashError }}</div>
+                    {% endfor %}
+                    <h1>Reset your password</h1>
+
+                    {{ form_start(requestForm) }}
+                    <div class="field">
+                        <p class="control has-icons-left ">
+                            {{ form_widget(requestForm.email, {
+                                attr: {
+                                    class: 'input',
+                                },
+                            }) }}
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-envelope"></i>
+                            </span>
+                        </p>
+                        <small>
+                            Enter your email address and we we will send
+                            <br> you a link to reset your password.
+                        </small>
+                        <p class="help is-danger">
+                            {% for error in requestForm.email.vars.errors %}
+                                {{ error.message }}
+                            {% endfor %}
+                        </p>
+                    </div>
+
+                    <div class="field">
+                        <p class="control">
+                            <button class="button is-black">Send password reset email</button>
+                        </p>
+                    </div>
+                    {{ form_end(requestForm) }}
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

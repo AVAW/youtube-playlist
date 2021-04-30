@@ -5,16 +5,16 @@ declare(strict_types=1);
 namespace App\Model\Slack\ConversationPlaylist;
 
 use App\Entity\Playlist\Playlist;
-use App\Entity\Slack\Conversation;
+use App\Entity\Slack\SlackConversation;
 use App\Handler\Request\Slack\ConversationPlaylist\ConversationPlaylistCreateInterface;
 
 class ConversationPlaylistCreateRequest implements ConversationPlaylistCreateInterface
 {
 
     private Playlist $playlist;
-    private Conversation $conversation;
+    private SlackConversation $conversation;
 
-    public static function create(Playlist $playlist, Conversation $conversation): self
+    public static function create(Playlist $playlist, SlackConversation $conversation): self
     {
         return (new static)
             ->setPlaylist($playlist)
@@ -33,12 +33,12 @@ class ConversationPlaylistCreateRequest implements ConversationPlaylistCreateInt
         return $this;
     }
 
-    public function getConversation(): Conversation
+    public function getConversation(): SlackConversation
     {
         return $this->conversation;
     }
 
-    public function setConversation(Conversation $conversation): self
+    public function setConversation(SlackConversation $conversation): self
     {
         $this->conversation = $conversation;
 

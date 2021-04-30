@@ -4,21 +4,21 @@ declare(strict_types=1);
 
 namespace App\Handler\Request\Slack\User;
 
-use App\Entity\Slack\User;
-use App\Service\Slack\Team\TeamProvider;
-use App\Service\Slack\User\UserManager;
+use App\Entity\Slack\SlackUser;
+use App\Service\Slack\Team\SlackTeamProvider;
+use App\Service\Slack\User\SlackUserManager;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 
 class UserUpdateRequestHandler
 {
 
-    private UserManager $userManager;
-    private TeamProvider $teamProvider;
+    private SlackUserManager $userManager;
+    private SlackTeamProvider $teamProvider;
 
     public function __construct(
-        UserManager $userManager,
-        TeamProvider $teamProvider
+        SlackUserManager $userManager,
+        SlackTeamProvider $teamProvider
     ) {
         $this->userManager = $userManager;
         $this->teamProvider = $teamProvider;
@@ -28,14 +28,15 @@ class UserUpdateRequestHandler
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function handle(User $user, UserUpdateInterface $command)
+    public function handle(SlackUser $slackUser, UserUpdateInterface $command)
     {
         $team = $this->teamProvider->findOneByTeamId($command->getTeamId());
 
         $this->userManager->update(
-            $user,
+            $slackUser,
             $team,
             null,
+            $command->getEmail(),
             $command->getRealName(),
             $command->getDisplayedName(),
             $command->getTitle(),

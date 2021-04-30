@@ -6,7 +6,7 @@ namespace App\Command;
 
 use App\Handler\Request\Slack\Conversation\ConversationUpdateRequestHandler;
 use App\Model\Slack\Conversation\ConversationUpdateRequest;
-use App\Service\Slack\Conversation\ConversationProvider;
+use App\Service\Slack\Conversation\SlackConversationProvider;
 use App\Utils\Timestampable\TimestampableHelper;
 use JoliCode\Slack\Api\Client;
 use Psr\Log\LoggerInterface;
@@ -25,11 +25,11 @@ class PullSlackConversationCommand extends Command
     protected Client $client;
     protected ConversationUpdateRequestHandler $conversationUpdateRequestHandler;
     protected LoggerInterface $logger;
-    protected ConversationProvider $conversationProvider;
+    protected SlackConversationProvider $conversationProvider;
 
     public function __construct(
         Client $client,
-        ConversationProvider $conversationProvider,
+        SlackConversationProvider $conversationProvider,
         ConversationUpdateRequestHandler $conversationUpdateRequestHandler,
         LoggerInterface $logger,
         string $name = null

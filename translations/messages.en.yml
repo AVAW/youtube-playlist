@@ -1,7 +1,26 @@
-name: YouTube playlist BOT
+name: YouTube playlist
+
+# Do not add this translation in other translation files, just add all languages to this list:
+locales:
+    en: English
+    zh: 中文
+
+language:
+    en: English
+    zh: Chinese
+
 allRightsReserved: All rights reserved
-submit: Submit
-shuffle: Shuffle
+
+buttons:
+    submit: Submit
+    shuffle: Shuffle
+
+menu:
+    contact: Contact
+    help: Help
+    terms: Terms & conditions of use
+    privacy: Privacy policy
+
 playlist:
     error:
         invalidUrl: This is not a valid URL.
@@ -14,6 +33,34 @@ playlist:
         credits: Playlist created by *@%author%* at %at%
     open: Open playlist
     url: YouTube playlist URL
-    realUrl: https://www.youtube.com/watch?list=xyz
+    realUrl: www.youtube.com?list=xyz
+
 command:
     wrong: Wrong command. Please try again.
+
+admin:
+    admin: admin
+
+user:
+    login: Login
+    email: Email
+
+security:
+    logout: Logout
+    signIn: Sign in
+    success:
+        emailVerified: Your email address has been verified.
+    remember: Remember me
+    forgotPassword: Forgot password?
+    register:
+        register: Register
+        regulations: I accept the %link_start%Terms and Conditions of Use, Privace policy and Cookie policy%link_end%
+
+gdpr:
+    title: Privacy policy
+    buttonClose: No, I do not agree.
+    buttonAccept: Got it, thanks!
+    cookies: |
+        This site uses an ad delivery service provided by <name> and its partners use technology such as cookies on this site to provide services, analyze user activity, and engage in advertising activity. By continuing to use the site, you consent to the use of these technologies. Additionally, Cloutteries.com engages in certain interest-based advertising activities in order to support this site and to provide personalized ad experiences. By clicking “Got it, thanks!”, you consent to this activity. As advertising is one of our main sources of income necessary to maintain the site and that the other information we collect is necessary to conduct our business (such as our duty to counteract money laundering), by clicking "No, I do not agree." will completely prevent browsing our website.
+
+        Please review the %link_privacy_start%Privacy Policy%link_privacy_end% applicable to advertisements by Cloutteries.com on this site, and the Privacy Policy linked in the footer of this site for all other data processing purposes. If you wish to revoke consent once given, please delete your cookies for this website. We also recommend that you read the %link_terms_start%Terms and Conditions of Use%link_terms_end% in order to learn all the conditions necessary to use the Cloutteries.com website.

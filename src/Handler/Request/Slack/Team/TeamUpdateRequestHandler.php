@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace App\Handler\Request\Slack\Team;
 
-use App\Entity\Slack\Team;
-use App\Service\Slack\Team\TeamManager;
+use App\Entity\Slack\SlackTeam;
+use App\Service\Slack\Team\SlackTeamManager;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 
 class TeamUpdateRequestHandler
 {
 
-    private TeamManager $teamManager;
+    private SlackTeamManager $teamManager;
 
     public function __construct(
-        TeamManager $teamManager
+        SlackTeamManager $teamManager
     ) {
         $this->teamManager = $teamManager;
     }
@@ -24,7 +24,7 @@ class TeamUpdateRequestHandler
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function handle(Team $team, TeamUpdateInterface $command)
+    public function handle(SlackTeam $team, TeamUpdateInterface $command)
     {
         $this->teamManager->update(
             $team,

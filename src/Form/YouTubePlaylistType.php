@@ -10,6 +10,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\NotNull;
 use Symfony\Component\Validator\Constraints\Url;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -35,6 +36,7 @@ class YouTubePlaylistType extends AbstractType
                 ],
                 'constraints' => [
                     new NotNull(),
+                    new NotBlank(),
                     new Url(null, $this->translator->trans('playlist.error.invalidUrl')),
                     new YouTubePlaylistUrl(),
                 ],

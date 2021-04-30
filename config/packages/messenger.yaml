@@ -24,3 +24,6 @@ framework:
         routing:
             # Route your messages to the transports
             'App\Message\Playlist\PullPlaylistVideos': async
+            'App\Message\Slack\NewSlackConversation': async
+            'App\Message\Slack\NewSlackTeam': async
+            'App\Message\Slack\NewSlackUser': async

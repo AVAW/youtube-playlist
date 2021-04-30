@@ -4,8 +4,12 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
+    locale: en
+    locales: [ en, zh ]
+
     slack:
         verification_token: '%env(SLACK_VERIFICATION_TOKEN)%'
+        verification_token_oauth: '%env(SLACK_OAUTH_TOKEN_USER)%'
 
 services:
     # default configuration for services in *this* file
@@ -39,11 +43,21 @@ services:
         calls:
             - [ setAnnotationReader, [ '@annotation_reader' ] ]
 
+    # JoliCode Slack API Client
     JoliCode\Slack\Api\Client:
         factory: 'JoliCode\Slack\ClientFactory::create'
         arguments:
             $token: '%env(SLACK_TOKEN)%'
 
-    App\Handler\Request\Command\CommandHandlerCollection:
-        arguments: [ !tagged { tag: 'app.command.handler' } ]
 
+    # Handler
+
+    App\Handler\Request\Slack\SlashCommands\CommandHandlerCollection:
+        arguments: [ !tagged { tag: 'app.slack.slash-command.handler' } ]
+
+
+    # Twig
+
+    App\Twig\Locales:
+        arguments:
+            $locales: '%locales%'

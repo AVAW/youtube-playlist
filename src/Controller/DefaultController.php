@@ -10,6 +10,8 @@ use App\Form\YouTubePlaylistType;
 use App\Handler\Request\Playlist\PlaylistCreateRequestHandler;
 use App\Model\Playlist\PlaylistCreateRequest;
 use App\Repository\ContactRepository;
+use App\Repository\User\UserRepository;
+use App\Service\User\UserProvider;
 use DateTime;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
@@ -34,11 +36,14 @@ class DefaultController extends AbstractController
 
 
 
-
+, UserRepository $userRepository
     ): Response {
         // PLAYGROUND
 
 
+
+//$user = $userRepository->findOneByEmailInProfiles('a.wojcik@arris.pl');
+//dd($user);
 
 
 
