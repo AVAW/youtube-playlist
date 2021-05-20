@@ -36,7 +36,7 @@ class PlaylistVideo implements \Stringable, TimestampableInterface
     private UuidV4 $identifier;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Playlist::class, inversedBy="videos", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity=Playlist::class, inversedBy="videos")
      * @ORM\JoinColumn(nullable=false)
      */
     private Playlist $playlist;

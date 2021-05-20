@@ -7,7 +7,9 @@ namespace App\Service\Playlist\Video;
 use App\Dto\Playlist\VideoDto;
 use App\Entity\Playlist\Playlist;
 use App\Entity\Playlist\PlaylistVideo;
+use DateTimeInterface;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\ORMException;
 use Symfony\Component\Uid\UuidV4;
 
 class PlaylistVideoManager
@@ -25,22 +27,28 @@ class PlaylistVideoManager
     }
 
     public function create(
-        Playlist $playlist,
+        Playlist $playlist = null,
         string $videoId,
         string $title,
-        \DateTimeInterface $publishedAt
+        DateTimeInterface $publishedAt
     ): PlaylistVideo {
-        return (new PlaylistVideo())
-            ->setPlaylist($playlist)
+        $video = (new PlaylistVideo())
             ->setVideoId($videoId)
             ->setTitle($title)
             ->setPublishedAt($publishedAt)
             ->setIdentifier(new UuidV4());
+
+        if ($playlist instanceof Playlist) {
+            $video->setPlaylist($playlist);
+        }
+
+        return $video;
     }
 
     /**
      * Batch Processing - Bulk Inserts
      * @param VideoDto[] $videos
+     * @throws ORMException
      */
     public function bulkInserts(Playlist $playlist, array $videos)
     {
@@ -63,6 +71,8 @@ class PlaylistVideoManager
             if (($i % $batchSize) === 0) {
                 $this->em->flush();
                 $this->em->clear();
+
+                $playlist = $this->em->getReference(Playlist::class, $playlist->getId());
             }
         }
 
