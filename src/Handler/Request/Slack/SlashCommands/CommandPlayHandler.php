@@ -8,15 +8,12 @@ use App\Entity\Playlist\Playlist;
 use App\Entity\Slack\SlackCommand;
 use App\Form\YouTubePlaylistType;
 use App\Handler\Request\Playlist\PlaylistCreateRequestHandler;
-use App\Handler\Request\Playlist\Video\VideosCreateRequestHandler;
 use App\Handler\Request\Slack\ConversationPlaylist\ConversationPlaylistCreateRequestHandler;
 use App\Handler\Request\Slack\ConversationPlaylist\ConversationPlaylistFindLastPlaylistRequestHandler;
-use App\Http\YouTube\PlaylistClient;
 use App\Message\Playlist\PullPlaylistVideos;
 use App\Model\Playlist\PlaylistCreateRequest;
 use App\Model\Slack\ConversationPlaylist\ConversationPlaylistCreateRequest;
 use App\Model\Slack\ConversationPlaylist\ConversationPlaylistFindLastPlaylistRequest;
-use App\Service\Playlist\PlaylistProvider;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use JoliCode\Slack\Api\Client;
@@ -41,12 +38,9 @@ class CommandPlayHandler implements CommandInterface
     private FormFactoryInterface $formFactory;
     private LoggerInterface $logger;
     private MessageBusInterface $bus;
-    private PlaylistClient $playlistClient;
     private PlaylistCreateRequestHandler $playlistCreateRequestHandler;
-    private PlaylistProvider $playlistProvider;
     private RouterInterface $router;
     private TranslatorInterface $translator;
-    private VideosCreateRequestHandler $videosCreateRequestHandler;
     private ConversationPlaylistFindLastPlaylistRequestHandler $conversationPlaylistFindLastPlaylistRequestHandler;
 
     public function __construct(
@@ -56,12 +50,9 @@ class CommandPlayHandler implements CommandInterface
         FormFactoryInterface $formFactory,
         LoggerInterface $logger,
         MessageBusInterface $bus,
-        PlaylistClient $playlistClient,
         PlaylistCreateRequestHandler $playlistCreateRequestHandler,
-        PlaylistProvider $playlistProvider,
         RouterInterface $router,
         TranslatorInterface $translator,
-        VideosCreateRequestHandler $videosCreateRequestHandler,
         ConversationPlaylistFindLastPlaylistRequestHandler $conversationPlaylistFindLastPlaylistRequestHandler
     ) {
         $this->client = $client;
@@ -70,12 +61,9 @@ class CommandPlayHandler implements CommandInterface
         $this->formFactory = $formFactory;
         $this->logger = $logger;
         $this->bus = $bus;
-        $this->playlistClient = $playlistClient;
         $this->playlistCreateRequestHandler = $playlistCreateRequestHandler;
-        $this->playlistProvider = $playlistProvider;
         $this->router = $router;
         $this->translator = $translator;
-        $this->videosCreateRequestHandler = $videosCreateRequestHandler;
         $this->conversationPlaylistFindLastPlaylistRequestHandler = $conversationPlaylistFindLastPlaylistRequestHandler;
     }
 
@@ -164,8 +152,8 @@ class CommandPlayHandler implements CommandInterface
                 'text' => [
                     'type' => 'mrkdwn',
                     'text' => $this->translator->trans('playlist.success.credits', [
-                        '%author%' => $command->getUser()->getDisplayedName(),
-                        '%at%' => $playlist->getCreatedAt()->format('d.m.Y H:i:s'),
+                        '%author%' => $command->getUser()->getName(),
+                        '%at%' => $playlist->getCreatedAt()->format('H:i:s d.m.Y'),
                     ]),
                 ],
                 'accessory' => [

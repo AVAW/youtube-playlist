@@ -7,7 +7,6 @@ namespace App\Security;
 use App\Entity\User\User;
 use App\Service\Google\User\GoogleUserManager;
 use App\Service\Google\User\GoogleUserProvider;
-use App\Service\Slack\User\SlackUserProvider;
 use App\Service\User\UserManager;
 use App\Service\User\UserProvider;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
@@ -28,7 +27,6 @@ class GoogleAuthenticator extends OAuth2Authenticator
     private ClientRegistry $clientRegistry;
     private RouterInterface $router;
     private GoogleUserProvider $googleUserProvider;
-    private SlackUserProvider $slackUserProvider;
     private UserProvider $userProvider;
     private UserManager $userManager;
     private GoogleUserManager $googleUserManager;
@@ -37,7 +35,6 @@ class GoogleAuthenticator extends OAuth2Authenticator
         ClientRegistry $clientRegistry,
         RouterInterface $router,
         GoogleUserProvider $googleUserProvider,
-        SlackUserProvider $slackUserProvider,
         UserProvider $userProvider,
         UserManager $userManager,
         GoogleUserManager $googleUserManager
@@ -45,7 +42,6 @@ class GoogleAuthenticator extends OAuth2Authenticator
         $this->clientRegistry = $clientRegistry;
         $this->router = $router;
         $this->googleUserProvider = $googleUserProvider;
-        $this->slackUserProvider = $slackUserProvider;
         $this->userProvider = $userProvider;
         $this->userManager = $userManager;
         $this->googleUserManager = $googleUserManager;

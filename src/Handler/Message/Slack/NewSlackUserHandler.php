@@ -5,12 +5,18 @@ declare(strict_types=1);
 namespace App\Handler\Message\Slack;
 
 use App\Entity\Slack\SlackUser;
+use App\Entity\User\User;
 use App\Handler\Request\Slack\User\UserUpdateRequestHandler;
 use App\Handler\Request\Slack\UserPresence\UserPresenceCreateOrUpdateRequestHandler;
+use App\Handler\Request\User\UserCreateOrUpdateRequestHandler;
 use App\Message\Slack\NewSlackUser;
 use App\Model\Slack\User\UserUpdateRequest;
 use App\Model\Slack\UserPresence\UserPresenceCreateOrUpdateRequest;
+use App\Model\User\UserCreateOrUpdateRequest;
 use App\Service\Slack\User\SlackUserProvider;
+use App\Service\User\UserProvider;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use JoliCode\Slack\Api\Client;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
@@ -23,21 +29,31 @@ class NewSlackUserHandler implements MessageHandlerInterface
     private UserPresenceCreateOrUpdateRequestHandler $userPresenceCreateOrUpdateRequestHandler;
     private UserUpdateRequestHandler $userUpdateRequestHandler;
     private SlackUserProvider $slackUserProvider;
+    private UserProvider $userProvider;
+    private UserCreateOrUpdateRequestHandler $userCreateOrUpdateRequestHandler;
 
     public function __construct(
         Client $client,
         LoggerInterface $logger,
         UserPresenceCreateOrUpdateRequestHandler $userPresenceCreateOrUpdateRequestHandler,
         UserUpdateRequestHandler $userUpdateRequestHandler,
-        SlackUserProvider $slackUserProvider
+        SlackUserProvider $slackUserProvider,
+        UserProvider $userProvider,
+        UserCreateOrUpdateRequestHandler $userCreateOrUpdateRequestHandler
     ) {
         $this->client = $client;
         $this->logger = $logger;
         $this->userPresenceCreateOrUpdateRequestHandler = $userPresenceCreateOrUpdateRequestHandler;
         $this->userUpdateRequestHandler = $userUpdateRequestHandler;
         $this->slackUserProvider = $slackUserProvider;
+        $this->userProvider = $userProvider;
+        $this->userCreateOrUpdateRequestHandler = $userCreateOrUpdateRequestHandler;
     }
 
+    /**
+     * @throws OptimisticLockException
+     * @throws ORMException
+     */
     public function __invoke(NewSlackUser $newSlackUser)
     {
         $slackUser = $this->slackUserProvider->findByIdentifier($newSlackUser->getIdentifier());
@@ -63,20 +79,32 @@ class NewSlackUserHandler implements MessageHandlerInterface
             $this->logger->error($e->getMessage());
         }
 
-        // zakładanie konta użytkownika
-        // user może mieć już konto przed integracją - poszukaj po mailu
-        // jeśli ma to powiąż user z slackuser
-        // jesli nie to stwórz nowe z użytkownikiem ze slacka? czy damy możliwość edycji loginu?
-        // todo:
+        if (empty($slackUser->getEmail())) {
+            // Bot user
+            return;
+        }
 
-        // $user = userProvider->findByMail();
-        // $slackProfile = $slackUserProvider->findByMail();
-        //
+        if ($slackUser->getUser() instanceof User) {
+            return;
+        }
 
-        // Create user
-        // todo: implement
-//        $command = UserCreateOrUpdate::createFrom($slackUser);
-//        $this->userCreateOrUpdateHandler->handle($command);
+        // Bind SlackUser with User
+
+        // Find existing user account with the same email
+        $user = $this->userProvider->findByEmail($slackUser->getEmail());
+        if ($user instanceof User) {
+            $slackUser->setUser($user);
+            $this->slackUserProvider->save($slackUser);
+            return;
+        }
+
+        $userCreteRequest = UserCreateOrUpdateRequest::create(
+            $slackUser->getEmail(),
+            $slackUser->getName(),
+            null,
+            $slackUser
+        );
+        $this->userCreateOrUpdateRequestHandler->handle($userCreteRequest);
     }
 
 }
