@@ -23,7 +23,7 @@ class PlaylistFindRequest implements PlaylistFindInterface
         return $this->identifier;
     }
 
-    public function setIdentifier($identifier): self
+    public function setIdentifier(string $identifier): self
     {
         $this->identifier = $identifier;
 

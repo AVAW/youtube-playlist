@@ -33,7 +33,7 @@ class PlaylistController extends AbstractController
         $identifier,
         PlaylistProvider $playlistProvider
     ): Response {
-        $playlist = $playlistProvider->findByIdentifier($identifier);
+        $playlist = $playlistProvider->findOneByIdentifierWithVideos($identifier);
         if (!$playlist instanceof Playlist) {
             throw new NotFoundException('Can not find playlist');
         }

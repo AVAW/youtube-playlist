@@ -74,8 +74,9 @@ class NewSlackUserHandler implements MessageHandlerInterface
         //
 
         // Create user
-        $command = UserCreateOrUpdate::createFrom($slackUser);
-        $this->userCreateOrUpdateHandler->handle($command);
+        // todo: implement
+//        $command = UserCreateOrUpdate::createFrom($slackUser);
+//        $this->userCreateOrUpdateHandler->handle($command);
     }
 
 }

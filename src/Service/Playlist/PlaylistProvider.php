@@ -28,6 +28,11 @@ class PlaylistProvider
         }
     }
 
+    public function findOneByIdentifierWithVideos(string $identifier): ?Playlist
+    {
+        return $this->repository->findOneByIdentifierWithVideos($identifier);
+    }
+
     /**
      * @throws ORMException
      * @throws OptimisticLockException

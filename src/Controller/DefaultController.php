@@ -8,10 +8,13 @@ use App\Entity\Contact;
 use App\Form\ContactType;
 use App\Form\YouTubePlaylistType;
 use App\Handler\Request\Playlist\PlaylistCreateRequestHandler;
+use App\Handler\Request\Playlist\Video\VideosCreateRequestHandler;
+use App\Http\YouTube\PlaylistClient;
 use App\Model\Playlist\PlaylistCreateRequest;
+use App\Model\Playlist\Video\VideosCreateRequest;
 use App\Repository\ContactRepository;
-use App\Repository\User\UserRepository;
-use App\Service\User\UserProvider;
+use App\Repository\Playlist\PlaylistRepository;
+use App\Service\Playlist\PlaylistProvider;
 use DateTime;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
@@ -36,14 +39,18 @@ class DefaultController extends AbstractController
 
 
 
-, UserRepository $userRepository
+
+
+
+
     ): Response {
         // PLAYGROUND
 
 
 
-//$user = $userRepository->findOneByEmailInProfiles('a.wojcik@arris.pl');
-//dd($user);
+
+
+
 
 
 
@@ -57,8 +64,6 @@ class DefaultController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var PlaylistCreateRequest $command */
-            $command = $form->getData();
             $playlist = $playlistCreateRequestHandler->handle($command);
 
             return $this->redirectToRoute('playlist', ['identifier' => $playlist->getIdentifier()]);

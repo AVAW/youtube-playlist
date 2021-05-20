@@ -10,13 +10,11 @@ use App\Utils\Timestampable\TimestampableInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\UuidV4;
 
 /**
  * @ORM\Entity(repositoryClass=PlaylistRepository::class)
- * @UniqueEntity(fields={"identifier"}, message="There is already playlist with this identifier")
  * @ORM\Table(indexes={@ORM\Index(name="identifier_idx", columns={"identifier"})})
  */
 class Playlist implements \Stringable, TimestampableInterface

@@ -24,6 +24,20 @@ class PlaylistRepository extends ServiceEntityRepository
         parent::__construct($registry, Playlist::class);
     }
 
+    public function findOneByIdentifierWithVideos($identifier)
+    {
+        $qb = $this->createQueryBuilder('p');
+
+        return $qb
+            ->addSelect('videos')
+            ->where('p.identifier = :identifier')
+            ->setParameter('identifier', $identifier, 'uuid')
+//            ->andWhere($qb->expr()->notIn('p.status', [Playlist::STATUS_REMOVED]))
+            ->leftJoin('p.videos', 'videos')
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     // /**
     //  * @return Playlist[] Returns an array of Playlist objects
     //  */
