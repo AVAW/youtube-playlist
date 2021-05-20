@@ -1,4 +1,5 @@
 monolog:
+    # channel logger: LoggerInterface $infoLogger
     channels: [ "info" ]
     handlers:
         main:

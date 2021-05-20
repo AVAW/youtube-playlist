@@ -6,7 +6,9 @@ services:
         container_name: youtube-playlist-mariadb
         working_dir: /application
         volumes:
-            - .:/application
+            - /var/lib/mysql/data:/var/lib/mysql
+            - /var/lib/mysql/logs:/var/log/mysqld.log
+            - /var/docker/mariadb/conf:/etc/mysql
         environment:
             - MYSQL_ROOT_PASSWORD=password
             - MYSQL_DATABASE=database

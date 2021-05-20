@@ -78,19 +78,20 @@ class Playlist implements \Stringable, TimestampableInterface
 
     /**
      * @ORM\OneToMany(targetEntity=PlaylistVideo::class, mappedBy="playlist", orphanRemoval=true)
+     * @ORM\JoinColumn(onDelete="CASCADE")
      * @Groups({"playlist"})
      */
     private Collection $videos;
 
     /**
-     * @ORM\OneToMany(targetEntity=PlaylistPlay::class, mappedBy="playlist", orphanRemoval=true)
+     * @ORM\OneToOne(targetEntity=PlaylistPlay::class, inversedBy="playlist", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(onDelete="SET NULL")
      */
-    private Collection $plays;
+    private ?PlaylistPlay $play;
 
     public function __construct()
     {
         $this->videos = new ArrayCollection();
-        $this->plays = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -229,32 +230,14 @@ class Playlist implements \Stringable, TimestampableInterface
         return $this;
     }
 
-    /**
-     * @return Collection|PlaylistPlay[]
-     */
-    public function getPlays(): Collection
+    public function getPlay(): ?PlaylistPlay
     {
-        return $this->plays;
+        return $this->play;
     }
 
-    public function addPlay(PlaylistPlay $play): self
+    public function setPlay(?PlaylistPlay $play): self
     {
-        if (!$this->plays->contains($play)) {
-            $this->plays[] = $play;
-            $play->setPlaylist($this);
-        }
-
-        return $this;
-    }
-
-    public function removePlay(PlaylistPlay $play): self
-    {
-        if ($this->plays->removeElement($play)) {
-            // set the owning side to null (unless already changed)
-            if ($play->getPlaylist() === $this) {
-                $play->setPlaylist(null);
-            }
-        }
+        $this->play = $play;
 
         return $this;
     }

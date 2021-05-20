@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Entity\Playlist;
 
 use App\Entity\Slack\SlackUser;
+use App\Entity\User\User;
 use App\Repository\Playlist\PlaylistVideoRepository;
 use App\Utils\Timestampable\Timestampable;
 use App\Utils\Timestampable\TimestampableInterface;
@@ -37,7 +38,7 @@ class PlaylistVideo implements \Stringable, TimestampableInterface
 
     /**
      * @ORM\ManyToOne(targetEntity=Playlist::class, inversedBy="videos")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      */
     private Playlist $playlist;
 
@@ -60,20 +61,30 @@ class PlaylistVideo implements \Stringable, TimestampableInterface
     private \DateTimeInterface $publishedAt;
 
     /**
-     * @ORM\ManyToMany(targetEntity=SlackUser::class, inversedBy="videos")
-     * @Groups({"playlist"})
+     * @ORM\OneToMany(targetEntity=PlaylistPlay::class, mappedBy="video", orphanRemoval=true)
+     * @ORM\JoinColumn(onDelete="CASCADE")
+     */
+    private Collection $plays;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=User::class, inversedBy="playlistVideos")
      */
     private Collection $authors;
 
     /**
-     * @ORM\OneToMany(targetEntity=PlaylistPlay::class, mappedBy="video", orphanRemoval=true)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private Collection $plays;
+    private ?string $videoOwnerChannelId;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private ?string $videoOwnerChannelTitle;
 
     public function __construct()
     {
-        $this->authors = new ArrayCollection();
         $this->plays = new ArrayCollection();
+        $this->authors = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -147,30 +158,6 @@ class PlaylistVideo implements \Stringable, TimestampableInterface
     }
 
     /**
-     * @return Collection|SlackUser[]
-     */
-    public function getAuthors(): Collection
-    {
-        return $this->authors;
-    }
-
-    public function addAuthor(SlackUser $author): self
-    {
-        if (!$this->authors->contains($author)) {
-            $this->authors[] = $author;
-        }
-
-        return $this;
-    }
-
-    public function removeAuthor(SlackUser $author): self
-    {
-        $this->authors->removeElement($author);
-
-        return $this;
-    }
-
-    /**
      * @return Collection|PlaylistPlay[]
      */
     public function getPlays(): Collection
@@ -196,6 +183,54 @@ class PlaylistVideo implements \Stringable, TimestampableInterface
                 $play->setVideo(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getAuthors(): Collection
+    {
+        return $this->authors;
+    }
+
+    public function addAuthor(User $author): self
+    {
+        if (!$this->authors->contains($author)) {
+            $this->authors[] = $author;
+        }
+
+        return $this;
+    }
+
+    public function removeAuthor(User $author): self
+    {
+        $this->authors->removeElement($author);
+
+        return $this;
+    }
+
+    public function getVideoOwnerChannelId(): ?string
+    {
+        return $this->videoOwnerChannelId;
+    }
+
+    public function setVideoOwnerChannelId(?string $videoOwnerChannelId): self
+    {
+        $this->videoOwnerChannelId = $videoOwnerChannelId;
+
+        return $this;
+    }
+
+    public function getVideoOwnerChannelTitle(): ?string
+    {
+        return $this->videoOwnerChannelTitle;
+    }
+
+    public function setVideoOwnerChannelTitle(?string $videoOwnerChannelTitle): self
+    {
+        $this->videoOwnerChannelTitle = $videoOwnerChannelTitle;
 
         return $this;
     }

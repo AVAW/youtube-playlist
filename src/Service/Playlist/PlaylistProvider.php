@@ -42,4 +42,9 @@ class PlaylistProvider
         $this->repository->save($playlist);
     }
 
+    public function findOneByIdentifierWithVideosAndPlay(string $identifier): ?Playlist
+    {
+        return $this->repository->findOneByIdentifierWithVideosAndPlay($identifier);
+    }
+
 }

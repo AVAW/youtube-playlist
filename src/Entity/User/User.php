@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Entity\User;
 
 use App\Entity\Google\GoogleUser;
+use App\Entity\Playlist\PlaylistVideo;
 use App\Entity\Slack\SlackUser;
 use App\Repository\User\UserRepository;
 use App\Utils\Timestampable\Timestampable;
@@ -75,11 +76,17 @@ class User implements UserInterface, \Stringable, TimestampableInterface
      */
     private Collection $googleProfiles;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=PlaylistVideo::class, mappedBy="authors")
+     */
+    private $playlistVideos;
+
     public function __construct()
     {
         $this->isVerified = false;
         $this->slackProfiles = new ArrayCollection();
         $this->googleProfiles = new ArrayCollection();
+        $this->playlistVideos = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -259,6 +266,33 @@ class User implements UserInterface, \Stringable, TimestampableInterface
             if ($googleProfile->getUser() === $this) {
                 $googleProfile->setUser(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|PlaylistVideo[]
+     */
+    public function getPlaylistVideos(): Collection
+    {
+        return $this->playlistVideos;
+    }
+
+    public function addPlaylistVideo(PlaylistVideo $playlistVideo): self
+    {
+        if (!$this->playlistVideos->contains($playlistVideo)) {
+            $this->playlistVideos[] = $playlistVideo;
+            $playlistVideo->addAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removePlaylistVideo(PlaylistVideo $playlistVideo): self
+    {
+        if ($this->playlistVideos->removeElement($playlistVideo)) {
+            $playlistVideo->removeAuthor($this);
         }
 
         return $this;

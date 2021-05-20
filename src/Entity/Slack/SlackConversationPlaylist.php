@@ -33,14 +33,14 @@ class SlackConversationPlaylist implements \Stringable, TimestampableInterface
     private UuidV4 $identifier;
 
     /**
-     * @ORM\ManyToOne(targetEntity=SlackConversation::class, inversedBy="conversationPlaylists")
+     * @ORM\ManyToOne(targetEntity=SlackConversation::class)
      * @ORM\JoinColumn(nullable=false)
      */
     private SlackConversation $conversation;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Playlist::class, inversedBy="conversationPlaylists")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\ManyToOne(targetEntity=Playlist::class)
+     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      */
     private Playlist $playlist;
 

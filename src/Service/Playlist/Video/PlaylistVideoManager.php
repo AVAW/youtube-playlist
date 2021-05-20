@@ -27,15 +27,19 @@ class PlaylistVideoManager
     }
 
     public function create(
-        Playlist $playlist = null,
+        Playlist $playlist,
         string $videoId,
         string $title,
-        DateTimeInterface $publishedAt
+        DateTimeInterface $publishedAt,
+        ?string $videoOwnerChannelId,
+        ?string $videoOwnerChannelTitle
     ): PlaylistVideo {
         $video = (new PlaylistVideo())
             ->setVideoId($videoId)
             ->setTitle($title)
             ->setPublishedAt($publishedAt)
+            ->setVideoOwnerChannelId($videoOwnerChannelId)
+            ->setVideoOwnerChannelTitle($videoOwnerChannelTitle)
             ->setIdentifier(new UuidV4());
 
         if ($playlist instanceof Playlist) {
@@ -64,6 +68,8 @@ class PlaylistVideoManager
                 $video->id,
                 $video->title,
                 $video->publishedAt,
+                $video->videoOwnerChannelId,
+                $video->videoOwnerChannelTitle,
             );
 
             $this->em->persist($playlistVideo);

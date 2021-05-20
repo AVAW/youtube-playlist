@@ -10,25 +10,21 @@ use App\Http\YouTube\PlaylistClient;
 use App\Message\Playlist\PullPlaylistVideos;
 use App\Model\Playlist\PlaylistFindRequest;
 use App\Model\Playlist\Video\VideosCreateRequest;
-use App\Service\Playlist\PlaylistProvider;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 class PullPlaylistVideosHandler implements MessageHandlerInterface
 {
 
     private PlaylistFindHandler $playlistFindHandler;
-    private PlaylistProvider $playlistProvider;
     private PlaylistClient $playlistClient;
     private VideosCreateRequestHandler $videosCreateRequestHandler;
 
     public function __construct(
         PlaylistFindHandler $playlistFindHandler,
-        PlaylistProvider $playlistProvider,
         PlaylistClient $playlistClient,
         VideosCreateRequestHandler $videosCreateRequestHandler
     ) {
         $this->playlistFindHandler = $playlistFindHandler;
-        $this->playlistProvider = $playlistProvider;
         $this->playlistClient = $playlistClient;
         $this->videosCreateRequestHandler = $videosCreateRequestHandler;
     }

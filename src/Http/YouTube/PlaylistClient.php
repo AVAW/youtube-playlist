@@ -89,6 +89,8 @@ class PlaylistClient
             $item->getContentDetails()->getVideoId(),
             $snippet->getTitle(),
             \DateTime::createFromFormat(DATE_ISO8601, $snippet->getPublishedAt()),
+            $snippet->getVideoOwnerChannelId(),
+            $snippet->getVideoOwnerChannelTitle()
         );
     }
 

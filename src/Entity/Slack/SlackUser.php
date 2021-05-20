@@ -180,7 +180,6 @@ class SlackUser implements \Stringable, TimestampableInterface
     {
         $this->conversations = new ArrayCollection();
         $this->presence = null;
-        $this->playlistVideos = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -501,33 +500,6 @@ class SlackUser implements \Stringable, TimestampableInterface
     public function setIsUltraRestricted(?bool $isUltraRestricted): self
     {
         $this->isUltraRestricted = $isUltraRestricted;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|PlaylistVideo[]
-     */
-    public function getPlaylistVideos(): Collection
-    {
-        return $this->playlistVideos;
-    }
-
-    public function addPlaylistVideo(PlaylistVideo $video): self
-    {
-        if (!$this->playlistVideos->contains($video)) {
-            $this->playlistVideos[] = $video;
-            $video->addAuthor($this);
-        }
-
-        return $this;
-    }
-
-    public function removePlaylistVideo(PlaylistVideo $video): self
-    {
-        if ($this->playlistVideos->removeElement($video)) {
-            $video->removeAuthor($this);
-        }
 
         return $this;
     }

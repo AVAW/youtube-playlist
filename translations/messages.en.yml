@@ -28,12 +28,17 @@ playlist:
         errorsMessage: There is a problem with your YouTube playlist URL
         forbidden: Plalist might me private.
         nothingIsPlayed: Nothing is played yet. Create playlist with "/play" command.
+        nothingIsPlayed2: Nothing is played yet. Run playlist to get song name.
     success:
         created: Your playlist was successfully created. Link to playlist was already posted.
         credits: Playlist created by *@%author%* at %at%
     open: Open playlist
     url: YouTube playlist URL
     realUrl: www.youtube.com?list=xyz
+    song:
+        skip: Skip
+        remove: Remove
+        none: None
 
 command:
     wrong: Wrong command. Please try again.

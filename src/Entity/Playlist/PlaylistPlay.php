@@ -32,14 +32,14 @@ class PlaylistPlay implements \Stringable, TimestampableInterface
     private UuidV4 $identifier;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Playlist::class, inversedBy="plays")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\OneToOne(targetEntity=Playlist::class, mappedBy="play", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private Playlist $playlist;
 
     /**
      * @ORM\ManyToOne(targetEntity=PlaylistVideo::class, inversedBy="plays")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      */
     private PlaylistVideo $video;
 
@@ -65,18 +65,6 @@ class PlaylistPlay implements \Stringable, TimestampableInterface
         return $this;
     }
 
-    public function getPlaylist(): ?Playlist
-    {
-        return $this->playlist;
-    }
-
-    public function setPlaylist(Playlist $playlist): self
-    {
-        $this->playlist = $playlist;
-
-        return $this;
-    }
-
     public function getVideo(): ?PlaylistVideo
     {
         return $this->video;
@@ -85,6 +73,28 @@ class PlaylistPlay implements \Stringable, TimestampableInterface
     public function setVideo(PlaylistVideo $video): self
     {
         $this->video = $video;
+
+        return $this;
+    }
+
+    public function getPlaylist(): ?Playlist
+    {
+        return $this->playlist;
+    }
+
+    public function setPlaylist(Playlist $playlist): self
+    {
+        // unset the owning side of the relation if necessary
+        if ($playlist === null && $this->playlist !== null) {
+            $this->playlist->setPlay(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($playlist !== null && $playlist->getPlay() !== $this) {
+            $playlist->setPlay($this);
+        }
+
+        $this->playlist = $playlist;
 
         return $this;
     }

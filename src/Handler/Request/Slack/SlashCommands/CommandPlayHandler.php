@@ -160,7 +160,7 @@ class CommandPlayHandler implements CommandInterface
                     'type' => 'button',
                     'text' => [
                         'type' => 'plain_text',
-                        'text' => ':notes: ' . $this->translator->trans('playlist.open') . ' :notes:',
+                        'text' => ':notes: ' . $this->translator->trans('playlist.open') . ' :notes:',
                         'emoji' => true,
                     ],
                     'value' => $playlist->getIdentifier(),

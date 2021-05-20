@@ -77,4 +77,21 @@ class PlaylistRepository extends ServiceEntityRepository
         $this->getEntityManager()->flush();
     }
 
+    public function findOneByIdentifierWithVideosAndPlay(string $identifier): ?Playlist
+    {
+        $qb = $this->createQueryBuilder('p');
+
+        return $qb
+            ->addSelect('play')
+            ->addSelect('video')
+            ->addSelect('authors')
+            ->where('p.identifier = :identifier')
+            ->setParameter('identifier', $identifier, 'uuid')
+            ->leftJoin('p.play', 'play')
+            ->leftJoin('play.video', 'video')
+            ->leftJoin('video.authors', 'authors')
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
 }
