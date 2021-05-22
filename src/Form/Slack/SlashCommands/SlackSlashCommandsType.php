@@ -2,10 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Form\Slack\Command;
+namespace App\Form\Slack\SlashCommands;
 
 use App\Entity\Slack\SlackCommand;
-use App\Model\Slack\GetOrCreateRequest;
+use App\Form\Slack\Conversation\SlackConversationType;
+use App\Form\Slack\Team\SlackTeamType;
+use App\Form\Slack\User\SlackUserType;
+use App\Model\Slack\SlashCommands\GetOrCreateRequest;
 use App\Validator\Token\Valid;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Form\AbstractType;
@@ -15,7 +18,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-class SlackCommandType extends AbstractType
+class SlackSlashCommandsType extends AbstractType
 {
 
     protected ParameterBagInterface $bag;
@@ -34,35 +37,20 @@ class SlackCommandType extends AbstractType
                     new Valid($this->bag->get('slack')['verification_token']),
                 ],
             ])
-            ->add('teamId', TextType::class, [
+            ->add('team', SlackTeamType::class, [
                 'constraints' => [
                     new NotBlank(),
-                ],
+                ]
             ])
-            ->add('teamDomain', TextType::class, [
+            ->add('conversation', SlackConversationType::class, [
                 'constraints' => [
                     new NotBlank(),
-                ],
+                ]
             ])
-            ->add('channelId', TextType::class, [
+            ->add('user', SlackUserType::class, [
                 'constraints' => [
                     new NotBlank(),
-                ],
-            ])
-            ->add('channelName', TextType::class, [
-                'constraints' => [
-                    new NotBlank(),
-                ],
-            ])
-            ->add('userId', TextType::class, [
-                'constraints' => [
-                    new NotBlank(),
-                ],
-            ])
-            ->add('userName', TextType::class, [
-                'constraints' => [
-                    new NotBlank(),
-                ],
+                ]
             ])
             ->add('command', ChoiceType::class, [
                 'choices' => SlackCommand::NAME_VALUES,

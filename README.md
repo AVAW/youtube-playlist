@@ -4,8 +4,8 @@ Arris YouTube playlist
 
 Features
 --------
-- YouTube integration
-- Slack integration (chat commands)
+- YouTube integration (OAuth)
+- Slack integration (OAuth, Slash Commands, Interactivity)
 
 Run
 ---

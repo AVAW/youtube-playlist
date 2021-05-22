@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Handler\Request\Slack\Interactivity\InteractivityInterface;
 use App\Handler\Request\Slack\SlashCommands\CommandInterface;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -43,6 +44,8 @@ class Kernel extends BaseKernel
     {
         $container->registerForAutoconfiguration(CommandInterface::class)
             ->addTag('app.slack.slash-command.handler');
+        $container->registerForAutoconfiguration(InteractivityInterface::class)
+            ->addTag('app.slack.interactivity.handler');
     }
 
 }

@@ -31,7 +31,7 @@ services:
     # as action arguments even if you don't extend any base controller class
     App\Controller\:
         resource: '../src/Controller/'
-        tags: ['controller.service_arguments']
+        tags: [ 'controller.service_arguments' ]
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
@@ -55,6 +55,8 @@ services:
     App\Handler\Request\Slack\SlashCommands\CommandHandlerCollection:
         arguments: [ !tagged { tag: 'app.slack.slash-command.handler' } ]
 
+    App\Handler\Request\Slack\Interactivity\InteractivityHandlerCollection:
+        arguments: [ !tagged { tag: 'app.slack.interactivity.handler' } ]
 
     # Twig
 

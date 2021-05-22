@@ -40,8 +40,11 @@ playlist:
         remove: Remove
         none: None
 
-command:
-    wrong: Wrong command. Please try again.
+slash-command:
+    wrong: Wrong Slash Command. Please try again.
+
+interactivity:
+    wrong: Wrong interactivity. Please try again.
 
 admin:
     admin: admin

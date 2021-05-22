@@ -18,7 +18,6 @@ class TimestampableHelper
         }
 
         if ($object->getUpdatedAt() instanceof \DateTimeInterface) {
-
             return $object->getUpdatedAt() >= $now;
         }
 

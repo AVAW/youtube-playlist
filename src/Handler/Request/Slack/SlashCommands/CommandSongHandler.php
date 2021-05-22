@@ -7,6 +7,7 @@ namespace App\Handler\Request\Slack\SlashCommands;
 use App\Entity\Playlist\Playlist;
 use App\Entity\Playlist\PlaylistPlay;
 use App\Entity\Playlist\PlaylistVideo;
+use App\Entity\Slack\SlackAction;
 use App\Entity\Slack\SlackCommand;
 use App\Handler\Request\Slack\ConversationPlaylist\ConversationPlaylistFindLastPlaylistRequestHandler;
 use App\Model\Slack\ConversationPlaylist\ConversationPlaylistFindLastPlaylistRequest;
@@ -93,7 +94,7 @@ class CommandSongHandler implements CommandInterface
                 'type' => 'section',
                 'text' => [
                     'type' => 'mrkdwn',
-                    'text' => "Song in youtube:\n*<$videoUrl|$videoUrl>*",
+                    'text' => "*Song in youtube:*\n<$videoUrl|$videoUrl>",
                 ],
             ],
             [
@@ -126,10 +127,8 @@ class CommandSongHandler implements CommandInterface
                             'emoji' => true,
                             'text' => $this->translator->trans('playlist.song.skip') . ' :black_right_pointing_double_triangle_with_vertical_bar:',
                         ],
-                        'value' => json_encode([
-                            'video' => $video->getIdentifier(),
-                            'action' => 'skip', // todo: change to const
-                        ]),
+                        'value' => $video->getIdentifier(),
+                        'action_id' => SlackAction::ACTION_ID_CLICK_PLAYLIST_VIDEO_SKIP,
                     ],
                     [
                         'type' => 'button',
@@ -138,17 +137,14 @@ class CommandSongHandler implements CommandInterface
                             'emoji' => true,
                             'text' => $this->translator->trans('playlist.song.remove') . ' :put_litter_in_its_place:',
                         ],
-                        'value' => json_encode([
-                            'video' => $video->getIdentifier(),
-                            'action' => 'remove', // todo: change to const
-                        ]),
+                        'value' => $video->getIdentifier(),
+                        'action_id' => SlackAction::ACTION_ID_CLICK_PLAYLIST_VIDEO_REMOVE,
                     ],
                 ],
             ],
             [
                 'type' => 'divider',
             ],
-
         ]);
     }
 
