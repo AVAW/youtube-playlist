@@ -16,6 +16,7 @@ use Symfony\Component\Uid\UuidV4;
 
 /**
  * @ORM\Entity(repositoryClass=PlaylistVideoRepository::class)
+ * @ORM\Table(indexes={@ORM\Index(name="idx_identifier", columns={"identifier"})})
  */
 class PlaylistVideo implements \Stringable, TimestampableInterface
 {

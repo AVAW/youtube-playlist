@@ -12,7 +12,7 @@ use Symfony\Component\Uid\UuidV4;
 
 /**
  * @ORM\Entity(repositoryClass=PlaylistPlayRepository::class)
- * @ORM\Table(indexes={@ORM\Index(name="identifier_idx", columns={"identifier"})})
+ * @ORM\Table(indexes={@ORM\Index(name="idx_identifier", columns={"identifier"})})
  */
 class PlaylistPlay implements \Stringable, TimestampableInterface
 {

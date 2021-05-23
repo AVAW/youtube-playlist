@@ -20,8 +20,8 @@ use Symfony\Component\Uid\UuidV4;
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @UniqueEntity(fields={"login"}, message="There is already an account with this login")
- * @ORM\Table(indexes={@ORM\Index(name="identifier_idx", columns={"identifier"})})
- * @ORM\Table(indexes={@ORM\Index(name="email_idx", columns={"email"})})
+ * @ORM\Table(indexes={@ORM\Index(name="idx_identifier", columns={"identifier"})})
+ * @ORM\Table(indexes={@ORM\Index(name="idx_email", columns={"email"})})
  */
 class User implements UserInterface, \Stringable, TimestampableInterface
 {

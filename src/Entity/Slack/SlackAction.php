@@ -12,6 +12,7 @@ use Symfony\Component\Uid\UuidV4;
 
 /**
  * @ORM\Entity(repositoryClass=SlackActionRepository::class)
+ * @ORM\Table(indexes={@ORM\Index(name="idx_identifier", columns={"identifier"})})
  */
 class SlackAction implements \Stringable, TimestampableInterface
 {
