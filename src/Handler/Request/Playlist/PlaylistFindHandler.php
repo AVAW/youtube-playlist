@@ -20,7 +20,7 @@ class PlaylistFindHandler
 
     public function handle(PlaylistFindInterface $command): ?Playlist
     {
-        return $this->playlistProvider->findByIdentifier($command->getIdentifier());
+        return $this->playlistProvider->findOneByIdentifierWithVideos($command->getIdentifier());
     }
 
 }
