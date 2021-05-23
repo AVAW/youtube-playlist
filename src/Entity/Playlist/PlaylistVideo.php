@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Entity\Playlist;
 
-use App\Entity\Slack\SlackUser;
 use App\Entity\User\User;
 use App\Repository\Playlist\PlaylistVideoRepository;
 use App\Utils\Timestampable\Timestampable;
@@ -73,13 +72,33 @@ class PlaylistVideo implements \Stringable, TimestampableInterface
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"playlist"})
      */
     private ?string $videoOwnerChannelId;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"playlist"})
      */
     private ?string $videoOwnerChannelTitle;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"playlist"})
+     */
+    private ?string $thumbnailDefault;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"playlist"})
+     */
+    private ?string $thumbnailMedium;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"playlist"})
+     */
+    private ?string $thumbnailHigh;
 
     public function __construct()
     {
@@ -231,6 +250,42 @@ class PlaylistVideo implements \Stringable, TimestampableInterface
     public function setVideoOwnerChannelTitle(?string $videoOwnerChannelTitle): self
     {
         $this->videoOwnerChannelTitle = $videoOwnerChannelTitle;
+
+        return $this;
+    }
+
+    public function getThumbnailDefault(): ?string
+    {
+        return $this->thumbnailDefault;
+    }
+
+    public function setThumbnailDefault(?string $thumbnailDefault): self
+    {
+        $this->thumbnailDefault = $thumbnailDefault;
+
+        return $this;
+    }
+
+    public function getThumbnailMedium(): ?string
+    {
+        return $this->thumbnailMedium;
+    }
+
+    public function setThumbnailMedium(?string $thumbnailMedium): self
+    {
+        $this->thumbnailMedium = $thumbnailMedium;
+
+        return $this;
+    }
+
+    public function getThumbnailHigh(): ?string
+    {
+        return $this->thumbnailHigh;
+    }
+
+    public function setThumbnailHigh(?string $thumbnailHigh): self
+    {
+        $this->thumbnailHigh = $thumbnailHigh;
 
         return $this;
     }

@@ -32,7 +32,10 @@ class PlaylistVideoManager
         string $title,
         DateTimeInterface $publishedAt,
         ?string $videoOwnerChannelId,
-        ?string $videoOwnerChannelTitle
+        ?string $videoOwnerChannelTitle,
+        ?string $thumbnailDefault,
+        ?string $thumbnailMedium,
+        ?string $thumbnailHigh
     ): PlaylistVideo {
         $video = (new PlaylistVideo())
             ->setVideoId($videoId)
@@ -40,6 +43,9 @@ class PlaylistVideoManager
             ->setPublishedAt($publishedAt)
             ->setVideoOwnerChannelId($videoOwnerChannelId)
             ->setVideoOwnerChannelTitle($videoOwnerChannelTitle)
+            ->setThumbnailDefault($thumbnailDefault)
+            ->setThumbnailMedium($thumbnailMedium)
+            ->setThumbnailHigh($thumbnailHigh)
             ->setIdentifier(new UuidV4());
 
         if ($playlist instanceof Playlist) {
@@ -70,6 +76,9 @@ class PlaylistVideoManager
                 $video->publishedAt,
                 $video->videoOwnerChannelId,
                 $video->videoOwnerChannelTitle,
+                $video->thumbnailDefault,
+                $video->thumbnailMedium,
+                $video->thumbnailHigh
             );
 
             $this->em->persist($playlistVideo);

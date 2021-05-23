@@ -90,7 +90,10 @@ class PlaylistClient
             $snippet->getTitle(),
             \DateTime::createFromFormat(DATE_ISO8601, $snippet->getPublishedAt()),
             $snippet->getVideoOwnerChannelId(),
-            $snippet->getVideoOwnerChannelTitle()
+            $snippet->getVideoOwnerChannelTitle(),
+            $snippet->getThumbnails()->getDefault()->getUrl(),
+            $snippet->getThumbnails()->getMedium()->getUrl(),
+            $snippet->getThumbnails()->getHigh()->getUrl()
         );
     }
 
