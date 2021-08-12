@@ -20,6 +20,7 @@ use Symfony\Component\Uid\UuidV4;
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @UniqueEntity(fields={"login"}, message="There is already an account with this login")
+ * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
  * @ORM\Table(indexes={@ORM\Index(name="idx_identifier", columns={"identifier"})})
  * @ORM\Table(indexes={@ORM\Index(name="idx_email", columns={"email"})})
  */
@@ -67,25 +68,23 @@ class User implements UserInterface, \Stringable, TimestampableInterface
     private bool $isVerified;
 
     /**
-     * @ORM\OneToMany(targetEntity=SlackUser::class, mappedBy="user")
-     */
-    private Collection $slackProfiles;
-
-    /**
-     * @ORM\OneToMany(targetEntity=GoogleUser::class, mappedBy="user")
-     */
-    private Collection $googleProfiles;
-
-    /**
      * @ORM\ManyToMany(targetEntity=PlaylistVideo::class, mappedBy="authors")
      */
-    private $playlistVideos;
+    private Collection $playlistVideos;
+
+    /**
+     * @ORM\OneToOne(targetEntity=SlackUser::class, inversedBy="user", cascade={"persist", "remove"})
+     */
+    private ?SlackUser $slackUser;
+
+    /**
+     * @ORM\OneToOne(targetEntity=GoogleUser::class, inversedBy="user", cascade={"persist", "remove"})
+     */
+    private ?GoogleUser $googleUser;
 
     public function __construct()
     {
         $this->isVerified = false;
-        $this->slackProfiles = new ArrayCollection();
-        $this->googleProfiles = new ArrayCollection();
         $this->playlistVideos = new ArrayCollection();
     }
 
@@ -212,66 +211,6 @@ class User implements UserInterface, \Stringable, TimestampableInterface
     }
 
     /**
-     * @return Collection|SlackUser[]
-     */
-    public function getSlackProfiles(): Collection
-    {
-        return $this->slackProfiles;
-    }
-
-    public function addSlackProfile(SlackUser $slackProfile): self
-    {
-        if (!$this->slackProfiles->contains($slackProfile)) {
-            $this->slackProfiles[] = $slackProfile;
-            $slackProfile->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeSlackProfile(SlackUser $slackProfile): self
-    {
-        if ($this->slackProfiles->removeElement($slackProfile)) {
-            // set the owning side to null (unless already changed)
-            if ($slackProfile->getUser() === $this) {
-                $slackProfile->setUser(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|GoogleUser[]
-     */
-    public function getGoogleProfiles(): Collection
-    {
-        return $this->googleProfiles;
-    }
-
-    public function addGoogleProfile(GoogleUser $googleProfile): self
-    {
-        if (!$this->googleProfiles->contains($googleProfile)) {
-            $this->googleProfiles[] = $googleProfile;
-            $googleProfile->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeGoogleProfile(GoogleUser $googleProfile): self
-    {
-        if ($this->googleProfiles->removeElement($googleProfile)) {
-            // set the owning side to null (unless already changed)
-            if ($googleProfile->getUser() === $this) {
-                $googleProfile->setUser(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
      * @return Collection|PlaylistVideo[]
      */
     public function getPlaylistVideos(): Collection
@@ -294,6 +233,30 @@ class User implements UserInterface, \Stringable, TimestampableInterface
         if ($this->playlistVideos->removeElement($playlistVideo)) {
             $playlistVideo->removeAuthor($this);
         }
+
+        return $this;
+    }
+
+    public function getSlackUser(): ?SlackUser
+    {
+        return $this->slackUser;
+    }
+
+    public function setSlackUser(?SlackUser $SlackUser): self
+    {
+        $this->slackUser = $SlackUser;
+
+        return $this;
+    }
+
+    public function getGoogleUser(): ?GoogleUser
+    {
+        return $this->googleUser;
+    }
+
+    public function setGoogleUser(?GoogleUser $googleUser): self
+    {
+        $this->googleUser = $googleUser;
 
         return $this;
     }

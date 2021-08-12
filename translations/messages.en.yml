@@ -28,17 +28,22 @@ playlist:
         errorsMessage: There is a problem with your YouTube playlist URL
         forbidden: Plalist might me private.
         nothingIsPlayed: Nothing is played yet. Create playlist with "/play" command.
-        nothingIsPlayed2: Nothing is played yet. Run playlist to get song name.
+        nothingIsPlayed2: Nothing is played yet. Run playlist.
     success:
         created: Your playlist was successfully created. Link to playlist was already posted.
         credits: Playlist created by *@%author%* at %at%
     open: Open playlist
     url: YouTube playlist URL
     realUrl: www.youtube.com?list=xyz
-    song:
+    video:
         skip: Skip
         remove: Remove
         none: None
+vote:
+    playlist:
+        video:
+            tooLate: Too late to vote for this video.
+            alreadyVoted: You already voted for this video. You have only one vote.
 
 slash-command:
     wrong: Wrong Slash Command. Please try again.
@@ -47,7 +52,7 @@ interactivity:
     wrong: Wrong interactivity. Please try again.
 
 admin:
-    admin: admin
+    admin: Admin
 
 user:
     login: Login
@@ -58,6 +63,7 @@ security:
     signIn: Sign in
     success:
         emailVerified: Your email address has been verified.
+        passwordReseated: Your password has been reseted. Login.
     remember: Remember me
     forgotPassword: Forgot password?
     register:

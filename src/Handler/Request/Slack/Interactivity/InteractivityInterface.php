@@ -11,6 +11,6 @@ interface InteractivityInterface
 
     public function supports(SlackAction $action): bool;
 
-    public function handle(SlackAction $action);
+    public function handle(SlackAction $action): ?string;
 
 }

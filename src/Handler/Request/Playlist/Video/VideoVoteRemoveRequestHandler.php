@@ -22,7 +22,7 @@ use Symfony\Component\Notifier\ChatterInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class VideoVoteSkipRequestHandler
+class VideoVoteRemoveRequestHandler
 {
 
     private AuthorizationCheckerInterface $authorizationChecker;
@@ -63,7 +63,7 @@ class VideoVoteSkipRequestHandler
         $this->chatter = $chatter;
     }
 
-    public function handle(VideoVoteSkipInterface $command)
+    public function handle(VideoVoteRemoveInterface $command): ?string
     {
         $video = $this->playlistVideoProvider->findByIdentifier($command->getVideoIdentifier());
         if (!$video instanceof PlaylistVideo) {
@@ -86,21 +86,21 @@ class VideoVoteSkipRequestHandler
         $conversation = $slackConversationPlaylist->getConversation();
 
         // Check if user voted for this video
-        $vote = $this->votePlaylistVideoProvider->findVote(VotePlaylistVideo::ACTION_SKIP, $video, $user, $play->getStartedAt(), $command->votedAt());
+        $vote = $this->votePlaylistVideoProvider->findVote(VotePlaylistVideo::ACTION_REMOVE, $video, $user, $play->getStartedAt(), $command->votedAt());
         if ($vote instanceof VotePlaylistVideo) {
             return $this->translator->trans('vote.playlist.video.alreadyVoted');
         }
 
         // Create vote
         $vote = $this->votePlaylistVideoManager->create(
-            VotePlaylistVideo::ACTION_SKIP,
+            VotePlaylistVideo::ACTION_REMOVE,
             $user,
             $video,
             $command->votedAt(),
         );
 
         // Count votes
-        $votes = $this->votePlaylistVideoProvider->findAllVotes(VotePlaylistVideo::ACTION_SKIP, $video, $play->getStartedAt(), $command->votedAt());
+        $votes = $this->votePlaylistVideoProvider->findAllVotes(VotePlaylistVideo::ACTION_REMOVE, $video, $play->getStartedAt(), $command->votedAt());
         // Check users presence
         $users = $this->userPresenceManager->getPresentUsers($playlist);
         // Decide how much votes we need
@@ -109,8 +109,8 @@ class VideoVoteSkipRequestHandler
         $this->sendSlackChatMessage($conversation, $user->getSlackUser(), $video, $calculator);
 
         if ($calculator->isFulfilled()) {
-            // Change video
-            // todo: Implement change video event
+            // Remove video
+            // todo: Implement remove video event
         }
 
         return null;
@@ -136,7 +136,7 @@ class VideoVoteSkipRequestHandler
                 'type' => 'header',
                 'text' => [
                     'type' => 'plain_text',
-                    'text' => 'Skip vote for song: ' . $video->getTitle(),
+                    'text' => 'Remove vote for song: ' . $video->getTitle(),
                     'emoji' => true,
                 ],
             ],
@@ -145,7 +145,7 @@ class VideoVoteSkipRequestHandler
                 'text' => [
                     'type' => 'mrkdwn',
                     'text' => "{$calculator->getVotes()}/{$calculator->getRequiredVotes()} votes"
-                        . $calculator->isFulfilled() ? "\n*Skipping song*" : '',
+                        . $calculator->isFulfilled() ? "\n*Remove song*" : '',
                 ],
             ],
             [

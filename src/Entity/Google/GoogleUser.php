@@ -72,9 +72,9 @@ class GoogleUser implements \Stringable, TimestampableInterface
     private ?string $locale;
 
     /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="googleProfile")
+     * @ORM\OneToOne(targetEntity=User::class, mappedBy="googleUser", cascade={"persist", "remove"})
      */
-    private User $user;
+    private ?User $user;
 
     public function __toString(): string
     {

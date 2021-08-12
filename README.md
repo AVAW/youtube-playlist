@@ -10,6 +10,7 @@ Features
 Run
 ---
 - `docker-compose up -d`
+- set constants in `.env.local`
 - log into `php` container with `docker-compose exec php bash` and run inside:
   - `composer install`
   - `sf d:m:m`

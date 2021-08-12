@@ -14,19 +14,6 @@
                 <div class="column is-one-quarter is-offset-0">
                     <h2 class="title is-2">Register</h2>
 
-                    {% set messages = app.flashes('messages') %}
-                    {% if messages is not empty %}
-                        <div class="notification has-background-success has-text-white msg-list">
-                            <div class="content">
-                                <ol class="">
-                                    {% for message in messages %}
-                                        <li>{{ message }}</li>
-                                    {% endfor %}
-                                </ol>
-                            </div>
-                        </div>
-                    {% endif %}
-
                     {% if error is defined and error is not empty %}
                         <div class="notification has-background-danger has-text-white msg-list">
                             <div class="content">
@@ -87,7 +74,6 @@
                         </p>
                     </div>
 
-
                     <div class="field">
                         <p class="control has-icons-left">
                             {{ form_widget(registrationForm.plainPassword, {
@@ -105,7 +91,6 @@
                             {% endfor %}
                         </p>
                     </div>
-
 
                     <div class="field is-unselectable">
                         <label>

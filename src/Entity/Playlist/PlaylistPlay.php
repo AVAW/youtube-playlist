@@ -43,6 +43,11 @@ class PlaylistPlay implements \Stringable, TimestampableInterface
      */
     private PlaylistVideo $video;
 
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private ?\DateTimeInterface $startedAt;
+
     public function __toString(): string
     {
         return __CLASS__ . '__' . $this->getId();
@@ -95,6 +100,18 @@ class PlaylistPlay implements \Stringable, TimestampableInterface
         }
 
         $this->playlist = $playlist;
+
+        return $this;
+    }
+
+    public function getStartedAt(): ?\DateTimeInterface
+    {
+        return $this->startedAt;
+    }
+
+    public function setStartedAt(?\DateTimeInterface $startedAt): self
+    {
+        $this->startedAt = $startedAt;
 
         return $this;
     }

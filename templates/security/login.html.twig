@@ -13,19 +13,6 @@
                 <div class="column is-one-quarter is-offset-0">
                     <h2 class="title is-2">{{ 'security.signIn'|trans }}</h2>
 
-                    {% set messages = app.flashes('messages') %}
-                    {% if messages is not empty %}
-                        <div class="notification has-background-success has-text-white msg-list">
-                            <div class="content">
-                                <ol class="">
-                                    {% for message in messages %}
-                                        <li>{{ message }}</li>
-                                    {% endfor %}
-                                </ol>
-                            </div>
-                        </div>
-                    {% endif %}
-
                     {% if error is not empty %}
                         <div class="notification has-background-danger has-text-white msg-list">
                             <div class="content">

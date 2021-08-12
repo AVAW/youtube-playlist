@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Reset your password{% endblock %}
+{% block title %}Set your new password{% endblock %}
 
 {% block body %}
     <section class="section has-background-light">
@@ -12,7 +12,7 @@
                 </div>
 
                 <div class="column is-one-quarter is-offset-0">
-                    <h2 class="title is-2">Reset your password</h2>
+                    <h2 class="title is-2">Set your new password</h2>
 
                     {% set messages = app.flashes('messages') %}
                     {% if messages is not empty %}
@@ -40,22 +40,39 @@
                     {% for flashError in app.flashes('reset_password_error') %}
                         <div class="alert alert-danger" role="alert">{{ flashError }}</div>
                     {% endfor %}
-                    <h1>Reset your password</h1>
 
                     {{ form_start(resetForm) }}
                     <div class="field">
                         <p class="control has-icons-left ">
-                            {{ form_widget(resetForm.plainPassword, {
+                            {{ form_widget(resetForm.plainPassword.first, {
                                 attr: {
                                     class: 'input',
                                 },
                             }) }}
                             <span class="icon is-small is-left">
-                                <i class="fas fa-envelope"></i>
+                                <i class="fas fa-lock"></i>
                             </span>
                         </p>
                         <p class="help is-danger">
-                            {% for error in resetForm.plainPassword.vars.errors %}
+                            {% for error in resetForm.plainPassword.first.vars.errors %}
+                                {{ error.message }}
+                            {% endfor %}
+                        </p>
+                    </div>
+
+                    <div class="field">
+                        <p class="control has-icons-left ">
+                            {{ form_widget(resetForm.plainPassword.second, {
+                                attr: {
+                                    class: 'input',
+                                },
+                            }) }}
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-lock"></i>
+                            </span>
+                        </p>
+                        <p class="help is-danger">
+                            {% for error in resetForm.plainPassword.second.vars.errors %}
                                 {{ error.message }}
                             {% endfor %}
                         </p>

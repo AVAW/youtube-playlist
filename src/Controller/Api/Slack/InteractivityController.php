@@ -88,19 +88,20 @@ class InteractivityController extends AbstractFOSRestController
             $slackActions = $actionsRequestHandler->handle($team, $conversation, $user, $command);
 
             $handled = false;
+            $res = [];
             /** @var SlackAction $action */
             foreach ($slackActions as $action) {
                 /** @var InteractivityInterface[] $actionHandlers */
                 foreach ($actionHandlers as $handler) {
                     if ($handler->supports($action)) {
-                        $handler->handle($action);
+                        $res [] = $handler->handle($action);
                         $handled = true;
                     }
                 }
             }
 
             if ($handled) {
-                return new Response('Success');
+                return new Response(implode("\n", $res));
             }
         }
 

@@ -29,5 +29,4 @@ class VideosCreateRequest implements VideosCreateInterface
         return $this;
     }
 
-
 }

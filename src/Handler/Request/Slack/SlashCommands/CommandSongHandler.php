@@ -125,7 +125,7 @@ class CommandSongHandler implements CommandInterface
                         'text' => [
                             'type' => 'plain_text',
                             'emoji' => true,
-                            'text' => $this->translator->trans('playlist.song.skip') . ' :black_right_pointing_double_triangle_with_vertical_bar:',
+                            'text' => $this->translator->trans('playlist.video.skip') . ' :black_right_pointing_double_triangle_with_vertical_bar:',
                         ],
                         'value' => $video->getIdentifier(),
                         'action_id' => SlackAction::ACTION_ID_CLICK_PLAYLIST_VIDEO_SKIP,
@@ -135,7 +135,7 @@ class CommandSongHandler implements CommandInterface
                         'text' => [
                             'type' => 'plain_text',
                             'emoji' => true,
-                            'text' => $this->translator->trans('playlist.song.remove') . ' :put_litter_in_its_place:',
+                            'text' => $this->translator->trans('playlist.video.remove') . ' :put_litter_in_its_place:',
                         ],
                         'value' => $video->getIdentifier(),
                         'action_id' => SlackAction::ACTION_ID_CLICK_PLAYLIST_VIDEO_REMOVE,

@@ -65,22 +65,22 @@
                        class="navbar-item {{ route == 'contact' ? 'is-active' }}">Contact</a>
                     {% if is_granted('ROLE_ADMIN') %}
                         <a href="{{ path('app_admin_default_index') }}"
-                           class="navbar-item">{{ 'admin.admin'|trans|upper }}</a>
+                           class="navbar-item">{{ 'admin.admin'|trans }}</a>
                     {% endif %}
                     {% if app.user %}
                         <div class="navbar-item has-dropdown is-hoverable">
                             <a class="navbar-link">Account</a>
                             <div class="navbar-dropdown">
                                 <a class="navbar-item">Dashboard</a>
-                                <a href="{{ path('user_profile') }}" class="navbar-item">Profile</a>
-                                <a href="{{ path('user_settings') }}" class="navbar-item">Settings</a>
+                                <a href="{{ path('user_profile') }}" class="navbar-item {{ route == 'user_profile' ? 'is-active' }}">Profile</a>
+                                <a href="{{ path('user_settings') }}" class="navbar-item {{ route == 'user_settings' ? 'is-active' }}">Settings</a>
                                 <hr class="navbar-divider">
-                                <div class="navbar-item"><a href="{{ path('app_logout') }}">Logout</a></div>
+                                <a href="{{ path('app_logout') }}" class="navbar-item">Logout</a>
                             </div>
                         </div>
                     {% else %}
-                        <a href="{{ path('app_login') }}" class="navbar-item">{{ 'security.signIn'|trans }}</a>
-                        <a href="{{ path('app_register') }}" class="navbar-item">{{ 'security.register.register'|trans }}</a>
+                        <a href="{{ path('app_login') }}" class="navbar-item {{ route == 'app_login' ? 'is-active' }}">{{ 'security.signIn'|trans }}</a>
+                        <a href="{{ path('app_register') }}" class="navbar-item {{ route == 'app_register' ? 'is-active' }}">{{ 'security.register.register'|trans }}</a>
                     {% endif %}
                 </div>
             </div>
@@ -91,13 +91,15 @@
 <div id="body_content">
     {% set messages = app.flashes('messages') %}
     {% if messages is not empty %}
-        <div class="notification has-background-success has-text-white msg-list">
-            <div class="content">
-                <ol class="">
-                    {% for message in messages %}
-                        <li>{{ message }}</li>
-                    {% endfor %}
-                </ol>
+        <div class="notification has-background-success has-text-white msg-list" style="margin-bottom: 0; border-radius: 0">
+            <div class="container">
+                <div class="content">
+                    <ol class="" style="margin-bottom: 16px">
+                        {% for message in messages %}
+                            <li>{{ message }}</li>
+                        {% endfor %}
+                    </ol>
+                </div>
             </div>
         </div>
     {% endif %}

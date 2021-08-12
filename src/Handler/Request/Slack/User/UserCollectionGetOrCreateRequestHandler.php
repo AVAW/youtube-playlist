@@ -6,7 +6,6 @@ namespace App\Handler\Request\Slack\User;
 
 use App\Entity\Slack\SlackConversation;
 use App\Entity\Slack\SlackUser;
-use App\Event\Slack\NewSlackUserEvent;
 use App\Message\Slack\NewSlackUser;
 use App\Service\Slack\User\SlackUserManager;
 use App\Service\Slack\User\SlackUserProvider;

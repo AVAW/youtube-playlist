@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Model\Playlist\Video;
 
 use App\Entity\User\User;
-use App\Handler\Request\Playlist\Video\VideoVoteSkipInterface;
+use App\Handler\Request\Playlist\Video\VideoVoteRemoveInterface;
 
-class VideoVoteSkipRequest implements VideoVoteSkipInterface
+class VideoVoteRemoveRequest implements VideoVoteRemoveInterface
 {
 
     private User $user;

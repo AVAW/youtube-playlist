@@ -17,6 +17,7 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use SymfonyCasts\Bundle\ResetPassword\Controller\ResetPasswordControllerTrait;
 use SymfonyCasts\Bundle\ResetPassword\Exception\ResetPasswordExceptionInterface;
 use SymfonyCasts\Bundle\ResetPassword\ResetPasswordHelperInterface;
@@ -84,6 +85,7 @@ class ResetPasswordController extends AbstractController
     public function reset(
         Request $request,
         UserPasswordEncoderInterface $passwordEncoder,
+        TranslatorInterface $translator,
         string $token = null
     ): Response {
         if ($token) {
@@ -130,7 +132,9 @@ class ResetPasswordController extends AbstractController
             // The session is cleaned up after the password has been changed.
             $this->cleanSessionAfterReset();
 
-            return $this->redirectToRoute('home');
+            $this->addFlash('messages', $translator->trans('security.success.passwordReseated'));
+
+            return $this->redirectToRoute('app_login');
         }
 
         return $this->render('security/reset_password/reset.html.twig', [

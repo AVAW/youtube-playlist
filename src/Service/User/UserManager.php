@@ -56,10 +56,10 @@ class UserManager
             ->setEmail($email);
 
         if ($slackUser instanceof SlackUser) {
-            $user->addSlackProfile($slackUser);
+            $user->setSlackUser($slackUser);
         }
         if ($googleUser instanceof GoogleUser) {
-            $user->addGoogleProfile($googleUser);
+            $user->setGoogleUser($googleUser);
         }
 
         $this->provider->save($user);

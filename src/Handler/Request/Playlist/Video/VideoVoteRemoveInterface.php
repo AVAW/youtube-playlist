@@ -6,7 +6,7 @@ namespace App\Handler\Request\Playlist\Video;
 
 use App\Entity\User\User;
 
-interface VideoVoteSkipInterface
+interface VideoVoteRemoveInterface
 {
 
     public function getUser(): User;

@@ -172,7 +172,7 @@ class SlackUser implements \Stringable, TimestampableInterface
     private Collection $playlistVideos;
 
     /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="slackProfile")
+     * @ORM\OneToOne(targetEntity=User::class, mappedBy="slackUser", cascade={"persist", "remove"})
      */
     private ?User $user;
 
