@@ -103,7 +103,7 @@ class CommandPlayHandler implements CommandInterface
             /** @var Playlist $playlist */
             $createPlaylistCommand = $form->getData();
 
-            $playlist = $this->playlistCreateRequestHandler->handle($createPlaylistCommand, $command);
+            $playlist = $this->playlistCreateRequestHandler->handle($createPlaylistCommand);
 
             // Bind conversation and playlist
             $conversationPlaylistRequest = ConversationPlaylistCreateRequest::create($playlist, $command->getConversation());
