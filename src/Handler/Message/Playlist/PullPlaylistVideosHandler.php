@@ -36,7 +36,12 @@ class PullPlaylistVideosHandler implements MessageHandlerInterface
             throw new \InvalidArgumentException('Cannot find playlist with identifier: ' . $pullPlaylistVideos->getIdentifier());
         }
 
-        $videos = $this->playlistClient->getPlaylistVideos($playlist->getYoutubeId());
+        $limit = 0;
+        if ($playlist->isCreatedByYouTube()) {
+            $limit = 2500;
+        }
+        $videos = $this->playlistClient->getPlaylistVideos($playlist->getYoutubeId(), $limit);
+
         $createVideosRequest = VideosCreateRequest::create($videos);
         $this->videosCreateRequestHandler->handle($playlist, $createVideosRequest);
     }

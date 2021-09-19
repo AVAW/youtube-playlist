@@ -41,8 +41,11 @@ class PlaylistClient
         $this->translator = $translator;
     }
 
-    /** @return VideoDto[] */
-    public function getPlaylistVideos(string $youTubeId): array
+    /**
+     * @param int $limit 0 => limitless
+     * @return VideoDto[]
+     */
+    public function getPlaylistVideos(string $youTubeId, int $limit = 0): array
     {
         $part = [
             'id',
@@ -66,6 +69,11 @@ class PlaylistClient
             $optParams = array_merge($queryParams, ['pageToken' => $results->getNextPageToken()]);
             $results = $this->service->playlistItems->listPlaylistItems($part, $optParams);
             $videos = array_merge($videos, $this->getPageVideos($results));
+
+            $amount = count($videos);
+            if ($limit !== 0 && $amount >= $limit) {
+                break;
+            }
         }
 
         return $videos;

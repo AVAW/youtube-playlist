@@ -176,6 +176,11 @@ class Playlist implements \Stringable, TimestampableInterface
         return $this;
     }
 
+    public function isCreatedByYouTube(): bool
+    {
+        return strtolower($this->getChannelTitle()) === 'youtube';
+    }
+
     public function getChannelTitle(): ?string
     {
         return $this->channelTitle;
