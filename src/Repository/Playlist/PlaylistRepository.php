@@ -24,7 +24,7 @@ class PlaylistRepository extends ServiceEntityRepository
         parent::__construct($registry, Playlist::class);
     }
 
-    public function findOneByIdentifierWithVideos($identifier)
+    public function findOneByIdentifierWithVideos(string $identifier)
     {
         $qb = $this->createQueryBuilder('p');
 
