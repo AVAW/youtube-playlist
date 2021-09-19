@@ -8,14 +8,20 @@ use App\Entity\Contact;
 use App\Form\ContactType;
 use App\Form\YouTubePlaylistType;
 use App\Handler\Request\Playlist\PlaylistCreateRequestHandler;
+use App\Handler\Request\Playlist\Video\VideosCreateRequestHandler;
+use App\Http\YouTube\PlaylistClient;
+use App\Message\Playlist\PullPlaylistVideos;
 use App\Model\Playlist\PlaylistCreateRequest;
+use App\Model\Playlist\Video\VideosCreateRequest;
 use App\Repository\ContactRepository;
+use App\Repository\Playlist\PlaylistRepository;
 use DateTime;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Uid\Uuid;
 
@@ -30,17 +36,13 @@ class DefaultController extends AbstractController
      */
     public function index(
         Request $request,
-        PlaylistCreateRequestHandler $playlistCreateRequestHandler
-
-
-
-
+        PlaylistCreateRequestHandler $playlistCreateRequestHandler,
+        MessageBusInterface $bus
 
 
 
     ): Response {
         // PLAYGROUND
-
 
 
 
@@ -60,6 +62,8 @@ class DefaultController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $playlist = $playlistCreateRequestHandler->handle($command);
+
+            $bus->dispatch(new PullPlaylistVideos((string) $playlist->getIdentifier()));
 
             return $this->redirectToRoute('playlist', ['identifier' => $playlist->getIdentifier()]);
         }
