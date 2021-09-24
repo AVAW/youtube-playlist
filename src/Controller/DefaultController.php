@@ -8,14 +8,9 @@ use App\Entity\Contact;
 use App\Form\ContactType;
 use App\Form\YouTubePlaylistType;
 use App\Handler\Request\Playlist\PlaylistCreateRequestHandler;
-use App\Handler\Request\Playlist\Video\VideosCreateRequestHandler;
-use App\Http\YouTube\PlaylistClient;
 use App\Message\Playlist\PullPlaylistVideos;
 use App\Model\Playlist\PlaylistCreateRequest;
-use App\Model\Playlist\Video\VideosCreateRequest;
 use App\Repository\ContactRepository;
-use App\Repository\Playlist\PlaylistRepository;
-use DateTime;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -91,15 +86,12 @@ class DefaultController extends AbstractController
         Request $request,
         ContactRepository $contactRepository
     ): Response {
-        $form = $this->createForm(ContactType::class);
+        $contact = new Contact();
+        $form = $this->createForm(ContactType::class, $contact);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var Contact $contact */
-            $contact = $form->getData();
-
             $contact
-                ->setCreatedAt(new DateTime())
                 ->setClientIp($request->getClientIp())
                 ->setIdentifier(Uuid::v4());
 
