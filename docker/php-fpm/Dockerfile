@@ -1,5 +1,4 @@
 FROM php:7.4-fpm
-WORKDIR "/application"
 
 # Fix debconf warnings upon build
 ARG DEBIAN_FRONTEND=noninteractive
@@ -36,7 +35,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 # Alias
 RUN echo 'alias sf="bin/console"' >> ~/.bashrc
 
-RUN printf '[PHP]\ndate.timezone = "Europe/Warsaw"\n' > /usr/local/etc/php/conf.d/tzone.ini
+COPY php-ini-overrides.ini /usr/local/etc/php/conf.d/php-ini-overrides.ini
 
 ## PHP-FPM packages need a nudge to make them docker-friendly
 #COPY overrides.conf /etc/php/7.3/fpm/pool.d/z-overrides.conf
