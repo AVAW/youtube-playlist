@@ -1,10 +1,10 @@
 About
 =====
-Arris YouTube playlist 
+Play videos from YouTube playlists. Allow integrating with Slack and vote form videos in conversations.
 
 Features
 --------
-- YouTube integration (OAuth)
+- YouTube's integration (OAuth)
 - Slack integration (OAuth, Slash Commands, Interactivity)
 
 Run
