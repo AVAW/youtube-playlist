@@ -2,7 +2,7 @@ version: "3.9"
 services:
 
     mariadb:
-        image: mariadb:10.5
+        image: mariadb:10.6.5
         container_name: youtube-playlist-mariadb
         working_dir: /application
         networks:
@@ -41,6 +41,8 @@ services:
             - backend
         volumes:
             - code:/application
+        expose:
+            - "9000"
 
     node:
         image: node:12.22.1
@@ -48,7 +50,6 @@ services:
         working_dir: /application
         networks:
             - frontend
-            - backend
         volumes:
             - code:/application
 
@@ -80,13 +81,18 @@ networks:
 
 volumes:
     code:
+        driver: local
+        driver_opts:
+            type: none
+            device: $PWD
+            o: bind
 
-#x-mutagen:
-#    sync:
-#        defaults:
-#            ignore:
-#                vcs: true
-#        code:
-#            alpha: "."
-#            beta: "volume://code"
-#            mode: "two-way-resolved"
+x-mutagen:
+    sync:
+        defaults:
+            ignore:
+                vcs: true
+        code:
+            alpha: "."
+            beta: "volume://code"
+            mode: "two-way-resolved"
