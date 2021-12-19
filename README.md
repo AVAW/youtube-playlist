@@ -16,6 +16,8 @@ Run
   - `sf d:m:m`
   - `sf messenger:consume async` - queue
 
+Start the development server: `yarn encore dev-server` or `yarn encore dev --watch`
+
 Docker fix permissions
 ----------------------
 `sudo chown -R $USER:$USER .`

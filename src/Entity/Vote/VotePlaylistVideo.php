@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Entity\Vote;
 
 use App\Entity\Playlist\PlaylistVideo;
-use App\Repository\Vote\VotePlaylistVideoRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -26,7 +25,7 @@ class VotePlaylistVideo extends Vote
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $action;
+    private string $action;
 
     public function getVideo(): ?PlaylistVideo
     {
