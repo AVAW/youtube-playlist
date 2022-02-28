@@ -14,23 +14,23 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Validate composer.json and composer.lock
-      run: composer validate --strict
+    - name: Builde docker-compose
+      run: docker-compose up -d
 
-    - name: Cache Composer packages
-      id: composer-cache
-      uses: actions/cache@v2
-      with:
-        path: vendor
-        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-php-
+    - name: Validate composer.json and composer.lock
+      run: docker-compose run php composer validate --strict
 
     - name: Install dependencies
-      run: composer install --prefer-dist --no-progress
-
-    # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
-    # Docs: https://getcomposer.org/doc/articles/scripts.md
+      run: docker-compose run php composer install --prefer-dist --no-progress
 
     - name: Run test suite
-      run: composer run-script test
+      run: docker-compose run php composer run-script test
+
+#    - name: Cache Composer packages
+#      id: composer-cache
+#      uses: actions/cache@v2
+#      with:
+#        path: vendor
+#        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+#        restore-keys: |
+#          ${{ runner.os }}-php-
