@@ -27,7 +27,7 @@ services:
             - "8080:80"
 
     php:
-        build: docker/php-fpm
+        image: arekphp/youtube-playlist-php-fpm:1.0
         container_name: '${APP_NAME}-php'
         working_dir: /application
         volumes:
