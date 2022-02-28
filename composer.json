@@ -116,6 +116,10 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
+        ],
+        "test:coverage-html": [
+            "@putenv XDEBUG_MODE=coverage",
+            "phpunit --color=always --coverage-html=\"output/code-coverage\""
         ]
     },
     "conflict": {
