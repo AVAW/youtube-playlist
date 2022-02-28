@@ -2,8 +2,8 @@
 
 namespace App\Tests\Utils;
 
-use App\Entity\TimestampableInterface;
-use App\Utils\LastUpdateHelper;
+use App\Utils\Timestampable\TimestampableInterface;
+use App\Utils\Timestampable\TimestampableHelper;
 use PHPUnit\Framework\TestCase;
 
 class LastUpdateHelperTest extends TestCase
@@ -16,8 +16,8 @@ class LastUpdateHelperTest extends TestCase
 
         $simpleEntity = new SimpleEntity($nowMinus10Minutes);
 
-        $this->assertFalse(LastUpdateHelper::isUpdatedInLastXMinutes($simpleEntity, 5));
-        $this->assertTrue(LastUpdateHelper::isUpdatedInLastXMinutes($simpleEntity, 15));
+        $this->assertFalse(TimestampableHelper::isUpdatedInLastXMinutes($simpleEntity, 5));
+        $this->assertTrue(TimestampableHelper::isUpdatedInLastXMinutes($simpleEntity, 15));
     }
 
     public function testIsUpdatedInLastMinutesCreatedAtUpdatedAt()
@@ -30,8 +30,8 @@ class LastUpdateHelperTest extends TestCase
 
         $simpleEntity = new SimpleEntity($nowMinus10Minutes, $nowMinus7Minutes);
 
-        $this->assertFalse(LastUpdateHelper::isUpdatedInLastXMinutes($simpleEntity, 5));
-        $this->assertTrue(LastUpdateHelper::isUpdatedInLastXMinutes($simpleEntity, 15));
+        $this->assertFalse(TimestampableHelper::isUpdatedInLastXMinutes($simpleEntity, 5));
+        $this->assertTrue(TimestampableHelper::isUpdatedInLastXMinutes($simpleEntity, 15));
     }
 
 }
