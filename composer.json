@@ -18,7 +18,7 @@
         "ext-iconv": "*",
         "ext-json": "*",
         "adam-paterson/oauth2-slack": "^1.1",
-        "composer/package-versions-deprecated": "1.11.99.1",
+        "composer/package-versions-deprecated": "1.11.99.*",
         "doctrine/annotations": "^1.0",
         "doctrine/doctrine-bundle": "^2.3",
         "doctrine/doctrine-migrations-bundle": "^3.0",
