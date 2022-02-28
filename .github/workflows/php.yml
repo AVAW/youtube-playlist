@@ -14,7 +14,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Builde docker-compose
+    - name: Build docker-compose
       run: docker-compose up -d --quiet-pull
 
     - name: Validate composer.json and composer.lock
