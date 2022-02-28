@@ -117,6 +117,7 @@
         "post-update-cmd": [
             "@auto-scripts"
         ],
+        "test": "vendor/bin/phpunit",
         "test:coverage-html": [
             "@putenv XDEBUG_MODE=coverage",
             "phpunit --color=always --coverage-html=\"output/code-coverage\""
